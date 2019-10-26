@@ -1,0 +1,82 @@
+{
+  "name": "yiisoft/yii2-app-basic",
+  "description": "Fem Poble",
+  "keywords": [
+    "fempoble",
+    "poble",
+    "noticies",
+    "esdeveniments"
+  ],
+  "homepage": "https://www.fempoble.app/",
+  "type": "project",
+  "license": "BSD-3-Clause",
+  "support": {
+    "issues": "https://github.com/yiisoft/yii2/issues?state=open",
+    "forum": "http://www.yiiframework.com/forum/",
+    "wiki": "http://www.yiiframework.com/wiki/",
+    "irc": "irc://irc.freenode.net/yii",
+    "source": "https://github.com/yiisoft/yii2"
+  },
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.4.0",
+    "yiisoft/yii2": "~2.0.29",
+    "yiisoft/yii2-bootstrap4": "~2.0.6",
+    "yiisoft/yii2-swiftmailer": "~2.1.0",
+    "yiisoft/yii2-imagine": "~2.1.0",
+    "2amigos/yii2-tinymce-widget": "~1.1",
+    "kartik-v/yii2-widget-switchinput": "*",
+    "kartik-v/yii2-widget-timepicker": "*",
+    "kartik-v/yii2-widget-datepicker": "dev-master",
+    "kartik-v/yii2-widget-datetimepicker": "*",
+    "kartik-v/yii2-date-range": "dev-master",
+    "kartik-v/yii2-widget-fileinput": "dev-master",
+    "alymosul/exponent-server-sdk-php": "dev-master"
+  },
+  "require-dev": {
+    "yiisoft/yii2-debug": "~2.1.0",
+    "yiisoft/yii2-gii": "~2.1.0",
+    "yiisoft/yii2-faker": "~2.0.0",
+    "codeception/base": "~2.3.0",
+    "codeception/verify": "~0.4.0",
+    "codeception/specify": "~0.4.6",
+    "symfony/browser-kit": ">=2.7 <=4.2.4"
+  },
+  "config": {
+    "process-timeout": 1800,
+    "fxp-asset": {
+      "enabled": false
+    }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "yii\\composer\\Installer::postInstall"
+    ],
+    "post-create-project-cmd": [
+      "yii\\composer\\Installer::postCreateProject",
+      "yii\\composer\\Installer::postInstall"
+    ]
+  },
+  "extra": {
+    "yii\\composer\\Installer::postCreateProject": {
+      "setPermission": [
+        {
+          "runtime": "0777",
+          "web/assets": "0777",
+          "yii": "0755"
+        }
+      ]
+    },
+    "yii\\composer\\Installer::postInstall": {
+      "generateCookieValidationKey": [
+        "config/web.php"
+      ]
+    }
+  },
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://asset-packagist.org"
+    }
+  ]
+}

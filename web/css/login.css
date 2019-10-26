@@ -1,0 +1,56 @@
+/* Login Page */
+.input-container{
+  height: 50px;
+  cursor:text
+}
+
+.login-content{
+  border-radius:20px;
+  border: 6px solid #2c53a6;
+}
+
+.login-wrap{
+  padding-top:8vh;
+}
+
+.login-input{
+  background-color: #ffffff;
+  border: 2px solid grey;
+  transition:0.5s;
+}
+
+
+.login-input:focus{
+  background-color: #ffffff !important;
+  border: 2px solid #2c53a6 !important;
+  box-shadow: none;
+}
+
+.br-red{
+  border: 2px solid red !important;
+  box-shadow: none;
+}
+
+.br-red:focus{
+  border: 2px solid red !important;
+  box-shadow: none;
+}
+
+
+.login-labels{
+  font-size: 16px;
+  color: #2c53a6;
+  font-weight: bold;
+}
+
+.force-left{
+  left:35px;
+}
+
+.error-label{
+  position: relative;
+  top: -50px;
+  left: -25px;
+  height:0px;
+  font-weight:bold
+}

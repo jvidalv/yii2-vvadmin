@@ -1,0 +1,55 @@
+/* -------------- TODO -----------------*/
+Amagar filtres index, fer un filtre general
+Afegir tooltip als botons de les taules 
+
+-- jornada_laboral --
+
+int id
+int user_id
+int empresa_id
+int tipo_jornada_laboral_id
+date dia_entrada
+time hora_entrada1
+time hora_entrada2
+time hora_entrada3
+time hora_sortida1
+time hora_sortida2
+time hora_sortida3
+float total_hores
+int sesio_activa
+varchar latitude
+varchar longitude
+blob user_info
+int borrat
+int created_at
+int updated_at
+
+-- rol empresa --
+
+int id
+int empresa_id
+int tipo_jornada_laboral_id
+varchar nom
+varchar descripcio
+int created_at
+int updated_at
+
+-- tipo_jornada_laboral --
+
+int id
+int default 
+int user_id
+int empresa_id
+int rol_empresa_id
+varchar nom
+varchar observacions
+datetime hora_entrada1
+datetime hora_entrada2
+datetime hora_entrada3
+datetime hora_sortida1
+datetime hora_sortida2
+datetime hora_sortida3
+int created_at
+int updated_at
+
+/* -------------- INCIDENCIES -----------------*/
