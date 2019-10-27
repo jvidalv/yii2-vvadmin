@@ -2,21 +2,17 @@
 
 namespace app\controllers;
 
-use Yii;
-
-use app\controllers\JosepController;
-use yii\filters\AccessControl;
-use yii\helpers\Url;
-use yii\web\Controller;
-use yii\web\Response;
-use yii\imagine\Image;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\LoginForm;
 use app\models\User;
+use Yii;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+use yii\web\Response;
 
-class SiteController extends Controller
+class SiteController extends TopController
 {
+
     /**
      * {@inheritdoc}
      */
@@ -31,10 +27,10 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                         'actions' => ['logout', 'index', 'upload-imatge', 'upload-files', 'delete-imatge', 'set-session'],
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
+                        'actions' => ['logout', 'index', 'upload-imatge', 'upload-files', 'delete-imatge', 'set-session'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
             'verbs' => [
@@ -103,7 +99,7 @@ class SiteController extends Controller
      * @return Response
      */
     public function actionLogout()
-    { 
+    {
         Yii::$app->user->logout();
         return $this->goHome();
     }
@@ -115,16 +111,16 @@ class SiteController extends Controller
      */
     public function actionExisteixUsuari()
     {
-      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-      if(\Yii::$app->request->isAjax && \Yii::$app->request->isPost){
-        $data = \Yii::$app->request->post()['data'];
-        $user = User::find()->where(['or', ['email' => $data]])->one();
-        if($user){
-          return ['status' => true, 'nom' => $user->nomComplet, 'imatge' => $user->media ? $user->media->getUrlImatge() : ''];
+        if (\Yii::$app->request->isAjax && \Yii::$app->request->isPost) {
+            $data = \Yii::$app->request->post()['data'];
+            $user = User::find()->where(['or', ['email' => $data]])->one();
+            if ($user) {
+                return ['status' => true, 'nom' => $user->nomComplet, 'imatge' => $user->media ? $user->media->getUrlImatge() : ''];
+            }
         }
-      }
-      return ['status' => false, 'error' =>  Yii::t('app', 'L\'usuari@ no existeix.'), ];
+        return ['status' => false, 'error' => Yii::t('app', 'L\'usuari@ no existeix.')];
     }
 
     /**
@@ -134,16 +130,16 @@ class SiteController extends Controller
      */
     public function actionContrassenyaCorrecta()
     {
-      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-      if(\Yii::$app->request->isAjax && \Yii::$app->request->isPost){
-        $model = new LoginForm();
+        if (\Yii::$app->request->isAjax && \Yii::$app->request->isPost) {
+            $model = new LoginForm();
 
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['/']);
+            if ($model->load(Yii::$app->request->post()) && $model->login()) {
+                return $this->redirect(['/']);
+            }
         }
-      }
-      return ['status' => false, 'error' =>  Yii::t('app', 'La contrassenya no és correcta'), ];
+        return ['status' => false, 'error' => Yii::t('app', 'La contrassenya no és correcta')];
     }
 
     /**
@@ -178,8 +174,12 @@ class SiteController extends Controller
     // demana tipo (afegir, borrar), nom propietat i valor
     public function actionSetSession($tipo = 'afegir', $nom, $valor = false)
     {
-      if($tipo === 'afegir') return $_SESSION[$nom] = $valor;
-      else unset($_SESSION[$nom]);
+        if ($tipo === 'afegir') {
+            return $_SESSION[$nom] = $valor;
+        } else {
+            unset($_SESSION[$nom]);
+        }
+
     }
 
 }

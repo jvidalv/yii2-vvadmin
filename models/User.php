@@ -65,10 +65,10 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     public function rules()
     {
         return [
-            [['email', 'nom', 'cognoms'], 'required'],
+            [['email', 'nom', 'cognoms', 'language_id'], 'required'],
             [['email'], 'email'],
             [['email'], 'unique'],
-            [['role', 'actiu'], 'integer'],
+            [['role', 'actiu', 'language_id'], 'integer'],
             [['nom', 'cognoms', 'email',  'password'], 'string', 'max' => 250],
             [['telefon'], 'string', 'max' => 50],
             [['username'], 'string', 'max' => 100],
@@ -96,17 +96,19 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'nom' => 'Nom',
-            'cognoms' => 'Cognmos',
-            'telefono' => 'Telefon',
-            'email' => 'Correu electrònic',
-            'username' => 'Nom d\'usuari',
-            'password' => 'Contrassenya',
+            'id' => Yii::t('app','id'),
+            'nom' => Yii::t('app','Nom'),
+            'cognoms' => Yii::t('app','Cognoms'),
+            'telefono' => Yii::t('app','Telefon'),
+            'activat' => Yii::t('app','Active'),
+            'email' => Yii::t('app','Correu electrònic'),
+            'username' => Yii::t('app','Nom d\'usuari'),
+            'password' => Yii::t('app','Contrassenya'),
             'authKey' => 'Auth Key',
             'password_reset_token' => 'Password Reset Token',
-            'role' => 'Role',
-            'imatge' => 'Imatge',
+            'role' => Yii::t('app','Role'),
+            'imatge' => Yii::t('app','Imatge'),
+            'language_id' => Yii::t('app','Language'),
         ];
     }
 
@@ -125,6 +127,15 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     {
         return $this->hasOne(Media::className(), ['id' => 'media_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+     public function getLanguage()
+     {
+         return $this->hasOne(Language::className(), ['id' => 'language_id']);
+     }
+ 
 
     /**
      * @return \yii\db\ActiveQuery

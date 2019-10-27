@@ -9,50 +9,50 @@ $config = [
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
     ],
-    'language'=>'ca',
+    'language' => 'ca',
     'components' => [
-       'assetManager' => [
-          'bundles' => [
+        'assetManager' => [
+            'bundles' => [
                 'dosamigos\switchinput\SwitchAsset' => [
-                        'depends' => ['yii\bootstrap4\BootstrapPluginAsset'],
-                    ],
-                'kartik\form\ActiveFormAsset' => [
-                  'bsDependencyEnabled' => false // do not load bootstrap assets for a specific asset bundle
+                    'depends' => ['yii\bootstrap4\BootstrapPluginAsset'],
                 ],
-              ],
+                'kartik\form\ActiveFormAsset' => [
+                    'bsDependencyEnabled' => false, // do not load bootstrap assets for a specific asset bundle
+                ],
+            ],
         ],
         'urlManager' => [
-           'enablePrettyUrl' => true,
-           'showScriptName' => false,
-           'enableStrictParsing' => false,
-           'rules' => [
-                Yii::t('app', '/') => 'site/index',
-                Yii::t('app', '/login') => 'site/login',
-                Yii::t('app', 'logout') => 'site/logout',
-                Yii::t('app', 'users') => 'user/index',
-                Yii::t('app', 'noticies') => 'noticia/index',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'enableStrictParsing' => false,
+            'rules' => [
+                '/' => 'site/index',
+                '/login' => 'site/login',
+                'logout' => 'site/logout',
+                
+                'noticies' => 'noticia/index',
+                'noticia/<slug>-<id:\d+>' => 'noticia/update',
 
-                Yii::t('app', 'media') => 'media/index',
-      
-                Yii::t('app', 'settings') => 'user/update',
+                'media' => 'media/index',
+                'categories' => 'category/index',
 
-                Yii::t('app', 'user').'/<slug>-<id:\d+>' => 'user/update',
-        
-                Yii::t('app', 'noticia').'/<slug>-<id:\d+>' => 'noticia/update',
-          ],
+                'users' => 'user/index',
+                'settings/<slug>-<id:\d+>' => 'user/update',
+
+            ],
         ],
         'formatter' => [
-            'dateFormat'=>'dd-MM-yyyy HH:mm',
+            'dateFormat' => 'dd-MM-yyyy HH:mm',
             'datetimeFormat' => 'dd-MM-yyyy HH:mm',
         ],
         'request' => [
-          'parsers' => [
-            'application/json' => 'yii\web\JsonParser',
-          ],
-          // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-          'cookieValidationKey' => '2kAgxOvLysGvkSFRVBfWHPKxjuoV4yLL',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
+            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+            'cookieValidationKey' => '2kAgxOvLysGvkSFRVBfWHPKxjuoV4yLL',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
@@ -61,12 +61,12 @@ $config = [
         ],
         'session' => [
             'class' => 'yii\web\DbSession',
-            'timeout' => 60*60*24*14, 
+            'timeout' => 60 * 60 * 24 * 14,
             'writeCallback' => function ($session) {
-              return [
-                 'user_id' => Yii::$app->user->id,
-                 'last_write' => time(),
-              ];
+                return [
+                    'user_id' => Yii::$app->user->id,
+                    'last_write' => time(),
+                ];
             },
         ],
         'errorHandler' => [
@@ -92,6 +92,18 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'db' => $db,
+        'i18n' => [
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'fileMap' => [
+                        'app' => 'app.php',
+                        'app/error' => 'error.php',
+                    ],
+                    'on missingTranslation' => ['app\components\TranslationEventHandler', 'handleMissingTranslation'],
+                ],
+            ],
+        ],
 
     ],
     'params' => $params,

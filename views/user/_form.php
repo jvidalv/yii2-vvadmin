@@ -5,6 +5,7 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\file\FileInput;
+use app\models\Language;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
@@ -27,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col-md-12">
                 <div class="overview-wrap">
                     <h1 class="title-1 fs-45"><?= $model->nomComplet ?></h1>
-                    <?= Html::submitButton('Guardar', ['class' => 'au-btn au-btn-icon au-btn--blue']) ?>
+                    <?= Html::submitButton(Yii::t('app', 'Guardar'), ['class' => 'au-btn au-btn-icon au-btn--blue']) ?>
                 </div>
             </div>
         </div>
@@ -35,19 +36,20 @@ $this->params['breadcrumbs'][] = $this->title;
           <div class="col">
             <div class="card">
                 <div class="card-header">
-                    <strong>Informació bàsica</strong>
+                    <strong><?= Yii::t('app', 'Informació bàsica') ?></strong>
                 </div>
                 <div class="card-body card-block">
                   <?= $form->field($model, 'nom')->textInput(['maxlength' => true]) ?>
                   <?= $form->field($model, 'cognoms')->textInput(['maxlength' => true]) ?>
                   <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
                   <?= $form->field($model, 'telefon')->textInput(['maxlength' => true]) ?>
+                  <?= $form->field($model, 'language_id')->dropDownList(ArrayHelper::map(Language::find()->all(), 'id', 'name')) ?>
                 </div>
             </div>
             <?php if(Yii::$app->user->identity->esAdmin()): ?>
               <div class="card">
                   <div class="card-header">
-                      <strong>Dades usuari</strong>
+                      <strong><?= Yii::t('app', 'Dades usuari') ?></strong>
                   </div>
                   <div class="card-body card-block">
                     <?= $form->field($model, 'actiu')->radioList([1 => 'Si', 0 => 'No'], ['class' => 'checkbox-inline-josep']) ?>
@@ -60,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
           <div class="col">
           <div class="card">
               <div class="card-header">
-                  <strong>Foto</strong>
+                  <strong><?= Yii::t('app', 'Foto') ?></strong>
               </div>
               <div class="card-body">
               <?= FileInput::widget([

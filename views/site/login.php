@@ -32,7 +32,7 @@ $this->beginPage() ?>
                     <img src="/images/logo-grande.png" alt="vblogv" width="200">
                 </div>
                   <div class="login-content">
-                      <div class="">
+                      <div>
                         <?php if(Yii::$app->session->hasFlash('login')): ?>
                           <div class="alert alert-danger" role="alert">
                            <?= Yii::$app->session->getFlash('login'); ?>
@@ -78,7 +78,7 @@ $this->beginPage() ?>
                               <div id="container-password" style="display:none">
                                 <div class="text-center">
                                   <img id="empresa_imatge-response" class="rounded-circle mx-auto d-block w-25" >
-                                  <p class="mt-2"><?= Yii::t('app','   Benvingut de nou,') ?> <span id="nom-response" class="font-weight-bold">No_value</span></p>
+                                  <p class="mt-2"><?= Yii::t('app','Benvingut de nou,') ?> <span id="nom-response" class="font-weight-bold">No_value</span></p>
                                 </div>
                                 <div class="mt-4">
                                   <div>

@@ -12,7 +12,7 @@ MediaAsset::register($this);
 /* @var $searchModel app\models\MediaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Imatges i documents';
+$this->title = Yii::t('app','Imatges i documents');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="media-index">
@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="card-header d-flex">
         <h1 class="title-1"><?= Html::encode($this->title) ?></h1>
         <button type="button" class="au-btn au-btn-icon au-btn--green au-btn--small ml-auto" data-toggle="modal" data-target="#modal">
-          + Penjar fitxers
+          + <?= Yii::t('app','Penjar fitxer') ?>
         </button>
     </div>
     <div class="card-body">
@@ -28,13 +28,13 @@ $this->params['breadcrumbs'][] = $this->title;
           <div class="table-data__tool-left">
             <ul class="nav nav-pills">
   						<li class="nav-item small">
-  							<div class="nav-link cursor-pointer <?= $activa == 'totals' ? 'active' : null ?>" onclick="insertParam('MediaSearch[es_imatge]', null)">Totes</div>
+  							<div class="nav-link cursor-pointer <?= $activa == 'totals' ? 'active' : null ?>" onclick="insertParam('MediaSearch[es_imatge]', null)"><?= Yii::t('app','Totes') ?></div>
   						</li>
   						<li class="nav-item cursor-pointer small">
-                <div class="nav-link cursor-pointer <?= $activa == 'imatges' ? 'active' : null ?>" onclick="insertParam('MediaSearch[es_imatge]', 1)">Imatges</div>
+                <div class="nav-link cursor-pointer <?= $activa == 'imatges' ? 'active' : null ?>" onclick="insertParam('MediaSearch[es_imatge]', 1)"><?= Yii::t('app','Imatges') ?></div>
   						</li>
               <li class="nav-item cursor-pointer small">
-                <div class="nav-link cursor-pointer <?= $activa == 'documents' ? 'active' : null ?>" onclick="insertParam('MediaSearch[es_imatge]', 0)">Documents</div>
+                <div class="nav-link cursor-pointer <?= $activa == 'documents' ? 'active' : null ?>" onclick="insertParam('MediaSearch[es_imatge]', 0)"><?= Yii::t('app','Documents') ?></div>
   						</li>
   					</ul>
           </div>
@@ -85,7 +85,7 @@ $this->params['breadcrumbs'][] = $this->title;
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title" id="largeModalLabel">Penjar fitxers</h3>
+        <h3 class="modal-title" id="largeModalLabel"><?=Yii::t('app', 'Upload files')?></h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -113,13 +113,13 @@ $this->params['breadcrumbs'][] = $this->title;
   <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 class="modal-title" id="largeModalLabel">Modificar metadades de la imatge</h3>
+        <h3 class="modal-title" id="largeModalLabel"><?=Yii::t('app', 'Modify image metadata')?></h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        Carregant ...
+        <?= Yii::t('app', 'Loading') ?> ...
       </div>
       </div>
   </div>

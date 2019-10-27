@@ -80,9 +80,9 @@ class Media extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'titol' => 'Títol',
-            'descripcio' => 'Descripció',
-            'file_name' => 'Nom del fitxer',
+            'titol' => Yii::t('app','Títol'),
+            'descripcio' => Yii::t('app','Descripció'),
+            'file_name' => Yii::t('app','Nom del fitxer'),
         ];
     }
 

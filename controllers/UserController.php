@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\models\User;
 use app\models\UserSearch;
+use app\models\Language;
+
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -65,7 +67,7 @@ class UserController extends MainController
                 $model->password = $model->password_hash;
             }
             $model->save();
-            Yii::$app->session->setFlash('general', "Dades actualitzades correctament!");
+            Yii::$app->session->setFlash('general', Yii::$app('app', 'Data saved correctly'));
         }
 
         $model->password = '******';
@@ -82,9 +84,18 @@ class UserController extends MainController
     {
         $lang = Yii::$app->request->post()['lang'];
 
-        Yii::$app->language = $lang;
+        $session = Yii::$app->session;
+        $session->set('language', $lang);
 
-        return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);    }
+        $query = Language::findOne(['code' => $lang]);
+
+        if($query){
+            Yii::$app->user->identity->language_id = $query->id;
+            Yii::$app->user->identity->save();
+        }
+
+        return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+    }
 
     /**
      * Deletes an existing User model.

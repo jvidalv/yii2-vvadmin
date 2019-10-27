@@ -8,7 +8,7 @@ defined('YII_ENV') or define('YII_ENV', $local ? 'dev' : 'prod');
 setlocale(LC_TIME,'ca_ES', 'Catalan_Spain', 'Catalan');
 
 // Activar HTTPS
-$_SERVER['HTTPS']='on';
+//$_SERVER['HTTPS']='on';
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';

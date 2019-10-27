@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="media-form">
   <div id="alert-media-form" class="alert alert-success" role="alert" style="display:none">
-		Dades<strong> guardades </strong>correctament!
+		<?= Yii::t('app', 'Data saved correctly') ?>
   </div>
   <div class="row">
     <div class="col-lg-4">
@@ -23,14 +23,14 @@ use yii\widgets\ActiveForm;
                   'id' => 'media-form'
               ]
           ]); ?>
-        <label>Direcció de la imatge: </label>
+        <label><?= Yii::t('app', 'Path to media') ?></label>
         <input class="w-100 p-2 mb-2" type="text" value="<?= 'https://'. $_SERVER['SERVER_NAME'] .  $model->url ?>" disabled/>
 
         <?= $form->field($model, 'titol')->textInput(['required' => true]) ?>
         <?= $form->field($model, 'descripcio')->textArea() ?>
 
         <div class="d-flex mx-auto">
-            <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
         </div>
       <?php ActiveForm::end(); ?>
 
