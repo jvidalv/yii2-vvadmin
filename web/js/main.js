@@ -1582,7 +1582,8 @@ function insertParam(key, value)
       });
     }
     $(".js-item-menu, .js-dropdown").click(function (event) {
-        event.stopPropagation();
+      var element = event.target
+      if($(element).data('method') !== 'post') event.stopPropagation();
     });
 
     $("body,html").on("click", function () {
