@@ -143,6 +143,15 @@ a.desc:after {
   left: 260px
 } */
 
+.active-language {
+  background: #496aaf;
+  color: white !important;
+}
+.active-language::after {
+  content: "✔";
+  float: right;
+}
+
 .menu-sidebar2 .logo {
   background: rgb(73, 106, 175);
 }

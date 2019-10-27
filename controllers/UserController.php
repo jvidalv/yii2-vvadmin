@@ -2,15 +2,11 @@
 
 namespace app\controllers;
 
-use Yii;
-use app\controllers\JosepController;
 use app\models\User;
 use app\models\UserSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use yii\web\UploadedFile;
 
 /**
  * UserController implements the CRUD actions for User model.
@@ -24,32 +20,32 @@ class UserController extends MainController
      */
     public function actionIndex()
     {
-      if(Yii::$app->user->identity->esAdmin()){
-        // carreguem modal i dades per al modal de creacio
-        $model = new User();
-        $model->password = bin2hex(openssl_random_pseudo_bytes(3));
+        if (Yii::$app->user->identity->esAdmin()) {
+            // carreguem modal i dades per al modal de creacio
+            $model = new User();
+            $model->password = bin2hex(openssl_random_pseudo_bytes(3));
 
-        if($model->load(Yii::$app->request->post())) {
-            $model->poble_id = Yii::$app->user->identity->esAdmin() ? $model->poble_id : Yii::$app->user->identity->poble_id;
-            $model->setPassword($model->password);
-            $model->password = $model->password_hash;
-            if($model->save()){
-              Yii::$app->session->setFlash('general', "Usuari afegit correctament!");
-              return $this->redirect(['update', 'slug' => $model->slug, 'id' => $model->id]);
+            if ($model->load(Yii::$app->request->post())) {
+                $model->poble_id = Yii::$app->user->identity->esAdmin() ? $model->poble_id : Yii::$app->user->identity->poble_id;
+                $model->setPassword($model->password);
+                $model->password = $model->password_hash;
+                if ($model->save()) {
+                    Yii::$app->session->setFlash('general', "Usuari afegit correctament!");
+                    return $this->redirect(['update', 'slug' => $model->slug, 'id' => $model->id]);
+                }
             }
+
+            $searchModel = new UserSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            return $this->render('index', [
+                'model' => $model,
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
         }
 
-        $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        return $this->render('index', [
-            'model' => $model,
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-      } else {
         return $this->goHome();
-      }
     }
 
     /**
@@ -64,9 +60,9 @@ class UserController extends MainController
         $model = $this->findModel($id ? $id : Yii::$app->user->identity->id);
 
         if ($model->load(Yii::$app->request->post())) {
-            if($model->password && $model->password != '******') {
-              $model->setPassword($model->password);
-              $model->password = $model->password_hash;
+            if ($model->password && $model->password != '******') {
+                $model->setPassword($model->password);
+                $model->password = $model->password_hash;
             }
             $model->save();
             Yii::$app->session->setFlash('general', "Dades actualitzades correctament!");
@@ -78,6 +74,17 @@ class UserController extends MainController
             'model' => $model,
         ]);
     }
+
+    /**
+     * Changes the user language
+     */
+    public function actionChangeLanguage()
+    {
+        $lang = Yii::$app->request->post()['lang'];
+
+        Yii::$app->language = $lang;
+
+        return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);    }
 
     /**
      * Deletes an existing User model.
@@ -108,4 +115,5 @@ class UserController extends MainController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
 }

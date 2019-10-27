@@ -121,7 +121,7 @@ class SiteController extends Controller
         $data = \Yii::$app->request->post()['data'];
         $user = User::find()->where(['or', ['email' => $data]])->one();
         if($user){
-          return ['status' => true, 'nom' => $user->nomComplet, 'imatge' => $user->media->getUrlImatge()];
+          return ['status' => true, 'nom' => $user->nomComplet, 'imatge' => $user->media ? $user->media->getUrlImatge() : ''];
         }
       }
       return ['status' => false, 'error' =>  Yii::t('app', 'L\'usuari@ no existeix.'), ];
