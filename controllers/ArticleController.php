@@ -3,16 +3,16 @@
 namespace app\controllers;
 
 use Yii;
-use app\models\Category;
-use app\models\CategorySearch;
+use app\models\Article;
+use app\models\ArticleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * CategoryController implements the CRUD actions for Category model.
+ * ArticleController implements the CRUD actions for Article model.
  */
-class CategoryController extends MainController
+class ArticleController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -30,29 +30,22 @@ class CategoryController extends MainController
     }
 
     /**
-     * Lists all Category models.
+     * Lists all Article models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new CategorySearch();
+        $searchModel = new ArticleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $model = new Category();
-        
-        
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'saved!'));
-        }
 
         return $this->render('index', [
-            'model' => $model,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Displays a single Category model.
+     * Displays a single Article model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -65,14 +58,17 @@ class CategoryController extends MainController
     }
 
     /**
-     * Creates a new Category model.
+     * Creates a new Article model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Category();
+        $model = new Article();
 
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
 
         return $this->render('create', [
             'model' => $model,
@@ -80,7 +76,7 @@ class CategoryController extends MainController
     }
 
     /**
-     * Updates an existing Category model.
+     * Updates an existing Article model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -100,7 +96,7 @@ class CategoryController extends MainController
     }
 
     /**
-     * Deletes an existing Category model.
+     * Deletes an existing Article model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -114,15 +110,15 @@ class CategoryController extends MainController
     }
 
     /**
-     * Finds the Category model based on its primary key value.
+     * Finds the Article model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Category the loaded model
+     * @return Article the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Category::findOne($id)) !== null) {
+        if (($model = Article::findOne($id)) !== null) {
             return $model;
         }
 

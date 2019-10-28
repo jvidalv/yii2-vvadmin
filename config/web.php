@@ -37,9 +37,13 @@ $config = [
 
                 'media' => 'media/index',
                 'categories' => 'category/index',
+                'tags' => 'tag/index',
+
+                'articles' => 'article/index',
+                'articles/<id:\d+>/<slug>' => 'article/update',
 
                 'users' => 'user/index',
-                'settings/<slug>-<id:\d+>' => 'user/update',
+                'settings/<id:\d+>/<slug>' => 'user/update',
 
             ],
         ],

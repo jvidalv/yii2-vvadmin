@@ -2,6 +2,7 @@ html,
 body {
   height: 100%;
   background-color: #f2f2f2;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif !important;
 }
 
 a {
@@ -143,6 +144,10 @@ a.desc:after {
   left: 260px
 } */
 
+.page-content--bgf7 {
+  background: #efefef;
+}
+
 .page-wrapper, .page-content--bgf7{
   min-height: 100vh;
 }
@@ -265,6 +270,10 @@ table thead tr th > a{
 
 table tbody tr:nth-child(2){
   background: #f2f8ff;
+}
+
+.table-data2.table tbody tr td:first-child {
+  vertical-align: middle;
 }
 /*
 .table-data2.table tbody td {

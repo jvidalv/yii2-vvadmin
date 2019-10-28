@@ -3,7 +3,8 @@
 use app\libraries\JosepGridView;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
-
+use yii\helpers\ArrayHelper;
+use app\models\Language;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -100,6 +101,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?=$form->field($model, 'nom')->textInput(['maxlength' => true])?>
                 <?=$form->field($model, 'cognoms')->textInput(['maxlength' => true])?>
                 <?=$form->field($model, 'password')->textInput(['maxlength' => true, 'type' => 'text'])?>
+                <?= $form->field($model, 'language_id')->dropDownList(ArrayHelper::map(Language::find()->all(), 'id', 'name')) ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>

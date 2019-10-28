@@ -4,11 +4,12 @@
 /* @var $content string */
 
 use app\assets\AppAsset;
+use app\widgets\Alert;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
-
 AppAsset::register($this);
+
 $user = Yii::$app->user->identity;
 
 ?>
@@ -41,24 +42,18 @@ $user = Yii::$app->user->identity;
                     <div class="header__navbar">
                         <ul class="list-unstyled">
                             <li class="has-sub">
-                                <?= Html::a( '<i class="fas fa-font"></i> '.Yii::t('app','Articles') . '<span class="bot-line"></span>', Url::to(['/article/index'])); ?>
+                                <?= Html::a( '<i class="fas fa-font"></i> '.Yii::t('app','articles') . '<span class="bot-line"></span>', Url::to(['/article/index'])); ?>
                                 <ul class="header3-sub-list list-unstyled">
                                     <li>
-                                    <?= Html::a( '<i class="fas fa-shapes"></i> '.Yii::t('app','Categories'), Url::to(['/category/index'])); ?>
+                                        <?= Html::a( '<i class="fas fa-shapes"></i> '.Yii::t('app','categories'), Url::to(['/category/index'])); ?>
                                     </li>
                                     <li>
-                                        <a href="index2.html">Dashboard 2</a>
-                                    </li>
-                                    <li>
-                                        <a href="index3.html">Dashboard 3</a>
-                                    </li>
-                                    <li>
-                                        <a href="index4.html">Dashboard 4</a>
+                                        <?= Html::a( '<i class="fas fa-tags"></i> '.Yii::t('app','tags'), Url::to(['/tag/index'])); ?>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <?= Html::a( '<i class="fas fa-images"></i> '.Yii::t('app','Media') . '<span class="bot-line"></span>', Url::to(['/media/index'])); ?>
+                                <?= Html::a( '<i class="fas fa-images"></i> '.Yii::t('app','media') . '<span class="bot-line"></span>', Url::to(['/media/index'])); ?>
 
                             </li>
                             <li class="has-sub">
@@ -67,9 +62,10 @@ $user = Yii::$app->user->identity;
                                     <span class="bot-line"></span>Admin</a>
                                 <ul class="header3-sub-list list-unstyled">
                                     <li>
-                                        <?= Html::a( '<i class="fas fa-users"></i> '.Yii::t('app','Usuaris'), Url::to('/user/index')); ?>                                    </li>
+                                        <?= Html::a( '<i class="fas fa-users"></i> '.Yii::t('app','users'), Url::to('/user/index')); ?>
+                                    </li>
                                     <li>
-                                        <?= Html::a( '<i class="fas fa-blog"></i> '.Yii::t('app','Blogs'), Url::to('/')); ?>
+                                        <?= Html::a( '<i class="fas fa-blog"></i> '.Yii::t('app','blogs'), Url::to('/')); ?>
                                     </li>
                                 </ul>
                             </li>
@@ -81,7 +77,7 @@ $user = Yii::$app->user->identity;
                             <div class="setting-dropdown js-dropdown">
                                 <div class="account-dropdown__body">
                                     <div class="account-dropdown__item">
-                                     <?= Html::a('<img class="mr-2" src="/images/ca.png" />'. Yii::t('app','Catala') . '</a>', Url::to('/user/change-language'), ['data' => ['method' => 'post', 'params' => ['lang' => 'ca']], 'class' => Yii::$app->language === 'ca' ? 'active-language' : ''])?>
+                                        <?= Html::a('<img class="mr-2" src="/images/ca.png" />'. Yii::t('app','Catala') . '</a>', Url::to('/user/change-language'), ['data' => ['method' => 'post', 'params' => ['lang' => 'ca']], 'class' => Yii::$app->language === 'ca' ? 'active-language' : ''])?>
                                     </div>
                                     <div class="account-dropdown__item">
                                         <?= Html::a('<img class="mr-2" src="/images/es.png" />'. Yii::t('app','Castella') . '</a>', Url::to('/user/change-language'), ['data' => ['method' => 'post', 'params' => ['lang' => 'es']], 'class' => Yii::$app->language === 'es' ? 'active-language' : ''])?>
@@ -96,7 +92,8 @@ $user = Yii::$app->user->identity;
                         <div class="account-wrap">
                             <div class="account-item account-item--style2 clearfix js-item-menu">
                                 <div class="image">
-                                    <img src="<?=$user->media ? $user->media->getUrlImatge() : ''?>" alt="<?=$user->nomComplet?>">
+                                    <img src="<?=$user->media ? $user->media->getUrlImatge() : ''?>"
+                                        alt="<?=$user->nomComplet?>">
                                 </div>
                                 <div class="content">
                                     <a class="js-acc-btn" href="#"><?=$user->nom?></a>
@@ -105,7 +102,8 @@ $user = Yii::$app->user->identity;
                                     <div class="info clearfix">
                                         <div class="image">
                                             <a href="#">
-                                                <img src="<?=$user->media ? $user->media->getUrlImatge() : ''?>" alt="<?=$user->nomComplet?>">
+                                                <img src="<?=$user->media ? $user->media->getUrlImatge() : ''?>"
+                                                    alt="<?=$user->nomComplet?>">
                                             </a>
                                         </div>
                                         <div class="content">
@@ -117,11 +115,11 @@ $user = Yii::$app->user->identity;
                                     </div>
                                     <div class="account-dropdown__body">
                                         <div class="account-dropdown__item">
-                                        <?= Html::a( '<i class="zmdi zmdi-edit"></i>'.Yii::t('app','Perfil'), Url::to(['/user/update', 'id' => Yii::$app->user->identity->id, 'slug' => Yii::$app->user->identity->slug])); ?>
+                                            <?= Html::a( '<i class="zmdi zmdi-edit"></i>'.Yii::t('app','Perfil'), Url::to(['/user/update', 'id' => Yii::$app->user->identity->id, 'slug' => Yii::$app->user->identity->slug])); ?>
                                         </div>
                                     </div>
                                     <div class="account-dropdown__footer">
-                                    <?= Html::a( '<i class="zmdi zmdi-account-o"></i>'.Yii::t('app','Logout'), Url::to('/site/logout'), ['data' => ['method' => 'post', 'confirm' => Yii::t('app','Sure about leaving?')]]); ?>
+                                        <?= Html::a( '<i class="zmdi zmdi-account-o"></i>'.Yii::t('app','Logout'), Url::to('/site/logout'), ['data' => ['method' => 'post', 'confirm' => Yii::t('app','Sure about leaving?')]]); ?>
 
                                     </div>
                                 </div>
@@ -132,14 +130,13 @@ $user = Yii::$app->user->identity;
             </div>
         </header>
         <div class="page-content--bgf7">
-        <?php if (isset($this->params['breadcrumbs'])): ?>
+            <?php if (isset($this->params['breadcrumbs'])): ?>
             <section class="au-breadcrumb2">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-12">
                             <div class="au-breadcrumb-content">
                                 <div class="au-breadcrumb-left">
-                                   
                                     <span class="au-breadcrumb-span"><?= Yii::t('app', 'Estas aquí:') ?></span>
                                     <?=Breadcrumbs::widget([
                                                     'homeLink' => ['label' => Yii::t('app', 'Inici'), 'url' => '/'],
@@ -155,14 +152,16 @@ $user = Yii::$app->user->identity;
                 </div>
             </section>
             <?php endif;?>
-
-            <?php if (Yii::$app->session->hasFlash('general')): ?>
+            <?php if (Yii::$app->session->hasFlash('success')): ?>
             <section class="flash-zone">
-                <div class="sufee-alert alert with-close alert-success alert-dismissible fade show">
-                    <?=Yii::$app->session->getFlash('general');?>
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
+                <div class="container">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <?= Yii::$app->session->getFlash('success');?>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+
                 </div>
             </section>
             <?php endif;?>

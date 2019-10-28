@@ -1682,6 +1682,7 @@ function insertParam(key, value)
   }
 
 })(jQuery);
+/*
 (function ($) {
   // USE STRICT
   "use strict";
@@ -1712,3 +1713,4 @@ function insertParam(key, value)
   }
 
 })(jQuery);
+*/

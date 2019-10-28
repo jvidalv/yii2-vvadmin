@@ -9,7 +9,7 @@ use yii\helpers\ArrayHelper;
 /* @var $searchModel app\models\CategorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'categories');
+$this->title = Yii::t('app', 'tags');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <section class="welcome p-t-10">
@@ -25,7 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
 </section>
 <section class="pt-4">
     <div class="container">
-        <div class="category-index">
+        <div class="tag-index">
             <div class="row">
                 <div class="col-lg-5">
                 <?php $form = ActiveForm::begin([
@@ -47,16 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <?= $form->field($model, 'name_en')->textInput(['maxlength' => true]) ?>
 
-                            <?= $form->field($model, 'description_ca')->textInput(['maxlength' => true]) ?>
-
-                            <?= $form->field($model, 'description_es')->textInput(['maxlength' => true]) ?>
-
-                            <?= $form->field($model, 'description_en')->textInput(['maxlength' => true]) ?>
-
-                            <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
-
                             <?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1, 'value' => 9 ]) ?>
-
 
                         </div>
                     </div>
@@ -83,9 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'dataProvider' => $dataProvider,
                                 'columns' => [
                                  //   ['class' => 'app\libraries\JosepActionColumn'],
-                                    'code',
                                     'name_' . Yii::$app->user->identity->language->code,
-                                    'description_' . Yii::$app->user->identity->language->code,
                                 ],
                             ]);?>
                             <?php Pjax::end();?>
