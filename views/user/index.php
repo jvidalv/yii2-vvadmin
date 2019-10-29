@@ -104,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'language_id')->dropDownList(ArrayHelper::map(Language::find()->all(), 'id', 'name')) ?>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal"><?= Yii::t('app','cancel') ?></button>
                 <?=Html::submitButton(Yii::t('app', 'Afegir'), ['class' => 'btn btn-primary btn-sm'])?>
             </div>
         </div>

@@ -4,6 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 use app\libraries\JosepGridView;
+use app\models\Category;
+use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\ArticleSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -32,9 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <form>
                         <div class="input-group">
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#modal">
-                                    + <?= Yii::t('app','create article') ?>
-                                </button>
+                                <?= Html::button(Yii::t('app','create article'), ['type' => 'button', 'class' => 'btn btn-success', 'data' => ['toggle' => 'modal', 'target' => '#modal']]) ?>
                                 <button class="btn btn-primary">
                                     <i class="fa fa-search"></i> <?= Yii::t('app', 'Filtrar') ?>
                                 </button>
@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'dataProvider' => $dataProvider,
                     'columns' => [
                         [
-                            'class' => 'app\libraries\JosepMediaActionColumn',
+                            'class' => 'app\libraries\JosepActionColumn',
                             'contentOptions' => ['style' => 'width:5%;'],
                           ],
                         'id',
@@ -65,3 +65,35 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </section>
+
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="largeModalLabel" aria-hidden="true">
+    <?php $form = ActiveForm::begin([
+    'fieldConfig' => [
+        'options' => ['class' => 'form-group row'],
+        'template' => "<div class=\"col col-md-3\">{label}</div>\n<div class=\"col-12 col-md-9\">{input}<small class=\"help-block form-text c-red\">{error}</small></div>\n",
+    ],
+  ])?>
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="largeModalLabel"><?=Yii::t('app', 'Afegir un usuari')?></h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?=$form->field($model, 'title')->textInput(['maxlength' => true])?>
+                <?=$form->field($model, 'user_id')->hiddenInput(['maxlength' => true, 'value' => Yii::$app->user->identity->id])->label(false)?>
+                <?=$form->field($model, 'language_id')->hiddenInput(['maxlength' => true, 'value' => Yii::$app->user->identity->language_id])->label(false) ?>
+                <?=$form->field($model, 'category_id')->hiddenInput(['maxlength' => true, 'value' => Category::DEFAULT])->label(false)?>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm"
+                    data-dismiss="modal"><?= Yii::t('app','cancel') ?></button>
+                <?=Html::submitButton(Yii::t('app', 'afegir'), ['class' => 'btn btn-primary btn-sm'])?>
+            </div>
+        </div>
+    </div>
+    <?php ActiveForm::end();?>
+</div>

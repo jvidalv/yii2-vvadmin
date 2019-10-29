@@ -12,18 +12,7 @@ use yii\helpers\ArrayHelper;
 $this->title = Yii::t('app', 'categories');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<section class="welcome p-t-10">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="title-4"><?= Html::encode($this->title) ?>
-                </h1>
-                <hr class="line-seprate">
-            </div>
-        </div>
-    </div>
-</section>
-<section class="pt-4">
+<section class="pt-2">
     <div class="container">
         <div class="category-index">
             <div class="row">
@@ -36,8 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]); ?>
                     <div class="card">
                         <div class="card-header d-flex">
-                            <h1 class="title-1"><?=Yii::t('app', 'create new')?></h1>
-                            <?= Html::submitButton( '💾 ' .Yii::t('app', 'save'), ['class' => "au-btn au-btn-icon au-btn--green au-btn--small ml-auto"]) ?>
+                            <strong><?=Yii::t('app', 'create new category')?></strong>
                         </div>
                         <div class="card-body">
 
@@ -59,25 +47,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
                         </div>
+                        <div class="card-footer">
+                            <?= Html::submitButton( '💾 ' .Yii::t('app', 'save'), ['class' => "au-btn au-btn-icon au-btn--green au-btn--small ml-auto"]) ?>
+
+                            </div>
                     </div>
                     <?php ActiveForm::end(); ?>
                 </div>
                 <div class="col-lg-7">
-                    <div class="card">
-                        <div class="card-header d-flex">
-                            <h1 class="title-1"><?= Yii::t('app', 'list') ?></h1>
-                            <button type="button" class="au-btn au-btn-icon au-btn--green au-btn--small ml-auto"
-                                data-toggle="modal" data-target="#modal">
-                                <?=Yii::t('app', 'add a category')?>
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-data__tool">
-                                <div class="table-data__tool-left">
-                                </div>
-                                <div class="table-data__tool-right">
-                                </div>
-                            </div>
+                   
                             <?php Pjax::begin();?>
                             <?=JosepGridView::widget([
                                 'dataProvider' => $dataProvider,
@@ -89,8 +67,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                             ]);?>
                             <?php Pjax::end();?>
-                        </div>
-                    </div>
                 </div>
 
             </div>

@@ -190,6 +190,10 @@ a.desc:after {
   height: inherit;
 }
 
+.container-content{
+  width: -webkit-fill-available
+}
+
 /* HELPERS */
 
 .cursor-pointer {

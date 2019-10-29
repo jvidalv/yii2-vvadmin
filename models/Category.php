@@ -19,6 +19,9 @@ use yii\behaviors\SluggableBehavior;
  */
 class Category extends \yii\db\ActiveRecord
 {
+
+    const DEFAULT = 1;
+    
     /**
      * {@inheritdoc}
      */
