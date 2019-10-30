@@ -44,4 +44,30 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
             'article_en_id' => Yii::t('app', 'Article En ID'),
         ];
     }
+
+     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArticleCa()
+    {
+        return $this->hasOne(Article::className(), ['id' => 'article_ca_id']);
+    }
+
+      /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArticleEs()
+    {
+        return $this->hasOne(Article::className(), ['id' => 'article_es_id']);
+    }
+
+      /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArticleEn()
+    {
+        return $this->hasOne(Article::className(), ['id' => 'article_en_id']);
+    }
+
+
 }

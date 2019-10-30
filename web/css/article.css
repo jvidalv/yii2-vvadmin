@@ -1,0 +1,41 @@
+.translations-body > div:not(:last-child) {
+    margin-bottom: 15px;
+}
+
+.translations-body > div > div:not(:last-child) {
+    margin-right: 10px;
+}
+
+.translations-body .active img{
+    border-radius: 50%;
+    box-shadow: 0px 0px 0px 3px #63c76a;
+}
+
+.translations-body .item {
+    display: block;
+    height: 30px;
+    width: 30px;
+    position: relative;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+    background: #e5e5e5;
+    margin-right: 5px;
+}
+
+.item i{
+    font-size: 20px;
+    color: gray;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -moz-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    -o-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+}
+
+.item:hover{
+    transform: scale(1.2)
+}

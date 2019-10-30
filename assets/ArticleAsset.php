@@ -23,7 +23,6 @@ class ArticleAsset extends AssetBundle
       'css/article.css'
     ];
     public $js = [
-      'https://cdn.tiny.cloud/1/rbh4tqfiap3cvu63mt38x1fztlx067wj094l41bpebi49b6j/tinymce/5/tinymce.min.js',
       'js/article.js'
     ];
     public $depends = [

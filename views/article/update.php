@@ -1,13 +1,16 @@
 <?php
 
+use app\assets\ArticleAsset;
+use app\models\ArticleHasTranslations;
+use app\models\Language;
+use app\models\Article;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use kartik\file\FileInput;
 use dosamigos\tinymce\TinyMce;
-use app\models\Language;
-
+ArticleAsset::register($this);
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Article */
@@ -20,7 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <section class="welcome p-t-10 pb-5">
     <div class="container">
-        <?php $form = ActiveForm::begin(); ?>
+        <?php $form = ActiveForm::begin([
+            'action' => Url::to(['article/update', 'id' => $model->id] )])
+            ?>
         <div class="row">
             <div class="col col-lg-8">
                 <?= $form->field($model, 'title', ['template' => '{input}', 'options' => ['class' => 'form-group']])->textInput(['maxlength' => true, 'class' => 'form-control flex-grow-1', 'placeholder' => '(BORRADOR)']) ?>
@@ -50,14 +55,37 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <strong><?= Yii::t('app', 'configuration') ?></strong>
+                        <strong><?= Yii::t('app', 'translations') ?></strong>
                     </div>
                     <div class="card-body">
-
+                        <div class="translations-body">
+                            <?php  foreach(Language::find()->all() as $lang): ?>
+                            <div class="d-flex <?= $lang->code === Yii::$app->language ? 'active' : '' ?>">
+                                <div><img src="/images/<?= $lang->code ?>.png"></div>
+                                <?php 
+                                $translations = $model->translations;
+                                if($translations && $translations['article_'.$lang->code.'_id']): 
+                                 $artLang = Article::findOne($translations['article_'.$lang->code.'_id']);
+                                 if($model->language_id !== $lang->id ): ?>
+                                <div class="item"><i class="zmdi zmdi-edit"></i> </div>
+                                <?php endif; ?>
+                                <div> <?= $artLang->updatedAt ?> </div>
+                                <div> <?= $artLang->user->username ?> </div>
+                                <?php else: ?>
+                                <div> <?= Yii::t('app', 'no translation yet') ?> </div>
+                                <div class="ml-auto"><a
+                                        href="<?= Url::to(['article/new-translation', 'id' => $model->id]) ?>"
+                                        class="item"><i class="zmdi zmdi-plus" alt="<?= Yii::t('app', 'create') ?>"></i>
+                                    </a></div>
+                                <?php endif; ?>
+                                <div>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </section>
 <?php ActiveForm::end(); ?>

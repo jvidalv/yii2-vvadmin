@@ -13,6 +13,11 @@ use Yii;
  */
 class Language extends \yii\db\ActiveRecord
 {
+
+    const LANG_CA = 'ca';
+    const LANG_ES = 'es';
+    const LANG_EN = 'en';
+    
     /**
      * {@inheritdoc}
      */
@@ -43,5 +48,20 @@ class Language extends \yii\db\ActiveRecord
             'name' => Yii::t('app', 'Name'),
             'code' => Yii::t('app', 'Code'),
         ];
+    }
+
+    public static function isCA()
+    {
+        return Yii::$app->language === self::LANG_CA;
+    }
+
+    public static function isES()
+    {
+        return Yii::$app->language === self::LANG_ES;
+    }
+
+     public static function isEN()
+    {
+        return Yii::$app->language === self::LANG_ES;
     }
 }
