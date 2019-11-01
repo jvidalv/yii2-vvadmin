@@ -9,7 +9,7 @@ use yii\bootstrap4\ActiveForm;
 use app\assets\LoginAsset;
 LoginAsset::register($this);
 
-$this->title = 'Connectar-se - Fem Poble';
+$this->title = Yii::t('app', 'login');
 $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
