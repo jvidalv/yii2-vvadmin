@@ -3,11 +3,9 @@
 namespace app\models;
 
 use Yii;
-
-use yii\web\IdentityInterface;
-use yii\web\UploadedFile;
-use yii\behaviors\TimestampBehavior;
 use yii\behaviors\SluggableBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "user".
@@ -27,7 +25,7 @@ use yii\behaviors\SluggableBehavior;
  *
  */
 
-class User extends \yii\db\ActiveRecord  implements IdentityInterface
+class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /* camp per a filtrar */
     public $general;
@@ -35,7 +33,7 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     public $imatge;
     /* 1, 2, 3 */
     const ROLES = [1 => 'ADMINISTRADOR', 2 => 'GESTOR', 3 => 'USUARI'];
-    const ADMIN = 1; CONST GESTOR = 2; CONST USUARI = 3;
+    const ADMIN = 1;const GESTOR = 2;const USUARI = 3;
 
     /**
      * {@inheritdoc}
@@ -53,8 +51,8 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
         return [
             TimestampBehavior::className(),
             [
-               'class' => SluggableBehavior::className(),
-               'attribute' => 'email',
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'email',
             ],
         ];
     }
@@ -69,25 +67,25 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
             [['email'], 'email'],
             [['email'], 'unique'],
             [['role', 'actiu', 'language_id'], 'integer'],
-            [['nom', 'cognoms', 'email',  'password'], 'string', 'max' => 250],
+            [['nom', 'cognoms', 'email', 'password'], 'string', 'max' => 250],
             [['telefon'], 'string', 'max' => 50],
             [['username'], 'string', 'max' => 100],
             [['imatge'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxSize' => 1024 * 250],
-            [['username','email'], 'unique'],
+            [['username', 'email'], 'unique'],
         ];
     }
 
     // custom before save Josep
     public function beforeSave($insert)
     {
-      if (!parent::beforeSave($insert)) {
-        return false;
-      }
-      // controlem que no mos pugon fer la pirula, nomes un admin pot cambiar estos parametres
-      if(!Yii::$app->user->identity->esAdmin()){
-        $this->role = Yii::$app->user->identity->role;
-      }
-      return true;
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        // controlem que no mos pugon fer la pirula, nomes un admin pot cambiar estos parametres
+        if (!Yii::$app->user->identity->esAdmin()) {
+            $this->role = Yii::$app->user->identity->role;
+        }
+        return true;
     }
 
     /**
@@ -96,19 +94,19 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id' => Yii::t('app','id'),
-            'nom' => Yii::t('app','name'),
-            'cognoms' => Yii::t('app','surname'),
-            'telefon' => Yii::t('app','phone'),
-            'actiu' => Yii::t('app','active'),
-            'email' => Yii::t('app','email'),
-            'username' => Yii::t('app','username'),
-            'password' => Yii::t('app','password'),
+            'id' => Yii::t('app', 'id'),
+            'nom' => Yii::t('app', 'name'),
+            'cognoms' => Yii::t('app', 'surname'),
+            'telefon' => Yii::t('app', 'phone'),
+            'actiu' => Yii::t('app', 'active'),
+            'email' => Yii::t('app', 'email'),
+            'username' => Yii::t('app', 'username'),
+            'password' => Yii::t('app', 'password'),
             'authKey' => 'Auth Key',
             'password_reset_token' => 'Password Reset Token',
-            'role' => Yii::t('app','Role'),
-            'imatge' => Yii::t('app','Imatge'),
-            'language_id' => Yii::t('app','Language'),
+            'role' => Yii::t('app', 'Role'),
+            'imatge' => Yii::t('app', 'Imatge'),
+            'language_id' => Yii::t('app', 'Language'),
         ];
     }
 
@@ -117,7 +115,7 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
      */
     public static function getUsuaris()
     {
-      return self::find()->all();
+        return self::find()->all();
     }
 
     /**
@@ -131,67 +129,80 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     /**
      * @return \yii\db\ActiveQuery
      */
-     public function getLanguage()
-     {
-         return $this->hasOne(Language::className(), ['id' => 'language_id']);
-     }
- 
+    public function getLanguage()
+    {
+        return $this->hasOne(Language::className(), ['id' => 'language_id']);
+    }
+
+    /**
+     * Changes the user language
+     */
+    public function changeLanguage($lang_code)
+    {
+        $lang = Language::findOne(['code' => $lang_code]);
+
+        $session = Yii::$app->session;
+        $session->set('language', $lang->code);
+
+        Yii::$app->user->identity->language_id = $lang->id;
+        Yii::$app->user->identity->save();
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getModuls()
     {
-      return Modul::findAll();
+        return Modul::findAll();
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public static function findIdentity($id)
     {
         return static::findOne(['id' => $id]);
     }
 
     /**
-        * {@inheritdoc}
-        */
+     * {@inheritdoc}
+     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
         return static::findOne(['access_token' => $token]);
     }
 
     /**
-        * Finds user by username
-        *
-        * @param string $username
-        * @return static|null
-        */
+     * Finds user by username
+     *
+     * @param string $username
+     * @return static|null
+     */
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username]);
     }
 
     /**
-        * Finds user by username
-        *
-        * @param string $username
-        * @return static|null
-    */
+     * Finds user by username
+     *
+     * @param string $username
+     * @return static|null
+     */
     public static function findByEmail($email)
     {
         return static::findOne(['email' => $email]);
     }
 
-   /**
-    * {@inheritdoc}
-    */
-   public function getId()
-   {
-       return $this->id;
-   }
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-   /**
+    /**
      * @inheritdoc
      */
     public function getPassword()
@@ -199,34 +210,34 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
         return $this->password;
     }
 
-   /**
-    * {@inheritdoc}
-    */
-   public function getAuthKey()
-   {
-       return $this->auth_key;
-   }
+    /**
+     * {@inheritdoc}
+     */
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
 
-   /**
-    * {@inheritdoc}
-    */
-   public function validateAuthKey($authKey)
-   {
-       return $this->authKey === $authKey;
-   }
+    /**
+     * {@inheritdoc}
+     */
+    public function validateAuthKey($authKey)
+    {
+        return $this->authKey === $authKey;
+    }
 
-   /**
-    * Validates password
-    *
-    * @param string $password password to validate
-    * @return bool if password provided is valid for current user
-    */
-   public function validatePassword($password)
-   {
-       return Yii::$app->getSecurity()->validatePassword($password, $this->password_hash);
-   }
+    /**
+     * Validates password
+     *
+     * @param string $password password to validate
+     * @return bool if password provided is valid for current user
+     */
+    public function validatePassword($password)
+    {
+        return Yii::$app->getSecurity()->validatePassword($password, $this->password_hash);
+    }
 
-   /**
+    /**
      * Generates password hash from password and sets it to the model
      *
      * @param string $password
@@ -260,29 +271,29 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-   // Comproba si es admin retorna bool
-   public function esAdmin()
-   {
-     return $this->role === 1;
-   }
+    // Comproba si es admin retorna bool
+    public function esAdmin()
+    {
+        return $this->role === 1;
+    }
 
-   // Comproba si es gestor retorna bool
-   public function esGestor()
-   {
-     return $this->role === 2;
-   }
+    // Comproba si es gestor retorna bool
+    public function esGestor()
+    {
+        return $this->role === 2;
+    }
 
-   // Comproba si com a mínim es gestor retorna bool
-   public function esMinimGestor()
-   {
-     return $this->role < 3;
-   }
+    // Comproba si com a mínim es gestor retorna bool
+    public function esMinimGestor()
+    {
+        return $this->role < 3;
+    }
 
-   // Retorne lo nom complet nom + cognoms
-   public function getNomComplet()
-   {
-       return $this->nom . ' ' . $this->cognoms;
-   }
+    // Retorne lo nom complet nom + cognoms
+    public function getNomComplet()
+    {
+        return $this->nom . ' ' . $this->cognoms;
+    }
 
     // String nom del rol en funcio de la id
     public function getRolString()
@@ -293,6 +304,6 @@ class User extends \yii\db\ActiveRecord  implements IdentityInterface
     // Url foto del perfil
     public function getUrlFotoPerfil()
     {
-      return Yii::$app->request->baseUrl . '/images/uploads/users/' . $this->imatge;
+        return Yii::$app->request->baseUrl . '/images/uploads/users/' . $this->imatge;
     }
 }

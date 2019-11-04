@@ -44,6 +44,8 @@ class Tag extends \yii\db\ActiveRecord
     {
         return [
             [['name_ca', 'name_es', 'name_en'], 'required'],
+            [['name_ca', 'name_es', 'name_en'], 'unique'],
+
             [['priority'], 'integer'],
             [['name_ca', 'name_es', 'name_en', 'slug'], 'string', 'max' => 30],
         ];

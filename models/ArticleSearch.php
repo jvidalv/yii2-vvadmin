@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Article;
@@ -43,7 +44,9 @@ class ArticleSearch extends Article
         $query = Article::find();
 
         // add conditions that should always apply here
-
+        $query->with('translations');
+        $query->where(['language_id' => Yii::$app->user->identity->language_id]);
+        
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);

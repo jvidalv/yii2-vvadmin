@@ -2,12 +2,15 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Article;
+use app\models\ArticleHasTags;
 use app\models\ArticleSearch;
+use app\models\Language;
+use app\models\Tag;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * ArticleController implements the CRUD actions for Article model.
@@ -37,7 +40,7 @@ class ArticleController extends MainController
     {
         $searchModel = new ArticleSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        
+
         $model = new Article();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['update', 'id' => $model->id]);
@@ -60,14 +63,76 @@ class ArticleController extends MainController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        Yii::$app->user->identity->changeLanguage($model->language->code);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+
+            if ($model->tags) {
+                $tags = explode(',', $model->tags);
+                array_map(function ($val) {$val->delete();}, $model->articleHasTags);
+
+                foreach ($tags as $tag) {
+
+                    $tag = trim($tag);
+                    $tagf = Tag::findOne(['name_' . $model->language->code => $tag]);
+                    if (!$tagf) {
+                        $tagf = new Tag();
+                        $tagf->setAttributes([
+                            'name_ca' => $tag,
+                            'name_es' => $tag,
+                            'name_en' => $tag,
+                            'priority' => 9,
+                        ]);
+                        $tagf->save();
+                    }
+
+                    $tagr = new ArticleHasTags();
+                    $tagr->setAttributes([
+                        'tag_id' => $tagf->id,
+                        'article_id' => $model->id,
+                    ]);
+                    $tagr->save();
+                }
+
+            }
+
+            Yii::$app->session->setFlash('success', Yii::t('app', 'saved!'));
         }
 
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * We generate a translation for a certain article
+     * @param [type] $id
+     * @return void
+     */
+    public function actionNewTranslation($id, $lang_code)
+    {
+        $model = $this->findModel($id);
+        $lang = Language::findOne(['code' => $lang_code]);
+
+        if ($model && $model->translations && $lang && !$model->translations['article_' . $lang->code . '_id']) {
+
+            $newArticle = new Article();
+            $newArticle->attributes = $model->attributes;
+            $newArticle->title = "($lang->code) $newArticle->title";
+            $newArticle->created_at = null;
+            $newArticle->updated_at = null;
+            $newArticle->language_id = $lang->id;
+            $newArticle->translating = true;
+
+            if($newArticle->save()){
+                $model->translations['article_' . $lang->code . '_id'] = $newArticle->id;
+                $model->translations->save();
+            }
+
+            Yii::$app->user->identity->changeLanguage($lang_code);
+        }
+
+        return $this->redirect(['index', 'id' => $newArticle->id, 'slug' => $newArticle->slug]);
     }
 
     /**
@@ -93,7 +158,7 @@ class ArticleController extends MainController
      */
     protected function findModel($id)
     {
-        if (($model = Article::findOne($id)) !== null) {
+        if (($model = Article::find()->where(['id' => $id])->with('translations')->one()) !== null) {
             return $model;
         }
 

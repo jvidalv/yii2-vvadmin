@@ -150,6 +150,7 @@ a.desc:after {
 
 .page-wrapper, .page-content--bgf7{
   min-height: 100vh;
+  overflow: unset;
 }
 
 .active-language {
@@ -192,6 +193,10 @@ a.desc:after {
 
 .container-content{
   width: -webkit-fill-available
+}
+
+.sticky-top{
+  top: 90px;
 }
 
 /* HELPERS */
@@ -272,8 +277,8 @@ table thead tr th > a{
   color: #555;
 }
 
-table tbody tr:nth-child(2){
-  background: #f2f8ff;
+table tbody tr:nth-child(even){
+  background: #fbf7c5;
 }
 
 .table-data2.table tbody tr td:first-child {

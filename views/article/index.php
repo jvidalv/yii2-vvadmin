@@ -53,12 +53,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'class' => 'app\libraries\JosepActionColumn',
                             'contentOptions' => ['style' => 'width:5%;'],
-                          ],
-                        'id',
-                        'language_id',
-                        'user_id',
-                        'media_id',
-                        'category_id',
+                        ],
+                        'title',
+                        [
+                            'label' => 'translations',
+                            'format' => 'raw',
+                            'value' => function($model){
+
+                                    $en = $model->translations->article_en_id ? "<img src='images/en.png' />" : '';
+                                    $ca = $model->translations->article_es_id ? "<img src='images/es.png' />" : '';
+                                    return $en . $ca;
+                            }
+                        ]
                     ],
             ]); ?>
             <?php Pjax::end(); ?>
