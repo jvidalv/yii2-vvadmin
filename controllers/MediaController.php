@@ -2,15 +2,16 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Media;
 use app\models\MediaSearch;
-use yii\web\NotFoundHttpException;
-use yii\web\UploadedFile;
+use app\models\User;
+use Yii;
 use yii\filters\VerbFilter;
 use yii\imagine\Image;
-use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\UploadedFile;
+
 /**
  * MediaController implements the CRUD actions for Media model.
  */
@@ -43,8 +44,8 @@ class MediaController extends MainController
 
         /* pestanya activa */
         $activa = 'totals';
-        if(isset($params['MediaSearch']['es_imatge'])):
-          $activa = (int)$params['MediaSearch']['es_imatge'] > 0 ? 'imatges' : ($params['MediaSearch']['es_imatge'] == 'null' ? 'totals' : 'documents');
+        if (isset($params['MediaSearch']['es_imatge'])):
+            $activa = (int)$params['MediaSearch']['es_imatge'] > 0 ? 'imatges' : ($params['MediaSearch']['es_imatge'] == 'null' ? 'totals' : 'documents');
         endif;
 
         return $this->render('index', [
@@ -72,6 +73,22 @@ class MediaController extends MainController
         return $this->renderPartial('_form', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Finds the Media model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Media the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Media::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
     /**
@@ -120,117 +137,129 @@ class MediaController extends MainController
         ]);
     }
 
-
-
     /**
-     * Deletes an existing Media model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
         $model = $this->findModel($id);
         $base_dir = realpath($_SERVER["DOCUMENT_ROOT"]);
-        if(file_exists($base_dir . $model->getUrl())) unlink($base_dir . $model->getUrlImatge());
-        if(file_exists($base_dir . $model->getUrlImatge('miniatura'))) unlink($base_dir . $model->getUrlImatge('miniatura'));
-        if(file_exists($base_dir . $model->getUrlImatge(65)))  unlink($base_dir . $model->getUrlImatge(65));
-        if(file_exists($base_dir . $model->getUrlImatge(150)))  unlink($base_dir . $model->getUrlImatge(150));
-        if(file_exists($base_dir . $model->getUrlImatge(250)))  unlink($base_dir . $model->getUrlImatge(250));
-        if(file_exists($base_dir . $model->getUrlImatge(750)))  unlink($base_dir . $model->getUrlImatge(750));
+        if (file_exists($base_dir . $model->getUrl())) unlink($base_dir . $model->getUrlImatge());
+        if (file_exists($base_dir . $model->getUrlImatge('miniatura'))) unlink($base_dir . $model->getUrlImatge('miniatura'));
+        if (file_exists($base_dir . $model->getUrlImatge(65))) unlink($base_dir . $model->getUrlImatge(65));
+        if (file_exists($base_dir . $model->getUrlImatge(150))) unlink($base_dir . $model->getUrlImatge(150));
+        if (file_exists($base_dir . $model->getUrlImatge(250))) unlink($base_dir . $model->getUrlImatge(250));
+        if (file_exists($base_dir . $model->getUrlImatge(750))) unlink($base_dir . $model->getUrlImatge(750));
         $model->delete();
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Media model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Media the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param bool $id
+     * @param $tipo
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
-    protected function findModel($id)
+    public function actionUploadFiles($id = false, $tipo)
     {
-        if (($model = Media::findOne($id)) !== null) {
-            return $model;
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $files = UploadedFile::getInstancesByName('media_upload');
+        foreach ($files as $file) {
+            $media = new Media();
+            $media->tipo = $tipo;
+            $media->user_id = Yii::$app->user->identity->id;
+            $media->file = [$file];
+            // validem lo fitxer
+            if ($media->validate()) {
+                // comprobem paths
+                if (!is_dir('uploads/' . date("Y") . '/')) mkdir('uploads/' . date("Y"), 0755); // carpeta any
+                if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/')) mkdir('uploads/' . date("Y") . '/' . date("m"), 0755); // carpeta mes
+                if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/' . $tipo . '/')) mkdir('uploads/' . date("Y") . '/' . date("m") . '/' . $tipo, 0755); // carpeta tipo
+                $path = 'uploads/' . date("Y") . '/' . date("m") . '/' . $tipo . '/';
+                // guardem en fals per a generar id
+                $media->save(false);
+                $full_path = $path . '' . $tipo . '-' . $media->id . '.' . $file->extension;
+                // comprobem si es posible guardar sino borrem
+                if ($file->saveAs($full_path)) {
+                    $media->path = $path;
+                    $media->titol = addslashes($file->basename);
+                    $media->file_name = $tipo . '-' . $media->id . '.' . $file->extension;
+                    $media->save(false);
+                    if ($id) $media->guardarObjecte($id, $tipo);
+                    // comprobem is es imatge i redimensionem
+                    if ($sizes = getimagesize($full_path)) {
+                        $media->es_imatge = 1;
+                        $media->save(false);
+                        /* thumb 65x65 */
+                        Image::thumbnail($full_path, $sizes[0] / 2, $sizes[1] / 2)
+                            ->save($path . $media::MINIATURA . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
+                        /* thumb 65x65 */
+                        Image::thumbnail($full_path, 65, 65)
+                            ->save($path . $media::THUMB65 . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
+                        /* thumb 250x250 */
+                        Image::thumbnail($full_path, 250, 250)
+                            ->save($path . $media::THUMB250 . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
+                    }
+                } else {
+                    $media->delete();
+                }
+            }
         }
-
-        throw new NotFoundHttpException('The requested page does not exist.');
+        return true;
     }
 
     /**
-     * Pujar media
-     * @return json
+     * @param $id
+     * @return bool|Response
+     * @throws NotFoundHttpException
      */
-     public function actionUploadFiles($id = false, $tipo)
-     {
-       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-      $files = UploadedFile::getInstancesByName('media_upload');
-      foreach($files as $file){
-        $media = new Media();
-        $media->tipo = $tipo;
-        $media->user_id = Yii::$app->user->identity->id;
-        $media->file = [$file];
-        // validem lo fitxer
-        if($media->validate()){
-            // comprobem paths
-            if(!is_dir('uploads/' . date("Y") . '/')) mkdir('uploads/' . date("Y"), 0755); // carpeta any
-            if(!is_dir('uploads/' . date("Y") . '/' . date("m") . '/')) mkdir('uploads/' . date("Y") . '/' . date("m"), 0755); // carpeta mes
-            if(!is_dir('uploads/' . date("Y") . '/' . date("m") . '/' . $tipo . '/')) mkdir('uploads/' . date("Y") . '/' . date("m") . '/' .$tipo, 0755); // carpeta tipo
-            $path = 'uploads/' . date("Y") . '/' . date("m") . '/' . $tipo . '/';
-            // guardem en fals per a generar id
-            $media->save(false);
-            $full_path = $path . '' . $tipo . '-' . $media->id . '.' . $file->extension;
-            // comprobem si es posible guardar sino borrem
-            if($file->saveAs($full_path)){
-              $media->path = '/' . $path;
-              $media->titol = addslashes($file->basename);
-              $media->file_name = $tipo . '-' . $media->id . '.' . $file->extension;
-              $media->save(false);
-              if($id) $media->guardarObjecte($id, $tipo);
-              // comprobem is es imatge i redimensionem
-              if($sizes = getimagesize($full_path)){
-                $media->es_imatge = 1;
-                $media->save(false);
-                /* thumb 65x65 */
-                Image::thumbnail($full_path, $sizes[0]/2, $sizes[1]/2)
-                ->save($path . $media::MINIATURA . $tipo . '-' . $media->id . '.' . $file->extension,['quality' => 70]);
-                /* thumb 65x65 */
-                Image::thumbnail($full_path, 65, 65)
-                ->save($path . $media::THUMB65 . $tipo . '-' . $media->id . '.' . $file->extension,['quality' => 70]);
-                /* thumb 250x250 */
-                Image::thumbnail($full_path, 250, 250)
-                ->save($path . $media::THUMB250 . $tipo . '-' . $media->id . '.' . $file->extension,['quality' => 70]);
-              }
-            } else {
-              $media->delete();
-            }
-          }
-        }
-      return true;
-    }
-
-    // Descarreguem
     public function actionDescarregar($id)
     {
-      $model = $this->findModel($id);
-      $base_dir = realpath($_SERVER["DOCUMENT_ROOT"]);
-      if (file_exists($base_dir . $model->getUrl())){
-        Yii::$app->response->sendFile($base_dir . $model->getUrl());
-        return true;
-      }
-      return $this->redirect(['index']);
+        $model = $this->findModel($id);
+        $base_dir = realpath($_SERVER["DOCUMENT_ROOT"]);
+        if (file_exists($base_dir . $model->getUrl())) {
+            Yii::$app->response->sendFile($base_dir . $model->getUrl());
+            return true;
+        }
+        return $this->redirect(['index']);
     }
 
     /**
-    * Esborrar media relacio by @Josep Vidal
-    * @return json
-    * Espere una ID, un tipo de OBJECTE
-    */
-    public function actionDeleteFiles($id, $tipo)
+     * @param $code
+     * @throws \yii\web\ServerErrorHttpException
+     */
+    public function actionGetUserImage($id)
     {
-      \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-      return Media::esborrarMedia($id, $tipo);
+        $response = Yii::$app->getResponse();
+        $response->headers->set('Content-Type', 'image/jpeg');
+        $response->format = Response::FORMAT_RAW;
+        try {
+            $user = User::findOne($id);
+            is_resource($response->stream = fopen($user->media->getUrlImatge(), 'r'));
+        } catch (\Exception $e) {
+            is_resource($response->stream = fopen('images/defaults/user.png', 'r'));
+        }
+
+        return $response->send();
+    }
+
+    /**
+     * @param $code
+     * @throws \yii\web\ServerErrorHttpException
+     */
+    public function actionGetLanguageImage($code)
+    {
+        $response = Yii::$app->getResponse();
+        $response->headers->set('Content-Type', 'image/jpeg');
+        $response->format = Response::FORMAT_RAW;
+        if (!is_resource($response->stream = fopen('images/lang/' . $code . '.png', 'r'))) {
+            throw new \yii\web\ServerErrorHttpException('file access failed: permission deny');
+        }
+        return $response->send();
     }
 }

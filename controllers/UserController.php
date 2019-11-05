@@ -2,12 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Language;
 use app\models\User;
 use app\models\UserSearch;
-use app\models\Language;
-
 use Yii;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -17,18 +15,18 @@ class UserController extends MainController
 {
 
     /**
-     * Lists all User models.
-     * @return mixed
+     * @return string|\yii\web\Response
+     * @throws \yii\base\Exception
      */
     public function actionIndex()
     {
-        if (Yii::$app->user->identity->esAdmin()) {
+        if (Yii::$app->user->identity->isAdmin()) {
             // carreguem modal i dades per al modal de creacio
             $model = new User();
             $model->password = bin2hex(openssl_random_pseudo_bytes(3));
 
             if ($model->load(Yii::$app->request->post())) {
-                $model->poble_id = Yii::$app->user->identity->esAdmin() ? $model->poble_id : Yii::$app->user->identity->poble_id;
+                $model->poble_id = Yii::$app->user->identity->isAdmin() ? $model->poble_id : Yii::$app->user->identity->poble_id;
                 $model->setPassword($model->password);
                 $model->password = $model->password_hash;
                 if ($model->save()) {
@@ -51,11 +49,10 @@ class UserController extends MainController
     }
 
     /**
-     * Updates an existing User model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param bool $id
+     * @return string
+     * @throws NotFoundHttpException
+     * @throws \yii\base\Exception
      */
     public function actionUpdate($id = false)
     {
@@ -78,40 +75,6 @@ class UserController extends MainController
     }
 
     /**
-     * Changes the user language
-     */
-    public function actionChangeLanguage()
-    {
-        $lang = Yii::$app->request->post()['lang'];
-
-        $session = Yii::$app->session;
-        $session->set('language', $lang);
-
-        $query = Language::findOne(['code' => $lang]);
-
-        if($query){
-            Yii::$app->user->identity->language_id = $query->id;
-            Yii::$app->user->identity->save();
-        }
-
-        return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
-    }
-
-    /**
-     * Deletes an existing User model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    // public function actionDelete($id)
-    // {
-    //     $this->findModel($id)->delete();
-    //
-    //     return $this->redirect(['index']);
-    // }
-
-    /**
      * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
@@ -125,6 +88,26 @@ class UserController extends MainController
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    /**
+     * Changes the user language
+     */
+    public function actionChangeLanguage()
+    {
+        $lang = Yii::$app->request->post()['lang'];
+
+        $session = Yii::$app->session;
+        $session->set('language', $lang);
+
+        $query = Language::findOne(['code' => $lang]);
+
+        if ($query) {
+            Yii::$app->user->identity->language_id = $query->code;
+            Yii::$app->user->identity->save();
+        }
+
+        return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
     }
 
 }

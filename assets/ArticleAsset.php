@@ -20,10 +20,10 @@ class ArticleAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-      'css/article.css'
+        'css/article.css'
     ];
     public $js = [
-      'js/article.js'
+        'js/article.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

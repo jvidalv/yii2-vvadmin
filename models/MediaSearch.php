@@ -4,7 +4,6 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Media;
 
 /**
  * MediaSearch represents the model behind the search form of `app\models\Media`.
@@ -44,7 +43,7 @@ class MediaSearch extends Media
         // add conditions that should always apply here
         $query->leftJoin('user', 'media.user_id = user.id');
         /* ordenacio per defecte */
-        if(!isset($params['sort'])) $query->orderBy('created_at DESC');
+        if (!isset($params['sort'])) $query->orderBy('created_at DESC');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -52,7 +51,7 @@ class MediaSearch extends Media
 
         $this->load($params);
         /* controlem llistat segons tipos de fitxer, si es null son tots */
-        if($this->es_imatge == 'null') unset($this->es_imatge);
+        if ($this->es_imatge == 'null') unset($this->es_imatge);
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -67,12 +66,12 @@ class MediaSearch extends Media
         ]);
 
         $query->andFilterWhere(['or',
-          ['like', 'media.titol', $this->general],
-          ['like', 'media.descripcio', $this->general],
-          ['like', 'media.path', $this->general],
-          ['like', 'media.file_name', $this->general],
-          ['like', 'user.nom', $this->general],
-          ['like', 'user.cognoms', $this->general]]);
+            ['like', 'media.titol', $this->general],
+            ['like', 'media.descripcio', $this->general],
+            ['like', 'media.path', $this->general],
+            ['like', 'media.file_name', $this->general],
+            ['like', 'user.nom', $this->general],
+            ['like', 'user.cognoms', $this->general]]);
 
         return $dataProvider;
     }

@@ -19,6 +19,6 @@ class ApiAuth extends AuthMethod
      */
     public function authenticate($user, $request, $response)
     {
-      return true;
+        return true;
     }
 }

@@ -19,7 +19,7 @@
   },
   "minimum-stability": "dev",
   "require": {
-    "php": ">=5.4.0",
+    "php": ">=7.2.0",
     "yiisoft/yii2": "~2.0.29",
     "yiisoft/yii2-bootstrap4": "~2.0.6",
     "yiisoft/yii2-swiftmailer": "~2.1.0",
@@ -31,7 +31,8 @@
     "kartik-v/yii2-widget-datetimepicker": "*",
     "kartik-v/yii2-date-range": "dev-master",
     "kartik-v/yii2-widget-fileinput": "dev-master",
-    "alymosul/exponent-server-sdk-php": "dev-master"
+    "alymosul/exponent-server-sdk-php": "dev-master",
+    "ext-fileinfo": "*"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

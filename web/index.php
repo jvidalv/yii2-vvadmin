@@ -5,7 +5,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', $local);
 defined('YII_ENV') or define('YII_ENV', $local ? 'dev' : 'prod');
 
 // Idioma per defecta catala
-setlocale(LC_TIME,'ca_ES', 'Catalan_Spain', 'Catalan');
+setlocale(LC_TIME, 'ca_ES', 'Catalan_Spain', 'Catalan');
 
 // Activar HTTPS
 //$_SERVER['HTTPS']='on';

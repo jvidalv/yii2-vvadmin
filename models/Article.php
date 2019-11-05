@@ -27,13 +27,13 @@ class Article extends \yii\db\ActiveRecord
 {
 
     public $general;
-    public $tags;
+    public $tags_form;
 
     /**
      * This variable is used to check if we are creating a new item for translation, and if so, we dont generate a new translations
      * @var [type]
      */
-    public $translating = false;
+    public $translating = 0;
 
     /**
      * {@inheritdoc}
@@ -64,10 +64,11 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['language_id', 'user_id', 'title'], 'required'],
-            [['language_id', 'user_id', 'media_id', 'category_id', 'state', 'updated_at', 'created_at'], 'integer'],
+            [['user_id', 'media_id', 'category_id', 'state', 'updated_at', 'created_at', 'translating'], 'integer'],
+            [['language_id'], 'string', 'max' => 2],
             [['date'], 'safe'],
             [['content'], 'string'],
-            [['tags'], 'string', 'max' => 200],
+            [['tags_form'], 'string', 'max' => 200],
             [['title', 'slug'], 'string', 'max' => 120],
             [['resume'], 'string', 'max' => 180],
         ];
@@ -102,10 +103,12 @@ class Article extends \yii\db\ActiveRecord
         // We generate the translation log if it does not still
         $translations = $this->translations;
         if (!$translations && $this->translating) {
+
             $translation = new ArticleHasTranslations();
             $translation->setAttributes([
-                'article_' . Yii::$app->language . '_id' => $this->id,
+                'article_' . $this->language_id => $this->id,
             ]);
+
             $translation->save();
         }
 
@@ -125,7 +128,7 @@ class Article extends \yii\db\ActiveRecord
      */
     public function getLanguage()
     {
-        return $this->hasOne(Language::className(), ['id' => 'language_id']);
+        return $this->hasOne(Language::className(), ['code' => 'language_id']);
     }
 
     /**
@@ -141,32 +144,49 @@ class Article extends \yii\db\ActiveRecord
      */
     public function getTranslations()
     {
-        return $this->hasOne(ArticleHasTranslations::className(), ['article_' . $this->language->code . '_id' => 'id']);
+        return $this->hasOne(ArticleHasTranslations::className(), ['article_' . $this->language->code => 'id']);
     }
 
+    /**
+     * @return false|string
+     */
     public function getCreatedAt()
     {
         return Date('d-m-Y H:i', $this->created_at);
     }
 
+    /**
+     * @return false|string
+     */
     public function getUpdatedAt()
     {
         return Date('d-m-Y H:i', $this->updated_at);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getArticleHasTags()
     {
         return $this->hasMany(ArticleHasTags::className(), ['article_id' => 'tag_id']);
     }
 
-    public function getTagss()
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getTags()
     {
         return $this->hasMany(Tag::className(), ['id' => 'tag_id'])->viaTable('article_has_tags', ['article_id' => 'id']);
     }
 
+    /**
+     * @return string
+     */
     public function getTagsString()
     {
-        $tags = $this->tagss;
-        return join(', ', array_map( function($val){return $val['name_'.$this->language->code]; }, $tags ?: []));
+        return join(', ', array_map(function ($val) {
+            return $val['name_' . $this->language->code];
+        }, $this->tags ?: []));
     }
 }

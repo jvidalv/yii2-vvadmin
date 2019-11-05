@@ -20,7 +20,7 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-      //  'themes/CoolAdmin/css/font-face.css',
+        //  'themes/CoolAdmin/css/font-face.css',
         'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css',
         'themes/CoolAdmin/vendor/mdi-font/css/material-design-iconic-font.min.css',
         'css/theme.css',

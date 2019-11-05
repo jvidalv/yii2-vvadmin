@@ -1,10 +1,10 @@
 <?php
 
 namespace app\models;
-use yii\behaviors\SluggableBehavior;
-use yii\behaviors\TimestampBehavior;
 
 use Yii;
+use yii\behaviors\SluggableBehavior;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "media".
@@ -19,21 +19,21 @@ use Yii;
 class Media extends \yii\db\ActiveRecord
 {
     /* camp per a filtrar */
-    public $general;
+    const MINIATURA = 'miniatura-';
 
     /* camp per pujar fitxers */
-    public $file;
+    const THUMB65 = 'thumb-very-little-';
 
     /* prefix de les imatges pujades */
-    const MINIATURA = 'miniatura-';
-    const THUMB65   = 'thumb-very-little-';
-    const THUMB150  = 'thumb-little-';
-    const THUMB250  = 'thumb-';
-    const THUMB750  = 'thumb-long-';
-    // tipos de objectes
+    const THUMB150 = 'thumb-little-';
+    const THUMB250 = 'thumb-';
+    const THUMB750 = 'thumb-long-';
     const USER = 'user';
-    /* preview quant no es imatge */
     const PDF = '/images/pdf-default.png';
+    // tipos de objectes
+    public $general;
+    /* preview quant no es imatge */
+    public $file;
 
     /**
      * {@inheritdoc}
@@ -51,8 +51,8 @@ class Media extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::className(),
             [
-               'class' => SluggableBehavior::className(),
-               'attribute' => 'file_name',
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'file_name',
             ],
         ];
     }
@@ -80,9 +80,9 @@ class Media extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'titol' => Yii::t('app','Títol'),
-            'descripcio' => Yii::t('app','Descripció'),
-            'file_name' => Yii::t('app','Nom del fitxer'),
+            'titol' => Yii::t('app', 'Títol'),
+            'descripcio' => Yii::t('app', 'Descripció'),
+            'file_name' => Yii::t('app', 'Nom del fitxer'),
         ];
     }
 
@@ -95,59 +95,72 @@ class Media extends \yii\db\ActiveRecord
     }
 
     // guardem al objecte concret, espere una id y el tipo de OBJECTE
-    public function guardarObjecte($id, $tipo){
-      switch($tipo){
-        case static::USER:
-          $user = User::findOne($id);
-          $user->media_id = $this->id;
-          return $user->save();;
-        break;
-      }
-      return false;
+    public function guardarObjecte($id, $tipo)
+    {
+        switch ($tipo) {
+            case static::USER:
+                $user = User::findOne($id);
+                $user->media_id = $this->id;
+                return $user->save();;
+                break;
+        }
+        return false;
     }
 
-    // esborrem relacio media del objecte espeficiat, espere una id y el tipo de OBJECTE
-    public function esborrarMedia($id, $tipo){
-      switch($tipo){
-        case static::USER:
-          $user = User::findOne($id);
-          $user->media_id = null;
-          return $user->save();
-        break;
-      }
-      return false;
+    /**
+     * @param $id
+     * @param $tipo
+     * @return bool
+     */
+    public function esborrarMedia($id, $tipo)
+    {
+        switch ($tipo) {
+            case static::USER:
+                $user = User::findOne($id);
+                $user->media_id = null;
+                return $user->save();
+                break;
+        }
+        return false;
     }
 
     /* retorne imatge segons parametre - 150 - 250 - 750 */
-    public function getUrlImatge($tipo = 'normal'){
-      if($this->es_imatge){
-        $string = $this->path;
+    public function getUrlImatge($tipo = 'normal')
+    {
 
-        switch($tipo){
-          case 'miniatura':
-            $string = $string . $this::MINIATURA;
-          break;
-          case 65:
-            $string = $string . $this::THUMB65;
-          break;
-          case 150:
-            $string = $string . $this::THUMB150;
-          break;
-          case 250:
-            $string = $string . $this::THUMB250;
-          break;
-          case 750:
-            $string = $string . $this::THUMB750;
-          break;
+        if ($this->es_imatge) {
+
+            $string = $this->path;
+
+            switch ($tipo) {
+                case 'miniatura':
+                    $string = $string . $this::MINIATURA;
+                    break;
+                case 65:
+                    $string = $string . $this::THUMB65;
+                    break;
+                case 150:
+                    $string = $string . $this::THUMB150;
+                    break;
+                case 250:
+                    $string = $string . $this::THUMB250;
+                    break;
+                case 750:
+                    $string = $string . $this::THUMB750;
+                    break;
+            }
+
+            return $string . $this->file_name;
+
         }
 
-        return $string . $this->file_name;
-      } else return $this::PDF;
+        return $this::PDF;
     }
 
     /* retorne url */
-    public function getUrl(){
-      return $this->path . $this->file_name;
+    public function getUrl()
+    {
+        return $this->path . $this->file_name;
     }
 
 }

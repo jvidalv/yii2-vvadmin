@@ -2,11 +2,8 @@
 
 namespace app\models;
 
-use Yii;
-
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
-use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "noticia".
@@ -46,8 +43,8 @@ class Noticia extends \yii\db\ActiveRecord
         return [
             TimestampBehavior::className(),
             [
-               'class' => SluggableBehavior::className(),
-               'attribute' => 'titol',
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'titol',
             ],
         ];
     }
@@ -58,7 +55,7 @@ class Noticia extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id',  'titol', 'data_publicacio'], 'required'],
+            [['user_id', 'titol', 'data_publicacio'], 'required'],
             [['user_id', 'super', 'updated_at', 'created_at', 'borrat'], 'integer'],
             [['cos'], 'string'],
             [['titol'], 'string', 'max' => 500],
@@ -93,15 +90,16 @@ class Noticia extends \yii\db\ActiveRecord
     * Status = true creant now registre, false, actualitzant
     *
     */
-    public function beforeSave($status){
-      parent::beforeSave ($status);
+    public function beforeSave($status)
+    {
+        parent::beforeSave($status);
 
-      /* controlem format dates */
-      if($this->data_publicacio) {
-        $this->data_publicacio_string = strftime("%A, %a, %e de %B del %G a les %H:%M", strtotime($this->data_publicacio));
-      }
+        /* controlem format dates */
+        if ($this->data_publicacio) {
+            $this->data_publicacio_string = strftime("%A, %a, %e de %B del %G a les %H:%M", strtotime($this->data_publicacio));
+        }
 
-      return true;
+        return true;
     }
 
     /**

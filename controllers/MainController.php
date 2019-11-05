@@ -3,36 +3,14 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
 
-//Controlem tot lo que pasa a un beforeaction, tots han dextendre deste menos lo SiteController
 class MainController extends TopController
 {
     /**
-     * @inheritdoc
+     * @param $action
+     * @return bool|void
+     * @throws \yii\web\BadRequestHttpException
      */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
-    }
-
-    public function init()
-    {
-        parent::init();
-        $app = \Yii::$app;
-    }
-
-    // custom before action, controlem login i permisos
     public function beforeAction($action)
     {
         if (!parent::beforeAction($action)) {

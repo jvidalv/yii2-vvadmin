@@ -8,7 +8,6 @@
 namespace app\libraries;
 
 
-use Yii;
 use yii\grid\GridView;
 
 /**
@@ -16,8 +15,8 @@ use yii\grid\GridView;
  */
 class JosepGridView extends GridView
 {
-  public $tableOptions = ['class' => 'table table-data2'];
-  public $pager = ['class' => 'app\libraries\widgets\JosepLinkPager'];
-  public $layout = "<div class=\"table-responsive table-responsive-data2\">\n{items}</div><div class=\"d-flex mt-3\">\n<div class=\"d-flex\">{summary}</div>\n<div class=\"ml-auto\">{pager}</div></div>";
-  public $rowOptions = ['class' => 'tr-shadow'];
+    public $tableOptions = ['class' => 'table table-data2'];
+    public $pager = ['class' => 'app\libraries\widgets\JosepLinkPager'];
+    public $layout = "<div class=\"table-responsive table-responsive-data2\">\n{items}</div><div class=\"d-flex mt-3\">\n<div class=\"d-flex\">{summary}</div>\n<div class=\"ml-auto\">{pager}</div></div>";
+    public $rowOptions = ['class' => 'tr-shadow'];
 }

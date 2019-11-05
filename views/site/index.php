@@ -21,7 +21,7 @@ $this->title = 'vblogv';
                             <div class="card-body">
                                 <p>Penja tot tipo de imatges i documents</p>
                                 <a href="/imatges"
-                                    class="btn btn-outline-secondary btn-lg btn-block btn-sm mt-3">&raquo; Vigila los
+                                   class="btn btn-outline-secondary btn-lg btn-block btn-sm mt-3">&raquo; Vigila los
                                     datos 🤣</a>
                             </div>
                         </div>
@@ -34,7 +34,7 @@ $this->title = 'vblogv';
                             <div class="card-body">
                                 <p>Que té a dir la gent a través de les aplicacions?</p>
                                 <a href="/missatges-de-la-gent"
-                                    class="btn btn-outline-secondary btn-lg btn-block btn-sm mt-3">&raquo; Ojo que no hi
+                                   class="btn btn-outline-secondary btn-lg btn-block btn-sm mt-3">&raquo; Ojo que no hi
                                     han filtros ⚡</a>
                             </div>
                         </div>

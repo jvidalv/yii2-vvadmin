@@ -4,7 +4,6 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\User;
 
 /**
  * UserSearch represents the model behind the search form of `app\models\User`.
@@ -42,7 +41,7 @@ class UserSearch extends User
     {
         $query = User::find();
         // add conditions that should always apply here
-        if(!isset($params['sort'])) $query->orderBy('created_at DESC');
+        if (!isset($params['sort'])) $query->orderBy('created_at DESC');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -63,12 +62,12 @@ class UserSearch extends User
         ]);
 
         $query->andFilterWhere(['or',
-          ['like', 'nom', $this->general],
-          ['like', 'cognoms', $this->general],
-          ['like', 'telefon', $this->general],
-          ['like', 'adreca', $this->general],
-          ['like', 'email', $this->general],
-          ['like', 'username', $this->general]
+            ['like', 'nom', $this->general],
+            ['like', 'cognoms', $this->general],
+            ['like', 'telefon', $this->general],
+            ['like', 'adreca', $this->general],
+            ['like', 'email', $this->general],
+            ['like', 'username', $this->general]
         ]);
 
 

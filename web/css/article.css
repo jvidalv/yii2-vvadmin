@@ -6,7 +6,7 @@
     margin-right: 10px;
 }
 
-.translations-body .active img{
+.translations-body .active img {
     border-radius: 50%;
     box-shadow: 0px 0px 0px 3px #63c76a;
 }
@@ -23,19 +23,19 @@
     margin-right: 5px;
 }
 
-.item i{
+.item i {
     font-size: 20px;
     color: gray;
     position: absolute;
     top: 50%;
     left: 50%;
-    -webkit-transform: translate(-50%,-50%);
-    -moz-transform: translate(-50%,-50%);
-    -ms-transform: translate(-50%,-50%);
-    -o-transform: translate(-50%,-50%);
-    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
-.item:hover{
+.item:hover {
     transform: scale(1.2)
 }

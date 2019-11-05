@@ -19,12 +19,10 @@ class TopController extends Controller
     }
 
     /**
-     * Checks for language and assings the right value
+     * Sets language session
      */
     private function setLanguage()
     {
-        $session = Yii::$app->session;
-
         if (Yii::$app->user->isGuest) {
             $langFound = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
             if (in_array($langFound, ['ca', 'es', 'en'])) {
@@ -35,6 +33,5 @@ class TopController extends Controller
         } else {
             Yii::$app->language = Yii::$app->user->identity->language->code;
         }
-
     }
 }

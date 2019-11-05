@@ -60,13 +60,10 @@ class SiteController extends TopController
 
     /**
      * Displays homepage.
-     *
      * @return string
      */
     public function actionIndex()
     {
-        // agafem la festivitat activa
-
         return $this->render('index');
     }
 
@@ -105,9 +102,8 @@ class SiteController extends TopController
     }
 
     /**
-     * Ajax call per a comprobar si existeix l'usuari
-     *
-     * @return Response|string
+     * Ajax call to check if user exist
+     * @return array
      */
     public function actionExisteixUsuari()
     {
@@ -117,16 +113,16 @@ class SiteController extends TopController
             $data = \Yii::$app->request->post()['data'];
             $user = User::find()->where(['or', ['email' => $data]])->one();
             if ($user) {
-                return ['status' => true, 'nom' => $user->nomComplet, 'imatge' => $user->media ? $user->media->getUrlImatge() : ''];
+                return ['status' => true, 'nom' => $user->fullName, 'imatge' => $user->media ? $user->media->getUrlImatge() : ''];
             }
         }
+
         return ['status' => false, 'error' => Yii::t('app', 'L\'usuari@ no existeix.')];
     }
 
     /**
-     * Ajax call per a comprobar si la contrassenya es correcta
-     *
-     * @return Response|string
+     * Es la contrassenya correcta?
+     * @return array|Response
      */
     public function actionContrassenyaCorrecta()
     {
@@ -140,46 +136,6 @@ class SiteController extends TopController
             }
         }
         return ['status' => false, 'error' => Yii::t('app', 'La contrassenya no és correcta')];
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
-
-    // afegeix una propietat al array.
-    // demana tipo (afegir, borrar), nom propietat i valor
-    public function actionSetSession($tipo = 'afegir', $nom, $valor = false)
-    {
-        if ($tipo === 'afegir') {
-            return $_SESSION[$nom] = $valor;
-        } else {
-            unset($_SESSION[$nom]);
-        }
-
     }
 
 }

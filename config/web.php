@@ -31,7 +31,7 @@ $config = [
                 '/' => 'site/index',
                 '/login' => 'site/login',
                 'logout' => 'site/logout',
-                
+
                 'noticies' => 'noticia/index',
                 'noticia/<slug>-<id:\d+>' => 'noticia/update',
 

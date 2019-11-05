@@ -24,18 +24,18 @@ class Tag extends \yii\db\ActiveRecord
         return 'tag';
     }
 
-     /**
+    /**
      * @inheritdoc
      */
-     public function behaviors()
-     {
-         return [
-             [
+    public function behaviors()
+    {
+        return [
+            [
                 'class' => SluggableBehavior::className(),
                 'attribute' => 'name_en',
-             ],
-         ];
-     }
+            ],
+        ];
+    }
 
     /**
      * {@inheritdoc}

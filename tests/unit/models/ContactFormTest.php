@@ -4,11 +4,11 @@ namespace tests\unit\models;
 
 class ContactFormTest extends \Codeception\Test\Unit
 {
-    private $model;
     /**
      * @var \UnitTester
      */
     public $tester;
+    private $model;
 
     public function testEmailIsSentOnContact()
     {

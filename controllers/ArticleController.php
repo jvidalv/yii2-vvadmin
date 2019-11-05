@@ -9,7 +9,6 @@ use app\models\Language;
 use app\models\Tag;
 use Yii;
 use yii\filters\VerbFilter;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -68,8 +67,11 @@ class ArticleController extends MainController
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
             if ($model->tags) {
+
                 $tags = explode(',', $model->tags);
-                array_map(function ($val) {$val->delete();}, $model->articleHasTags);
+                array_map(function (ArticleHasTags $val) {
+                    $val->delete();
+                }, $model->articleHasTags);
 
                 foreach ($tags as $tag) {
 
@@ -104,43 +106,47 @@ class ArticleController extends MainController
         ]);
     }
 
+
     /**
-     * We generate a translation for a certain article
-     * @param [type] $id
-     * @return void
+     * @param $id
+     * @param $lang_code
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
      */
     public function actionNewTranslation($id, $lang_code)
     {
         $model = $this->findModel($id);
         $lang = Language::findOne(['code' => $lang_code]);
 
-        if ($model && $model->translations && $lang && !$model->translations['article_' . $lang->code . '_id']) {
+        if ($model && $lang && $model->translations && !$model->translations['article_' . $lang->code]) {
 
             $newArticle = new Article();
             $newArticle->attributes = $model->attributes;
             $newArticle->title = "($lang->code) $newArticle->title";
             $newArticle->created_at = null;
             $newArticle->updated_at = null;
-            $newArticle->language_id = $lang->id;
-            $newArticle->translating = true;
+            $newArticle->language_id = $lang->code;
+            $newArticle->translating = 1;
 
-            if($newArticle->save()){
-                $model->translations['article_' . $lang->code . '_id'] = $newArticle->id;
+            if ($newArticle->save()) {
+                $model->translations['article_' . $lang->code] = $newArticle->id;
                 $model->translations->save();
             }
 
             Yii::$app->user->identity->changeLanguage($lang_code);
+            return $this->redirect(['update', 'id' => $newArticle->id]);
         }
 
-        return $this->redirect(['index', 'id' => $newArticle->id, 'slug' => $newArticle->slug]);
+        Yii::$app->session->setFlash('error', Yii::t('app', 'error'));
+        return $this->redirect(['update', 'id' => $model->id]);
     }
 
     /**
-     * Deletes an existing Article model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
+     * @param $id
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -158,10 +164,11 @@ class ArticleController extends MainController
      */
     protected function findModel($id)
     {
-        if (($model = Article::find()->where(['id' => $id])->with('translations')->one()) !== null) {
+        if (($model = Article::findOne($id)) !== null) {
             return $model;
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
+
 }

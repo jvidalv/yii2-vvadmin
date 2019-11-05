@@ -1,29 +1,29 @@
 var recarregar = 0;
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-  /* modal de pujada de fitxers */
-  $("#modal").on("hidden.bs.modal", function () {
-    /* llimpiem lo modal al tancarlo */
-    $('#media-input').fileinput('clear')
-    /* recarreguem lo llistat */
-    $.pjax.reload({container: '#recarregar-ajax'})
-  });
+    /* modal de pujada de fitxers */
+    $("#modal").on("hidden.bs.modal", function () {
+        /* llimpiem lo modal al tancarlo */
+        $('#media-input').fileinput('clear')
+        /* recarreguem lo llistat */
+        $.pjax.reload({container: '#recarregar-ajax'})
+    });
 
-  /* modal de modificacio de media */
-  $("#modal-media").on("hidden.bs.modal", function () {
-    if(recarregar) $.pjax.reload({container: '#recarregar-ajax'});
-    recarregar = 0;
-  });
+    /* modal de modificacio de media */
+    $("#modal-media").on("hidden.bs.modal", function () {
+        if (recarregar) $.pjax.reload({container: '#recarregar-ajax'});
+        recarregar = 0;
+    });
 
 })
 
 /* carreguem lo modal de modificacio de la imatge */
-$('[data-modificar]').click(function(event){
-  event.preventDefault();
-  var idMedia = $(this).data('media-id')
-  $('#modal-media').find('.modal-body').load('/media/update?id=' + idMedia)
-  $('#modal-media').modal('toggle');
+$('[data-modificar]').click(function (event) {
+    event.preventDefault();
+    var idMedia = $(this).data('media-id')
+    $('#modal-media').find('.modal-body').load('/media/update?id=' + idMedia)
+    $('#modal-media').modal('toggle');
 })
 
 /* carreguem lo modal de modificacio de la imatge */
@@ -38,7 +38,7 @@ $('[data-modificar]').click(function(event){
 // })
 
 /* modal ajax de modificacio de fitxers */
-$(document).on("submit","#media-form",function() {
+$(document).on("submit", "#media-form", function () {
 
     event.preventDefault(); // parem el post
     var data = $(this).serializeArray();
@@ -50,13 +50,13 @@ $(document).on("submit","#media-form",function() {
         dataType: 'json',
         data: data
     })
-    .done(function(response) {
-      recarregar = 1;
-      if (response == true) {
-          $('#alert-media-form').show('slow');
-      }
-    })
-    .fail(function() {
-        console.log("error");
-    });
+        .done(function (response) {
+            recarregar = 1;
+            if (response == true) {
+                $('#alert-media-form').show('slow');
+            }
+        })
+        .fail(function () {
+            console.log("error");
+        });
 });

@@ -21,7 +21,7 @@ class Category extends \yii\db\ActiveRecord
 {
 
     const DEFAULT = 1;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -30,18 +30,18 @@ class Category extends \yii\db\ActiveRecord
         return 'category';
     }
 
-     /**
+    /**
      * @inheritdoc
      */
-     public function behaviors()
-     {
-         return [
-             [
+    public function behaviors()
+    {
+        return [
+            [
                 'class' => SluggableBehavior::className(),
                 'attribute' => 'code',
-             ],
-         ];
-     }
+            ],
+        ];
+    }
 
     /**
      * {@inheritdoc}

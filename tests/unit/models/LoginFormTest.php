@@ -8,11 +8,6 @@ class LoginFormTest extends \Codeception\Test\Unit
 {
     private $model;
 
-    protected function _after()
-    {
-        \Yii::$app->user->logout();
-    }
-
     public function testLoginNoUser()
     {
         $this->model = new LoginForm([
@@ -46,6 +41,11 @@ class LoginFormTest extends \Codeception\Test\Unit
         expect_that($this->model->login());
         expect_not(\Yii::$app->user->isGuest);
         expect($this->model->errors)->hasntKey('password');
+    }
+
+    protected function _after()
+    {
+        \Yii::$app->user->logout();
     }
 
 }

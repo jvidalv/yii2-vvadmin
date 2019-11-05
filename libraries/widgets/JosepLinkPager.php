@@ -7,7 +7,6 @@
 
 namespace app\libraries\widgets;
 
-use Yii;
 use yii\widgets\LinkPager;
 
 
@@ -28,7 +27,7 @@ use yii\widgets\LinkPager;
  */
 class JosepLinkPager extends LinkPager
 {
-  public $linkContainerOptions = ['class' => 'page-item'];
-  public $linkOptions = ['class' => 'page-link'];
-  public $disabledListItemSubTagOptions = ['tag' => 'a', 'class' => 'page-link'];
+    public $linkContainerOptions = ['class' => 'page-item'];
+    public $linkOptions = ['class' => 'page-link'];
+    public $disabledListItemSubTagOptions = ['tag' => 'a', 'class' => 'page-link'];
 }

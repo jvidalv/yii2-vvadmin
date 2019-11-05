@@ -11,6 +11,7 @@ use yii\web\IdentityInterface;
  * This is the model class for table "user".
  *
  * @property int $id
+ * @property string $language_id
  * @property string $nom
  * @property string $cognoms
  * @property string $telefono
@@ -24,16 +25,18 @@ use yii\web\IdentityInterface;
  * @property string $imatge
  *
  */
-
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /* camp per a filtrar */
+    /**
+     * Roles
+     */
+    const ROLES = [1 => 'ADMIN', 2 => 'EDITOR', 3 => 'USER'];
+    const ADMIN = 1;
+    const EDITOR = 2;
+    const USER = 3;
     public $general;
-    // camp imatge
     public $imatge;
-    /* 1, 2, 3 */
-    const ROLES = [1 => 'ADMINISTRADOR', 2 => 'GESTOR', 3 => 'USUARI'];
-    const ADMIN = 1;const GESTOR = 2;const USUARI = 3;
 
     /**
      * {@inheritdoc}
@@ -44,116 +47,11 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
-            [
-                'class' => SluggableBehavior::className(),
-                'attribute' => 'email',
-            ],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['email', 'nom', 'cognoms', 'language_id'], 'required'],
-            [['email'], 'email'],
-            [['email'], 'unique'],
-            [['role', 'actiu', 'language_id'], 'integer'],
-            [['nom', 'cognoms', 'email', 'password'], 'string', 'max' => 250],
-            [['telefon'], 'string', 'max' => 50],
-            [['username'], 'string', 'max' => 100],
-            [['imatge'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxSize' => 1024 * 250],
-            [['username', 'email'], 'unique'],
-        ];
-    }
-
-    // custom before save Josep
-    public function beforeSave($insert)
-    {
-        if (!parent::beforeSave($insert)) {
-            return false;
-        }
-        // controlem que no mos pugon fer la pirula, nomes un admin pot cambiar estos parametres
-        if (!Yii::$app->user->identity->esAdmin()) {
-            $this->role = Yii::$app->user->identity->role;
-        }
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('app', 'id'),
-            'nom' => Yii::t('app', 'name'),
-            'cognoms' => Yii::t('app', 'surname'),
-            'telefon' => Yii::t('app', 'phone'),
-            'actiu' => Yii::t('app', 'active'),
-            'email' => Yii::t('app', 'email'),
-            'username' => Yii::t('app', 'username'),
-            'password' => Yii::t('app', 'password'),
-            'authKey' => 'Auth Key',
-            'password_reset_token' => 'Password Reset Token',
-            'role' => Yii::t('app', 'Role'),
-            'imatge' => Yii::t('app', 'Imatge'),
-            'language_id' => Yii::t('app', 'Language'),
-        ];
-    }
-
-    /**
      * Retorna tots els usuaris filtrats segons permisos
      */
     public static function getUsuaris()
     {
         return self::find()->all();
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMedia()
-    {
-        return $this->hasOne(Media::className(), ['id' => 'media_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getLanguage()
-    {
-        return $this->hasOne(Language::className(), ['id' => 'language_id']);
-    }
-
-    /**
-     * Changes the user language
-     */
-    public function changeLanguage($lang_code)
-    {
-        $lang = Language::findOne(['code' => $lang_code]);
-
-        $session = Yii::$app->session;
-        $session->set('language', $lang->code);
-
-        Yii::$app->user->identity->language_id = $lang->id;
-        Yii::$app->user->identity->save();
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getModuls()
-    {
-        return Modul::findAll();
     }
 
     /**
@@ -184,14 +82,120 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username
-     *
-     * @param string $username
-     * @return static|null
+     * @param $email
+     * @return User|null
      */
     public static function findByEmail($email)
     {
         return static::findOne(['email' => $email]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+            [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'email',
+            ],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['email', 'nom', 'cognoms', 'language_id'], 'required'],
+            [['language_id'], 'string', 'max' => 2],
+            [['email'], 'email'],
+            [['email'], 'unique'],
+            [['role', 'actiu'], 'integer'],
+            [['nom', 'cognoms', 'email', 'password'], 'string', 'max' => 250],
+            [['telefon'], 'string', 'max' => 50],
+            [['username'], 'string', 'max' => 100],
+            [['imatge'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxSize' => 1024 * 250],
+            [['username', 'email'], 'unique'],
+        ];
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        // controlem que no mos pugon fer la pirula, nomes un admin pot cambiar estos parametres
+        if (!Yii::$app->user->identity->isAdmin()) {
+            $this->role = Yii::$app->user->identity->role;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->role === 1;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('app', 'id'),
+            'nom' => Yii::t('app', 'name'),
+            'cognoms' => Yii::t('app', 'surname'),
+            'telefon' => Yii::t('app', 'phone'),
+            'actiu' => Yii::t('app', 'active'),
+            'email' => Yii::t('app', 'email'),
+            'username' => Yii::t('app', 'username'),
+            'password' => Yii::t('app', 'password'),
+            'authKey' => 'Auth Key',
+            'password_reset_token' => 'Password Reset Token',
+            'role' => Yii::t('app', 'Role'),
+            'imatge' => Yii::t('app', 'Imatge'),
+            'language_id' => Yii::t('app', 'Language'),
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMedia()
+    {
+        return $this->hasOne(Media::className(), ['id' => 'media_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getLanguage()
+    {
+        return $this->hasOne(Language::className(), ['code' => 'language_id']);
+    }
+
+    /**
+     * @param $lang_code
+     */
+    public function changeLanguage($lang_code)
+    {
+        $session = Yii::$app->session;
+        $session->set('language', $lang_code);
+
+        Yii::$app->user->identity->language_id = $lang_code;
+        Yii::$app->user->identity->save();
     }
 
     /**
@@ -238,9 +242,8 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates password hash from password and sets it to the model
-     *
-     * @param string $password
+     * @param $password
+     * @throws \yii\base\Exception
      */
     public function setPassword($password)
     {
@@ -271,37 +274,25 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    // Comproba si es admin retorna bool
-    public function esAdmin()
-    {
-        return $this->role === 1;
-    }
-
-    // Comproba si es gestor retorna bool
-    public function esGestor()
-    {
-        return $this->role === 2;
-    }
-
-    // Comproba si com a mínim es gestor retorna bool
-    public function esMinimGestor()
-    {
-        return $this->role < 3;
-    }
-
-    // Retorne lo nom complet nom + cognoms
-    public function getNomComplet()
+    /**
+     * @return string
+     */
+    public function getFullName()
     {
         return $this->nom . ' ' . $this->cognoms;
     }
 
-    // String nom del rol en funcio de la id
+    /**
+     * @return mixed
+     */
     public function getRolString()
     {
         return $this::ROLES[$this->role];
     }
 
-    // Url foto del perfil
+    /**
+     * @return string
+     */
     public function getUrlFotoPerfil()
     {
         return Yii::$app->request->baseUrl . '/images/uploads/users/' . $this->imatge;

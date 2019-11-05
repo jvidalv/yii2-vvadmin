@@ -20,11 +20,11 @@ class NoticiaAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-      'css/noticia.css'
+        'css/noticia.css'
     ];
     public $js = [
-      ['https://maps.googleapis.com/maps/api/js?key=AIzaSyDG7_saoiOoJ0ZFeByaCJ0p_r-1qYqjixE&libraries=places'],
-      'js/noticia.js'
+        ['https://maps.googleapis.com/maps/api/js?key=AIzaSyDG7_saoiOoJ0ZFeByaCJ0p_r-1qYqjixE&libraries=places'],
+        'js/noticia.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

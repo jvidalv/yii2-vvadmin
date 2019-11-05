@@ -21,7 +21,7 @@ use Yii;
  */
 class ArticleLog extends \yii\db\ActiveRecord
 {
-    
+
     /**
      * {@inheritdoc}
      */
