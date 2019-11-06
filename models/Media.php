@@ -27,10 +27,16 @@ class Media extends \yii\db\ActiveRecord
     /* prefix de les imatges pujades */
     const THUMB150 = 'thumb-little-';
     const THUMB250 = 'thumb-';
+    const THUMB500 = 'thumb-500-';
     const THUMB750 = 'thumb-long-';
-    const USER = 'user';
+
     const PDF = '/images/pdf-default.png';
-    // tipos de objectes
+
+    /* object types */
+    const USER = 'user';
+    const ARTICLE = 'article';
+
+    /* filters */
     public $general;
     /* preview quant no es imatge */
     public $file;
@@ -94,16 +100,24 @@ class Media extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    // guardem al objecte concret, espere una id y el tipo de OBJECTE
+    /**
+     * @param $id
+     * @param $tipo
+     * @return bool
+     */
     public function guardarObjecte($id, $tipo)
     {
         switch ($tipo) {
             case static::USER:
                 $user = User::findOne($id);
                 $user->media_id = $this->id;
-                return $user->save();;
-                break;
+                return $user->save();
+            case static::ARTICLE:
+                $article = Article::findOne($id);
+                $article->media_id = $this->id;
+                return $article->save();
         }
+
         return false;
     }
 
@@ -112,16 +126,19 @@ class Media extends \yii\db\ActiveRecord
      * @param $tipo
      * @return bool
      */
-    public function esborrarMedia($id, $tipo)
+    public static function esborrarMedia($id, $tipo)
     {
         switch ($tipo) {
             case static::USER:
-                $user = User::findOne($id);
-                $user->media_id = null;
-                return $user->save();
+                $model = User::findOne($id);
+                break;
+            case static::ARTICLE:
+                $model = Article::findOne($id);
                 break;
         }
-        return false;
+
+        $model->media_id = null;
+        return $model->save();
     }
 
     /* retorne imatge segons parametre - 150 - 250 - 750 */
@@ -136,16 +153,19 @@ class Media extends \yii\db\ActiveRecord
                 case 'miniatura':
                     $string = $string . $this::MINIATURA;
                     break;
-                case 65:
+                case $this::THUMB65:
                     $string = $string . $this::THUMB65;
                     break;
-                case 150:
+                case $this::THUMB150:
                     $string = $string . $this::THUMB150;
                     break;
-                case 250:
+                case  $this::THUMB250:
                     $string = $string . $this::THUMB250;
                     break;
-                case 750:
+                case $this::THUMB500:
+                    $string = $string . $this::THUMB500;
+                    break;
+                case $this::THUMB750:
                     $string = $string . $this::THUMB750;
                     break;
             }

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Article;
 use app\models\Media;
 use app\models\MediaSearch;
 use app\models\User;
@@ -195,7 +196,7 @@ class MediaController extends MainController
                     if ($sizes = getimagesize($full_path)) {
                         $media->es_imatge = 1;
                         $media->save(false);
-                        /* thumb 65x65 */
+                        /* cut in half */
                         Image::thumbnail($full_path, $sizes[0] / 2, $sizes[1] / 2)
                             ->save($path . $media::MINIATURA . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
                         /* thumb 65x65 */
@@ -204,6 +205,8 @@ class MediaController extends MainController
                         /* thumb 250x250 */
                         Image::thumbnail($full_path, 250, 250)
                             ->save($path . $media::THUMB250 . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
+                        Image::thumbnail($full_path, 500, 500)
+                            ->save($path . $media::THUMB500 . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
                     }
                 } else {
                     $media->delete();
@@ -227,6 +230,17 @@ class MediaController extends MainController
             return true;
         }
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @param $id
+     * @param $tipo
+     * @return bool
+     */
+    public function actionDeleteFiles($id, $tipo)
+    {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        return Media::esborrarMedia($id, $tipo);
     }
 
     /**
@@ -260,6 +274,25 @@ class MediaController extends MainController
         if (!is_resource($response->stream = fopen('images/lang/' . $code . '.png', 'r'))) {
             throw new \yii\web\ServerErrorHttpException('file access failed: permission deny');
         }
+        return $response->send();
+    }
+
+    /**
+     * @param $code
+     * @throws \yii\web\ServerErrorHttpException
+     */
+    public function actionGetArticleImage($id, $size = Media::THUMB65)
+    {
+        $response = Yii::$app->getResponse();
+        $response->headers->set('Content-Type', 'image/jpeg');
+        $response->format = Response::FORMAT_RAW;
+        $article = Article::findOne($id);
+        if($article->media_id && $article->media){
+            is_resource($response->stream = fopen($article->media->getUrlImatge($size), 'r'));
+        } else {
+            is_resource($response->stream = fopen('images/defaults/65-article.png', 'r'));
+        }
+
         return $response->send();
     }
 }

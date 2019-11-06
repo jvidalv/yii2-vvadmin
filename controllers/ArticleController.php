@@ -66,9 +66,8 @@ class ArticleController extends MainController
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
 
-            if ($model->tags) {
-
-                $tags = explode(',', $model->tags);
+            if ($model->tags_form) {
+                $tags = explode(',', $model->tags_form);
                 array_map(function (ArticleHasTags $val) {
                     $val->delete();
                 }, $model->articleHasTags);

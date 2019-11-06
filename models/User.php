@@ -27,15 +27,17 @@ use yii\web\IdentityInterface;
  */
 class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
-    /* camp per a filtrar */
     /**
      * Roles
      */
-    const ROLES = [1 => 'ADMIN', 2 => 'EDITOR', 3 => 'USER'];
     const ADMIN = 1;
     const EDITOR = 2;
     const USER = 3;
+    const ROLES = [self::ADMIN => 'ADMIN', self::EDITOR => 'EDITOR', self::USER => 'USER'];
+
+    /* camp per a filtrar */
     public $general;
+
     public $imatge;
 
     /**

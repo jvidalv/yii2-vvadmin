@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 /* @var $searchModel app\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Users list');
+$this->title = Yii::t('app', 'users');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <section class="welcome p-t-10">

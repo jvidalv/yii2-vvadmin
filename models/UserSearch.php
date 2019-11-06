@@ -17,7 +17,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'role', 'created_at', 'updated_at'], 'integer'],
-            [['general', 'nom', 'cognoms', 'telefon', 'email', 'dni', 'adreca', 'username', 'password', 'authKey', 'password_reset_token', 'imatge'], 'safe'],
+            [['general', 'nom', 'cognoms', 'telefon', 'email', 'username', 'password', 'authKey', 'password_reset_token', 'imatge'], 'safe'],
         ];
     }
 
@@ -65,7 +65,6 @@ class UserSearch extends User
             ['like', 'nom', $this->general],
             ['like', 'cognoms', $this->general],
             ['like', 'telefon', $this->general],
-            ['like', 'adreca', $this->general],
             ['like', 'email', $this->general],
             ['like', 'username', $this->general]
         ]);

@@ -40,8 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <i class="fa fa-search"></i> <?= Yii::t('app', 'Filtrar') ?>
                                 </button>
                             </div>
-                            <input type="text" name="MediaSearch[general]" value="<?= $searchModel['general'] ?>"
-                                   onblur="insertParam('MediaSearch[general]', this.value  )"
+                            <input type="text" name="ArticleSearch[general]" value="<?= $searchModel['general'] ?>"
+                                   onblur="insertParam('ArticleSearch[general]', this.value  )"
                                    placeholder="<?= Yii::t('app', '...') ?>" class="form-control">
                         </div>
                     </form>
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'title',
                     [
-                        'label' => 'translations',
+                        'label' => Yii::t('app', 'translations'),
                         'format' => 'raw',
                         'value' => function ($model) {
                             $ca = $model->language_id !== Language::LANG_CA && $model->translations->article_ca ? Html::img(['media/get-language-image', 'code' => Language::LANG_CA]) : '';
@@ -65,6 +65,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             $en = $model->language_id !== Language::LANG_EN && $model->translations->article_en ? Html::img(['media/get-language-image', 'code' => Language::LANG_EN]) : '';
                             return $ca . $es . $en;
                         }
+                    ],
+                    [
+                            'label' => Yii::t('app', 'image'),
+                            'format' => 'raw',
+                            'value' => function($model){
+                                return Html::img(['media/get-article-image', 'id' => $model->id]);
+                            }
+
                     ]
                 ],
             ]); ?>

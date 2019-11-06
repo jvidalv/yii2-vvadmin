@@ -71,10 +71,8 @@ class ArticleSearch extends Article
             'created_at' => $this->created_at,
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'resume', $this->resume])
-            ->andFilterWhere(['like', 'content', $this->content])
-            ->andFilterWhere(['like', 'slug', $this->slug]);
+        $query->andFilterWhere(['or', ['like', 'title', $this->general], ['like', 'resume', $this->general], ['like', 'content', $this->general], ['like', 'slug', $this->general]]);
+
 
         return $dataProvider;
     }

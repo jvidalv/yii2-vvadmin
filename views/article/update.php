@@ -5,6 +5,7 @@ use app\models\Article;
 use app\models\Category;
 use app\models\Language;
 use dosamigos\tinymce\TinyMce;
+use kartik\file\FileInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -41,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'width' => "-webkit-fill-available",
                             'min_height' => 600,
                             'plugins' => [
-                                "print preview fullpage paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons autoresize",
+                                "print preview paste searchreplace autolink autosave save code visualblocks visualchars image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons autoresize",
                             ],
                             'menubar' => 'file edit view insert format tools table help',
                             'toolbar' => "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl"
@@ -49,6 +50,31 @@ $this->params['breadcrumbs'][] = $this->title;
                     ])
                     ?>
                     <?= $form->field($model, 'tags_form')->textInput(['maxlength' => true, 'value' => $model->getTagsString(), 'placeholder' => Yii::t('app', 'separate them using a comma, ej: react, html')]) ?>
+                    <?= FileInput::widget([
+                        'name' => 'media_upload[]',
+                        'id' => 'media-input',
+                        'options' => [
+                            'multiple' => true,
+                            'accept' => '.jpeg,.jpg,.png'
+                        ],
+                        'language' => Yii::$app->user->identity->language_id,
+                        'pluginOptions' => [
+                            'initialPreview' => [
+                                $model->media_id ? '/'. $model->media->getUrlImatge() : '/images/defaults/article.png',
+                            ],
+                            'initialPreviewAsData' => true,
+                            'uploadUrl' => Url::to(['/media/upload-files',
+                                'id' => $model->id,
+                                'tipo' => 'article',
+                            ]),
+                            'deleteUrl' => Url::to(['/media/delete-files',
+                                'id' => $model->id,
+                                'tipo' => 'article',
+                            ]),
+                            'showRemove' => false,
+                            'maxFileSize' => 300,
+                        ]
+                    ]) ?>
                 </div>
                 <div class="col">
                     <div class="card">
@@ -93,11 +119,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="card">
                         <div class="card-header">
-                            <strong><?= Yii::t('app', 'Others') ?></strong>
+                            <strong><?= Yii::t('app', 'others') ?></strong>
                         </div>
                         <div class="card-body">
                             <?= $form->field($model, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->all(), 'id', 'name_' . $model->language->code)) ?>
                             <?= $form->field($model, 'resume')->textArea(['maxlength' => true, 'rows' => 2]) ?>
+
                         </div>
                     </div>
                     <div class="sticky-top">

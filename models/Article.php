@@ -28,6 +28,7 @@ class Article extends \yii\db\ActiveRecord
 
     public $general;
     public $tags_form;
+    public $imatge;
 
     /**
      * This variable is used to check if we are creating a new item for translation, and if so, we dont generate a new translations
@@ -71,6 +72,7 @@ class Article extends \yii\db\ActiveRecord
             [['tags_form'], 'string', 'max' => 200],
             [['title', 'slug'], 'string', 'max' => 120],
             [['resume'], 'string', 'max' => 180],
+            [['imatge'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxSize' => 1024 * 250],
         ];
     }
 
@@ -121,6 +123,14 @@ class Article extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMedia()
+    {
+        return $this->hasOne(Media::className(), ['id' => 'media_id']);
     }
 
     /**

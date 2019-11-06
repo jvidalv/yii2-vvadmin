@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'language' => 'ca',
                                 'pluginOptions' => [
                                     'initialPreview' => [
-                                        $model->media_id ? $model->media->url : '/images/user-default.jpeg',
+                                        $model->media_id ? '/' . $model->media->getUrl : '/images/user-default.jpeg',
                                     ],
                                     'initialPreviewAsData' => true,
                                     'uploadUrl' => Url::to(['/media/upload-files',
