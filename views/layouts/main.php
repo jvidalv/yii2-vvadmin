@@ -164,6 +164,21 @@ $user = Yii::$app->user->identity;
                     </div>
                 </section>
             <?php endif; ?>
+            <?php if (Yii::$app->session->hasFlash('danger')): ?>
+                <section class="flash-zone">
+                    <div class="container">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <?php foreach(Yii::$app->session->getFlash('danger') as $error){
+                                echo $error;
+;                            } ?>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+
+                    </div>
+                </section>
+            <?php endif; ?>
             <?= $content ?>
         </div>
     </div>

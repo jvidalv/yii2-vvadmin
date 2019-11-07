@@ -32,7 +32,9 @@
     "kartik-v/yii2-date-range": "dev-master",
     "kartik-v/yii2-widget-fileinput": "dev-master",
     "alymosul/exponent-server-sdk-php": "dev-master",
-    "ext-fileinfo": "*"
+    "ext-fileinfo": "*",
+    "ext-dom": "*",
+    "ext-libxml": "*"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

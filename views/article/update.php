@@ -44,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'plugins' => [
                                 "print preview paste searchreplace autolink autosave save code visualblocks visualchars image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons autoresize",
                             ],
+                            'link_context_toolbar' => true,
                             'menubar' => 'file edit view insert format tools table help',
                             'toolbar' => "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl"
                         ]
@@ -136,7 +137,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <strong><?= Yii::t('app', 'sections') ?></strong>
                             </div>
                             <div class="card-body">
-                                todo//
+                                <?php foreach($model->articleHasAnchors as $anchor){
+                                    echo Html::a($anchor->content, '#' . $anchor->anchor_id) . '</br>';
+                                }
+                                ?>
                             </div>
                         </div>
 

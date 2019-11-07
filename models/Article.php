@@ -37,6 +37,11 @@ class Article extends \yii\db\ActiveRecord
     public $translating = 0;
 
     /**
+     * Tags and attributes constants for blog content
+     */
+    const TAGS_ANCHOR = 'anchor';
+
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
@@ -157,6 +162,7 @@ class Article extends \yii\db\ActiveRecord
         return $this->hasOne(ArticleHasTranslations::className(), ['article_' . $this->language->code => 'id']);
     }
 
+
     /**
      * @return false|string
      */
@@ -178,7 +184,15 @@ class Article extends \yii\db\ActiveRecord
      */
     public function getArticleHasTags()
     {
-        return $this->hasMany(ArticleHasTags::className(), ['article_id' => 'tag_id']);
+        return $this->hasMany(ArticleHasTags::className(), ['article_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArticleHasAnchors()
+    {
+        return $this->hasMany(ArticleHasAnchors::className(), ['article_id' => 'id'])->orderBy('id asc');
     }
 
     /**

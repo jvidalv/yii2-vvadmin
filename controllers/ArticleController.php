@@ -3,10 +3,12 @@
 namespace app\controllers;
 
 use app\models\Article;
+use app\models\ArticleHasAnchors;
 use app\models\ArticleHasTags;
 use app\models\ArticleSearch;
 use app\models\Language;
 use app\models\Tag;
+use DOMDocument;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -64,40 +66,17 @@ class ArticleController extends MainController
         $model = $this->findModel($id);
         Yii::$app->user->identity->changeLanguage($model->language->code);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
-            if ($model->tags_form) {
-                $tags = explode(',', $model->tags_form);
-                array_map(function (ArticleHasTags $val) {
-                    $val->delete();
-                }, $model->articleHasTags);
+            $model = $this->parseArticleTags($model);
+            $model = $this->parseArticleContent($model);
 
-                foreach ($tags as $tag) {
-
-                    $tag = trim($tag);
-                    $tagf = Tag::findOne(['name_' . $model->language->code => $tag]);
-                    if (!$tagf) {
-                        $tagf = new Tag();
-                        $tagf->setAttributes([
-                            'name_ca' => $tag,
-                            'name_es' => $tag,
-                            'name_en' => $tag,
-                            'priority' => 9,
-                        ]);
-                        $tagf->save();
-                    }
-
-                    $tagr = new ArticleHasTags();
-                    $tagr->setAttributes([
-                        'tag_id' => $tagf->id,
-                        'article_id' => $model->id,
-                    ]);
-                    $tagr->save();
-                }
-
+            if (!$model->errors && $model->save()) {
+                Yii::$app->session->setFlash('success', Yii::t('app', 'saved!'));
+            } else {
+                 array_map(function ($string) {
+                     Yii::$app->session->addFlash('danger', $string[0] . '<br/>');}, $model->errors);
             }
-
-            Yii::$app->session->setFlash('success', Yii::t('app', 'saved!'));
         }
 
         return $this->render('update', [
@@ -168,6 +147,90 @@ class ArticleController extends MainController
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * We parse the content article and apply all the modifications
+     * We also capture errors
+     * @param Article $model
+     * @return Article
+     */
+    private function parseArticleContent(Article $model)
+    {
+        libxml_use_internal_errors(true);
+        $content = new DOMDocument();
+        $content->loadHTML($model->content);
+
+        if (count(libxml_get_errors())) {
+            foreach (libxml_get_errors() as $error) {
+                switch ($error->code) {
+                    case 513:
+                        $model->addError('content', Yii::t('app', 'ID repetead at line {line}', ['line' => $error->line]));
+                }
+            }
+            libxml_clear_errors();
+            return $model;
+        };
+
+        array_map(function (ArticleHasAnchors $val) {
+            $val->delete();
+        }, ArticleHasAnchors::findAll(['article_id' => $model->id]));
+
+        $links = $content->getElementsByTagName('a');
+        foreach ($links as $link) {
+            if (strpos($link->getAttribute('id'), "anchor-") !== false) {
+                $anchor = new ArticleHasAnchors();
+                $anchor->setAttributes([
+                    'article_id' => $model->id,
+                    'anchor_id' => $link->getAttribute('id'),
+                    'content' => $link->parentNode->nodeValue
+                ]);
+                $anchor->save();
+            };
+        }
+
+        return $model;
+    }
+
+    /**
+     * Tag generation
+     * @param Article $model
+     * @return Article
+     */
+    private function parseArticleTags(Article $model)
+    {
+        if ($model->tags_form) {
+            $tags = explode(',', $model->tags_form);
+            array_map(function (ArticleHasTags $val) {
+                $val->delete();
+            }, ArticleHasTags::findAll(['article_id' => $model->id]));
+
+            foreach ($tags as $tag) {
+
+                $tag = trim($tag);
+                $tagf = Tag::findOne(['name_' . $model->language->code => $tag]);
+                if (!$tagf) {
+                    $tagf = new Tag();
+                    $tagf->setAttributes([
+                        'name_ca' => $tag,
+                        'name_es' => $tag,
+                        'name_en' => $tag,
+                        'priority' => 9,
+                    ]);
+                    $tagf->save();
+                }
+
+                $tagr = new ArticleHasTags();
+                $tagr->setAttributes([
+                    'tag_id' => $tagf->id,
+                    'article_id' => $model->id,
+                ]);
+
+                $tagr->save();
+            }
+        }
+
+        return $model;
     }
 
 }
