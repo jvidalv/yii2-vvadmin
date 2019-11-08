@@ -288,7 +288,11 @@ class MediaController extends MainController
         $response->format = Response::FORMAT_RAW;
         $article = Article::findOne($id);
         if($article->media_id && $article->media){
-            is_resource($response->stream = fopen($article->media->getUrlImatge($size), 'r'));
+            try{
+                is_resource($response->stream = fopen($article->media->getUrlImatge($size), 'r'));
+            } catch(\Exception $e){
+                is_resource($response->stream = fopen('images/defaults/65-article.png', 'r'));
+            }
         } else {
             is_resource($response->stream = fopen('images/defaults/65-article.png', 'r'));
         }

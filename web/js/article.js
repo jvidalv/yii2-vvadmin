@@ -1,8 +1,23 @@
 
-$(document).on('click', 'a', function(){
 
-   console.log( $('#article-content_ifr').contents().find("html").html());
-   let tag = $($(this).attr('href'));
-   console.log($("#tinymce"))
-    //$('html,body').animate({scrollTop: tag.offset().top},'slow');
-})
+$(document).click('.anchor-section', function(){
+   makeAnchorsInsideTinyMceWorkable();
+});
+
+/**
+ * We create a ghost copy of article contents so the anchors outside work
+ */
+function makeAnchorsInsideTinyMceWorkable()
+{
+   if(!$('#content-ghost-copied').length) {
+      let contents = $('#contents-ghost').html();
+      $('.tox-edit-area').prepend('<div id="content-ghost-copied">' + contents + '</div>')
+   }
+}
+
+window.addEventListener("hashchange", function () {
+   window.scrollTo(window.scrollX, window.scrollY - 200);
+});
+
+
+

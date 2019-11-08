@@ -39,3 +39,22 @@
 .item:hover {
     transform: scale(1.2)
 }
+
+.anchor-section {
+    color: #ff7600;
+    font-size: 23px;
+    border-bottom: 1px dashed;
+}
+
+/**
+Overriding tinymce menu bar to make it sticky
+ */
+
+.tox-editor-container, .tox-tinymce{
+    overflow: unset !important;
+}
+.tox-toolbar{
+    position: sticky !important;
+    top: 76px;
+    z-index: 999;
+}

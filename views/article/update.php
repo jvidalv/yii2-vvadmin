@@ -42,15 +42,28 @@ $this->params['breadcrumbs'][] = $this->title;
                             'width' => "-webkit-fill-available",
                             'min_height' => 600,
                             'plugins' => [
-                                "print preview paste searchreplace autolink autosave save code visualblocks visualchars image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons autoresize",
+                                "print preview paste searchreplace autolink autosave save code visualblocks visualchars image link media template codesample table charmap hr pagebreak nonbreaking anchor toc advlist lists imagetools textpattern noneditable charmap quickbars autoresize",
                             ],
                             'link_context_toolbar' => true,
                             'menubar' => 'file edit view insert format tools table help',
-                            'toolbar' => "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl"
+                            'toolbar' => "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl",
+                             'image_advtab' => true,
+                            'image_uploadtab' => true,
+                            'images_upload_url' => Url::to(['tiny-mce/upload-image-from-tiny', 'id' => $model->id, Yii::$app->request->csrfParam => Yii::$app->request->csrfToken]),
+                            'image_list' =>[
+                            ['title' => 'dog', 'value' => '/images/logo.png'],
+                                                        ['title' => 'dog', 'value' => 'hola.jpg'],
+
+  ],
                         ]
                     ])
                     ?>
                     <?= $form->field($model, 'tags_form')->textInput(['maxlength' => true, 'value' => $model->getTagsString(), 'placeholder' => Yii::t('app', 'separate them using a comma, ej: react, html')]) ?>
+                    <?php
+                        echo Html::beginTag('div', ['id' => 'contents-ghost', 'class' => 'd-none']);
+                        echo $model->content;
+                        echo Html::endTag('div');
+                    ?>
                     <?= FileInput::widget([
                         'name' => 'media_upload[]',
                         'id' => 'media-input',
@@ -61,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'language' => Yii::$app->user->identity->language_id,
                         'pluginOptions' => [
                             'initialPreview' => [
-                                $model->media_id ? '/'. $model->media->getUrlImatge() : '/images/defaults/article.png',
+                                $model->media_id ? '/' . $model->media->getUrlImatge() : '/images/defaults/article.png',
                             ],
                             'initialPreviewAsData' => true,
                             'uploadUrl' => Url::to(['/media/upload-files',
@@ -137,8 +150,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <strong><?= Yii::t('app', 'sections') ?></strong>
                             </div>
                             <div class="card-body">
-                                <?php foreach($model->articleHasAnchors as $anchor){
-                                    echo Html::a($anchor->content, '#' . $anchor->anchor_id) . '</br>';
+                                <?php foreach ($model->articleHasAnchors as $anchor) {
+                                    echo Html::a($anchor->content, '#' . $anchor->anchor_id, ['class' => 'anchor-section']) . '</br>';
                                 }
                                 ?>
                             </div>
