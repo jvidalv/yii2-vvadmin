@@ -1,6 +1,7 @@
 <?php
 
 use app\models\Language;
+use app\models\Media;
 use kartik\file\FileInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -78,16 +79,16 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'language' => 'ca',
                                 'pluginOptions' => [
                                     'initialPreview' => [
-                                        $model->media_id ? '/' . $model->media->getUrl : '/images/user-default.jpeg',
+                                        '/' . Media::img($model->id, Media::TBL_USER),
                                     ],
                                     'initialPreviewAsData' => true,
                                     'uploadUrl' => Url::to(['/media/upload-files',
                                         'id' => $model->id,
-                                        'tipo' => 'user',
+                                        'table' => 'user',
                                     ]),
                                     'deleteUrl' => Url::to(['/media/delete-files',
                                         'id' => $model->id,
-                                        'tipo' => 'user',
+                                        'table' => 'user',
                                     ]),
                                     'showRemove' => false,
                                     'maxFileSize' => 300,

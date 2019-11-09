@@ -6,9 +6,11 @@ use app\models\Article;
 use app\models\Media;
 use app\models\MediaSearch;
 use app\models\User;
+use Exception;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\imagine\Image;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
@@ -161,58 +163,54 @@ class MediaController extends MainController
 
     /**
      * @param bool $id
-     * @param $tipo
+     * @param $table
      * @return bool
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionUploadFiles($id = false, $tipo)
+    public function actionUploadFiles($id = null, $table)
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $files = UploadedFile::getInstancesByName('media_upload');
+
         foreach ($files as $file) {
             $media = new Media();
-            $media->tipo = $tipo;
+            $media->table = $table;
+            $media->table_id = $id;
             $media->user_id = Yii::$app->user->identity->id;
             $media->file = [$file];
-            // validem lo fitxer
+
             if ($media->validate()) {
-                // comprobem paths
+
                 if (!is_dir('uploads/' . date("Y") . '/')) mkdir('uploads/' . date("Y"), 0755); // carpeta any
                 if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/')) mkdir('uploads/' . date("Y") . '/' . date("m"), 0755); // carpeta mes
-                if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/' . $tipo . '/')) mkdir('uploads/' . date("Y") . '/' . date("m") . '/' . $tipo, 0755); // carpeta tipo
-                $path = 'uploads/' . date("Y") . '/' . date("m") . '/' . $tipo . '/';
-                // guardem en fals per a generar id
+                if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/' . $table . '/')) mkdir('uploads/' . date("Y") . '/' . date("m") . '/' . $table, 0755); // carpeta tipo
+
+                $path = 'uploads/' . date("Y") . '/' . date("m") . '/' . $table . '/';
+                // save in false to get an ID
                 $media->save(false);
-                $full_path = $path . '' . $tipo . '-' . $media->id . '.' . $file->extension;
+                $full_path = $path . '' . $table . '-' . $media->id . '.' . $file->extension;
+
                 // comprobem si es posible guardar sino borrem
                 if ($file->saveAs($full_path)) {
                     $media->path = $path;
                     $media->titol = addslashes($file->basename);
-                    $media->file_name = $tipo . '-' . $media->id . '.' . $file->extension;
+                    $media->file_name = $table . '-' . $media->id . '.' . $file->extension;
                     $media->save(false);
-                    if ($id) $media->guardarObjecte($id, $tipo);
+                    if ($id) $media->guardarObjecte($id, $table);
+
                     // comprobem is es imatge i redimensionem
                     if ($sizes = getimagesize($full_path)) {
                         $media->es_imatge = 1;
                         $media->save(false);
-                        /* cut in half */
-                        Image::thumbnail($full_path, $sizes[0] / 2, $sizes[1] / 2)
-                            ->save($path . $media::MINIATURA . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
-                        /* thumb 65x65 */
-                        Image::thumbnail($full_path, 65, 65)
-                            ->save($path . $media::THUMB65 . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
-                        /* thumb 250x250 */
-                        Image::thumbnail($full_path, 250, 250)
-                            ->save($path . $media::THUMB250 . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
-                        Image::thumbnail($full_path, 500, 500)
-                            ->save($path . $media::THUMB500 . $tipo . '-' . $media->id . '.' . $file->extension, ['quality' => 70]);
                     }
+
                 } else {
                     $media->delete();
                 }
             }
         }
+
         return true;
     }
 
@@ -234,39 +232,133 @@ class MediaController extends MainController
 
     /**
      * @param $id
-     * @param $tipo
+     * @param $table
      * @return bool
      */
-    public function actionDeleteFiles($id, $tipo)
+    public function actionDeleteFiles($id, $table)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return Media::esborrarMedia($id, $tipo);
+        return Media::esborrarMedia($id, $table);
     }
 
     /**
-     * @param $code
+     * Returns an image
+     * @param $table
+     * @param $table_id
+     * @param array $size
      * @throws \yii\web\ServerErrorHttpException
      */
-    public function actionGetUserImage($id)
+    public function actionGetImage($table, $table_id, $size = [])
     {
         $response = Yii::$app->getResponse();
         $response->headers->set('Content-Type', 'image/jpeg');
         $response->format = Response::FORMAT_RAW;
-        try {
-            $user = User::findOne($id);
-            is_resource($response->stream = fopen($user->media->getUrlImatge(), 'r'));
-        } catch (\Exception $e) {
-            is_resource($response->stream = fopen('images/defaults/user.png', 'r'));
+        $size = $size ? json_decode($size) : [];
+        /**
+         * If we want an image that its origin is on media, we can't query by parameters other than primary key
+         */
+        if ($table === Media::TBL_MEDIA) {
+            $media = Media::findOne($table_id);
+        } else {
+            $media = Media::find()->where(['table' => $table, 'table_id' => $table_id])->orderBy('id desc')->one();
+        }
+
+        /**
+         * 1. Check if media exist at all
+         * 2. Check if file that media points exist
+         * 3. Check if file of media with the sizes exist, if not create it and return the path
+         * 4. Return the image
+         */
+        if (!$media) {
+            $response->stream = $this->imageFallback($table);
+        // Si existe media y no existe la imagen devolvemos un 404 con el tamaño especificado
+        } else if (!file_exists($media->getFullPath())) {
+
+            if (!file_exists(Media::PATH_TO_TEMPORARY . $size[0] . $size[1] . '404.jpg')) {
+                if (!$path = $this->generate404Image($size)) {
+                    $response->stream = fopen(Media::PATH_TO_TEMPORARY . '404.jpg', 'r');
+                } else {
+                    $response->stream = fopen(Media::PATH_TO_TEMPORARY . $size[0] . $size[1] . '404.jpg', 'r');
+                }
+            } else {
+                $response->stream = fopen(Media::PATH_TO_TEMPORARY . $size[0] . $size[1] . '404.jpg', 'r');
+            }
+
+        } else if (!file_exists($media->getFullPath($size))) {
+
+            if (!$path = $this->generateImage($media, $size)) {
+                $response->stream = $this->imageFallback($table);
+            } else {
+                $response->stream = fopen($media->getFullPath($size), 'r');
+            }
+
+        } else {
+            $response->stream = fopen($media->getFullPath($size), 'r');
+        }
+
+        if (!is_resource($response->stream)) {
+            throw new \yii\web\ServerErrorHttpException('file access failed: permission deny');
         }
 
         return $response->send();
     }
 
+
+    /**
+     * @param Media $media
+     * @param $size
+     * @return bool|\Imagine\Image\ImageInterface
+     */
+    private function generateImage(Media $media, $size)
+    {
+        try {
+            $image = Image::thumbnail($media->getFullPath(), $size[0], $size[1])
+                ->save($media->path . $size[0] . '-' . $size[1] . '-' . $media->file_name, ['quality' => 100]);
+
+            return $image;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param $size
+     * @return bool|\Imagine\Image\ImageInterface
+     */
+    private function generate404Image($size)
+    {
+        try {
+            $image = Image::thumbnail(Media::PATH_TO_DEFAULTS . '404.jpg', $size[0], $size[1])
+                ->save(Media::PATH_TO_TEMPORARY . $size[0] . $size[1] . '404.jpg', ['quality' => 100]);
+            return $image;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param $table
+     * @return bool
+     */
+    private
+    function imageFallback($table = Media::TBL_MEDIA)
+    {
+        switch ($table) {
+            case Media::TBL_ARTICLE:
+                return fopen('images/defaults/65-article.png', 'r');
+            case Media::TBL_USER:
+                return fopen('images/defaults/user.png', 'r');
+            default:
+                return fopen('images/defaults/404.jpg', 'r');
+        }
+    }
+
     /**
      * @param $code
      * @throws \yii\web\ServerErrorHttpException
      */
-    public function actionGetLanguageImage($code)
+    public
+    function actionGetLanguageImage($code)
     {
         $response = Yii::$app->getResponse();
         $response->headers->set('Content-Type', 'image/jpeg');
@@ -277,26 +369,4 @@ class MediaController extends MainController
         return $response->send();
     }
 
-    /**
-     * @param $code
-     * @throws \yii\web\ServerErrorHttpException
-     */
-    public function actionGetArticleImage($id, $size = Media::THUMB65)
-    {
-        $response = Yii::$app->getResponse();
-        $response->headers->set('Content-Type', 'image/jpeg');
-        $response->format = Response::FORMAT_RAW;
-        $article = Article::findOne($id);
-        if($article->media_id && $article->media){
-            try{
-                is_resource($response->stream = fopen($article->media->getUrlImatge($size), 'r'));
-            } catch(\Exception $e){
-                is_resource($response->stream = fopen('images/defaults/65-article.png', 'r'));
-            }
-        } else {
-            is_resource($response->stream = fopen('images/defaults/65-article.png', 'r'));
-        }
-
-        return $response->send();
-    }
 }

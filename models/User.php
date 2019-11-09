@@ -22,6 +22,11 @@ use yii\web\IdentityInterface;
  * @property string $authKey
  * @property string $password_reset_token
  * @property int $role
+ * @property \yii\db\ActiveQuery $media
+ * @property \yii\db\ActiveQuery $language
+ * @property string $fullName
+ * @property mixed $rolString
+ * @property string $urlFotoPerfil
  * @property string $imatge
  *
  */
@@ -47,6 +52,80 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return 'user';
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+            [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'email',
+            ],
+        ];
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['email', 'nom', 'cognoms', 'language_id'], 'required'],
+            [['language_id'], 'string', 'max' => 2],
+            [['email'], 'email'],
+            [['email'], 'unique'],
+            [['role', 'actiu'], 'integer'],
+            [['nom', 'cognoms', 'email', 'password'], 'string', 'max' => 250],
+            [['telefon'], 'string', 'max' => 50],
+            [['username'], 'string', 'max' => 100],
+            [['imatge'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxSize' => 1024 * 250],
+            [['username', 'email'], 'unique'],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => Yii::t('app', 'id'),
+            'nom' => Yii::t('app', 'name'),
+            'cognoms' => Yii::t('app', 'surname'),
+            'telefon' => Yii::t('app', 'phone'),
+            'actiu' => Yii::t('app', 'active'),
+            'email' => Yii::t('app', 'email'),
+            'username' => Yii::t('app', 'username'),
+            'password' => Yii::t('app', 'password'),
+            'authKey' => 'Auth Key',
+            'password_reset_token' => 'Password Reset Token',
+            'role' => Yii::t('app', 'Role'),
+            'imatge' => Yii::t('app', 'Imatge'),
+            'language_id' => Yii::t('app', 'Language'),
+        ];
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        // controlem que no mos pugon fer la pirula, nomes un admin pot cambiar estos parametres
+        if (!Yii::$app->user->identity->isAdmin()) {
+            $this->role = Yii::$app->user->identity->role;
+        }
+
+        return true;
+    }
+
 
     /**
      * Retorna tots els usuaris filtrats segons permisos
@@ -92,55 +171,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return static::findOne(['email' => $email]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
-            [
-                'class' => SluggableBehavior::className(),
-                'attribute' => 'email',
-            ],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['email', 'nom', 'cognoms', 'language_id'], 'required'],
-            [['language_id'], 'string', 'max' => 2],
-            [['email'], 'email'],
-            [['email'], 'unique'],
-            [['role', 'actiu'], 'integer'],
-            [['nom', 'cognoms', 'email', 'password'], 'string', 'max' => 250],
-            [['telefon'], 'string', 'max' => 50],
-            [['username'], 'string', 'max' => 100],
-            [['imatge'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxSize' => 1024 * 250],
-            [['username', 'email'], 'unique'],
-        ];
-    }
-
-    /**
-     * @param bool $insert
-     * @return bool
-     */
-    public function beforeSave($insert)
-    {
-        if (!parent::beforeSave($insert)) {
-            return false;
-        }
-        // controlem que no mos pugon fer la pirula, nomes un admin pot cambiar estos parametres
-        if (!Yii::$app->user->identity->isAdmin()) {
-            $this->role = Yii::$app->user->identity->role;
-        }
-
-        return true;
-    }
 
     /**
      * @return bool
@@ -150,27 +180,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->role === 1;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => Yii::t('app', 'id'),
-            'nom' => Yii::t('app', 'name'),
-            'cognoms' => Yii::t('app', 'surname'),
-            'telefon' => Yii::t('app', 'phone'),
-            'actiu' => Yii::t('app', 'active'),
-            'email' => Yii::t('app', 'email'),
-            'username' => Yii::t('app', 'username'),
-            'password' => Yii::t('app', 'password'),
-            'authKey' => 'Auth Key',
-            'password_reset_token' => 'Password Reset Token',
-            'role' => Yii::t('app', 'Role'),
-            'imatge' => Yii::t('app', 'Imatge'),
-            'language_id' => Yii::t('app', 'Language'),
-        ];
-    }
 
     /**
      * @return \yii\db\ActiveQuery

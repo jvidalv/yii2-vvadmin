@@ -4,6 +4,7 @@ use app\assets\ArticleAsset;
 use app\models\Article;
 use app\models\Category;
 use app\models\Language;
+use app\models\Media;
 use dosamigos\tinymce\TinyMce;
 use kartik\file\FileInput;
 use yii\helpers\ArrayHelper;
@@ -68,22 +69,21 @@ $this->params['breadcrumbs'][] = $this->title;
                         'name' => 'media_upload[]',
                         'id' => 'media-input',
                         'options' => [
-                            'multiple' => true,
                             'accept' => '.jpeg,.jpg,.png'
                         ],
                         'language' => Yii::$app->user->identity->language_id,
                         'pluginOptions' => [
                             'initialPreview' => [
-                                $model->media_id ? '/' . $model->media->getUrlImatge() : '/images/defaults/article.png',
+                                '/' . Media::img($model->id, Media::TBL_ARTICLE),
                             ],
                             'initialPreviewAsData' => true,
                             'uploadUrl' => Url::to(['/media/upload-files',
                                 'id' => $model->id,
-                                'tipo' => 'article',
+                                'table' => Media::TBL_ARTICLE,
                             ]),
                             'deleteUrl' => Url::to(['/media/delete-files',
                                 'id' => $model->id,
-                                'tipo' => 'article',
+                                'table' => Media::TBL_ARTICLE,
                             ]),
                             'showRemove' => false,
                             'maxFileSize' => 300,
@@ -99,7 +99,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="translations-body">
                                 <?php foreach (Language::find()->all() as $lang): ?>
                                     <?php if ($lang->code !== $model->language_id): ?>
-                                        <div class="d-flex <?= $lang->code === Yii::$app->language ? 'active' : '' ?>">
+                                        <div class="d-flex">
                                             <div>
                                                 <?= Html::img(['media/get-language-image', 'code' => $lang->code]) ?>
                                             </div>

@@ -34,7 +34,8 @@
     "alymosul/exponent-server-sdk-php": "dev-master",
     "ext-fileinfo": "*",
     "ext-dom": "*",
-    "ext-libxml": "*"
+    "ext-libxml": "*",
+    "ext-json": "*"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

@@ -1,6 +1,6 @@
 <?php
 // Comprobem si local o produccio
-$local = $_SERVER["REMOTE_ADDR"] === "127.0.0.1" || $_SERVER["REMOTE_ADDR"] === "::1" ? true : false;
+$local = true;
 defined('YII_DEBUG') or define('YII_DEBUG', $local);
 defined('YII_ENV') or define('YII_ENV', $local ? 'dev' : 'prod');
 

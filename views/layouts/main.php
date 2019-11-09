@@ -6,6 +6,7 @@
 
 use app\assets\AppAsset;
 use app\models\Language;
+use app\models\Media;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
@@ -93,7 +94,7 @@ $user = Yii::$app->user->identity;
                         <div class="account-wrap">
                             <div class="account-item account-item--style2 clearfix js-item-menu">
                                 <div class="image">
-                                    <?= Html::img(['media/get-user-image', 'id' => Yii::$app->user->identity->id]) ?>
+                                    <?= Html::img(['media/get-image', 'table' => Media::TBL_USER, 'table_id' => Yii::$app->user->identity->id, 'size' => json_encode([45,45])]) ?>
                                 </div>
                                 <div class="content">
                                     <a class="js-acc-btn" href="#"><?= $user->nom ?></a>
@@ -102,7 +103,7 @@ $user = Yii::$app->user->identity;
                                     <div class="info clearfix">
                                         <div class="image">
                                             <a href="/">
-                                                <?= Html::img(['media/get-user-image', 'id' => Yii::$app->user->identity->id]) ?>
+                                                <?= Html::img(['media/get-image', 'table' => Media::TBL_USER, 'table_id' => Yii::$app->user->identity->id, 'size' => json_encode([65,65])]) ?>
                                             </a>
                                         </div>
                                         <div class="content">

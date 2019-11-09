@@ -3,6 +3,7 @@
 use app\libraries\JosepGridView;
 use app\models\Category;
 use app\models\Language;
+use app\models\Media;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
@@ -70,7 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'label' => Yii::t('app', 'image'),
                             'format' => 'raw',
                             'value' => function($model){
-                                return Html::img(['media/get-article-image', 'id' => $model->id]);
+                                return Html::img(['media/get-image', 'table' => Media::TBL_ARTICLE, 'table_id' => $model->id, 'size' => json_encode([65,65])]);
                             }
 
                     ]
