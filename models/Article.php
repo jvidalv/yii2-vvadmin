@@ -12,7 +12,6 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property int $language_id
  * @property int $user_id
- * @property int $media_id
  * @property int $category_id
  * @property string $date
  * @property string $title
@@ -70,7 +69,7 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['language_id', 'user_id', 'title'], 'required'],
-            [['user_id', 'media_id', 'category_id', 'state', 'updated_at', 'created_at', 'translating'], 'integer'],
+            [['user_id', 'category_id', 'state', 'updated_at', 'created_at', 'translating'], 'integer'],
             [['language_id'], 'string', 'max' => 2],
             [['date'], 'safe'],
             [['content'], 'string'],
@@ -90,7 +89,6 @@ class Article extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'language_id' => Yii::t('app', 'language'),
             'user_id' => Yii::t('app', 'user'),
-            'media_id' => Yii::t('app', 'media'),
             'category_id' => Yii::t('app', 'category'),
             'date' => Yii::t('app', 'Date'),
             'title' => Yii::t('app', 'Title'),
@@ -128,14 +126,6 @@ class Article extends \yii\db\ActiveRecord
     public function getCategory()
     {
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMedia()
-    {
-        return $this->hasOne(Media::className(), ['id' => 'media_id']);
     }
 
     /**

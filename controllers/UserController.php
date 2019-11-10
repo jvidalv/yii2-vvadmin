@@ -64,7 +64,7 @@ class UserController extends MainController
                 $model->password = $model->password_hash;
             }
             $model->save();
-            Yii::$app->session->setFlash('general', Yii::$app('app', 'Data saved correctly'));
+            Yii::$app->session->setFlash('general', Yii::t('app', 'Data saved correctly'));
         }
 
         $model->password = '******';

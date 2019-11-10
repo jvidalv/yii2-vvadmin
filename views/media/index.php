@@ -77,8 +77,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         [
                             'format' => 'raw',
-                            'value' => function ($model) {
-                                return Html::img(Url::to(['media/get-image', 'table' => Media::TBL_MEDIA, 'table_id' => $model->id, 'size' => json_encode([65, 65])]));
+                            'value' => function (Media $model) {
+                                return Html::img($model->getFullPath(), ['width' => 75]);
                             },
                         ],
                         'titol',

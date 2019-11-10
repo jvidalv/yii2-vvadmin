@@ -66,7 +66,7 @@ $config = [
         'session' => [
             'class' => 'yii\web\DbSession',
             'timeout' => 60 * 60 * 24 * 14,
-            'writeCallback' => function ($session) {
+            'writeCallback' => function () {
                 return [
                     'user_id' => Yii::$app->user->id,
                     'last_write' => time(),

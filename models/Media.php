@@ -2,9 +2,11 @@
 
 namespace app\models;
 
+use Exception;
 use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\imagine\Image;
 
 /**
  * This is the model class for table "media".
@@ -69,10 +71,9 @@ class Media extends \yii\db\ActiveRecord
     {
         return [
             [['user_id'], 'required'],
-            ['table', 'default', 'value' => self::TBL_MEDIA],
-            [['user_id', 'borrat', 'es_imatge', 'table_id'], 'integer'],
+            [['user_id', 'borrat', 'es_imatge'], 'integer'],
             [['file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xlsx, pptx, pdf, txt, doc, dot, docx, jpeg, jpg, png', 'maxFiles' => 10],
-            [['titol', 'path', 'file_name', 'table'], 'string', 'max' => 500],
+            [['titol', 'path', 'file_name'], 'string', 'max' => 500],
             [['descripcio'], 'string', 'max' => 1000],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -87,7 +88,6 @@ class Media extends \yii\db\ActiveRecord
             'id' => 'ID',
             'user_id' => 'User ID',
             'titol' => Yii::t('app', 'title'),
-            'table' => Yii::t('app', 'origin'),
             'descripcio' => Yii::t('app', 'description'),
             'path' => Yii::t('app', 'path to file'),
             'file_name' => Yii::t('app', 'filename'),
@@ -103,33 +103,76 @@ class Media extends \yii\db\ActiveRecord
      * @param string $output
      * @return string
      */
-    public static function img($table_id, $table, $size = [], $output = self::OP_URL)
+    public static function img($table_id, $table, $size, $output = self::OP_URL)
     {
-        $media = Media::findOne(['table' => $table, 'table_id' => $table_id]);
+        $media = Media::find()->alias('m')
+            ->leftJoin('media_has_tables as mt', 'mt.media_id = m.id')
+            ->where(['mt.table_name' => $table, 'mt.table_id' => $table_id])->orderBy('id desc')->one();
 
-        if($media){
-            return $media->getFullPath($size);
+        $size = Media::limit_size($size);
+
+        if ($media) {
+            if(is_file($media->getFullPath($size))) {
+                return $media->getFullPath($size);
+            } else {
+                return Media::generate_image($media->file_name, $media->path, $size);
+            }
         }
 
-        return self::img_fallback($table, $output);
+        switch ($table) {
+            case Media::TBL_USER:
+                return Media::generate_image('user.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY);
+            case Media::TBL_ARTICLE:
+                return Media::generate_image('article.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY);
+            default:
+                return Media::generate_image('404.jpg', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY);
+        }
     }
 
     /**
-     * Fallback in case image does not exist
-     * @param $table
-     * @param string $output
-     * @return string
+     * Creates and image with the specified $size, preppends the size to the filename
+     * Has a fallback that always returns 404 if something went wrong
+     * @param $filename
+     * @param $path
+     * @param $size
+     * @param $savepath
+     * @return bool|\Imagine\Image\ImageInterface
      */
-    public static function img_fallback($table, $output = self::OP_URL)
+    public static function generate_image($filename, $path, $size, $savepath = false)
     {
-        switch ($table) {
-            case MEDIA::TBL_ARTICLE:
-                return 'images/defaults/65-article.png';
-            case MEDIA::TBL_USER:
-                return 'images/defaults/user.png';
-            default:
-                return 'images/defaults/404.jpg';
+        $newFileName = join('', $size) . $filename;
+        $savepath = $savepath ?: $path;
+
+        try {
+            if ($size[0] !== null && $size[1] !== null) {
+                Image::thumbnail($path . $filename, $size[0], $size[1])
+                    ->save($savepath . $newFileName, ['quality' => 100]);
+            }
+        } catch (Exception $e) {
+            return self::generate_image('404.jpg', Media::PATH_TO_DEFAULTS, $size, $savepath);
         }
+
+        return $savepath . $newFileName;
+    }
+
+    /**
+     * Limit the size of photos so they don't trick the server into megaimages
+     * @param array $size
+     * @return array|bool
+     */
+    public static function limit_size($size)
+    {
+        if (count($size) === 2 && isset($size[0]) && isset($size[1])) {
+            foreach ($size as $i => $s) {
+                $s = abs($s);
+                $s = is_numeric($s) ? $s : 250;
+                $s = $s < 1200 ? $s : 250;
+                $size[$i] = $s;
+            }
+            return $size;
+        }
+
+        return [null, null];
     }
 
     /**
@@ -141,56 +184,14 @@ class Media extends \yii\db\ActiveRecord
     }
 
     /**
+     * @param array $size
      * @return string
      */
-    public function getFullPath($size = [])
+    public function getFullPath($size = [null, null])
     {
-        return $size && count($size) === 2 ?
-            $this->path . $size[0] . '-' . $size[1] . '-' . $this->file_name
-            :
-            $this->path . $this->file_name;
+        return $this->path . join('', $size) . $this->file_name;
     }
 
-    /**
-     * @param $id
-     * @param $table
-     * @return bool
-     */
-    public function guardarObjecte($id, $table)
-    {
-        switch ($table) {
-            case static::TBL_USER:
-                $user = User::findOne($id);
-                $user->media_id = $this->id;
-                return $user->save();
-            case static::TBL_ARTICLE:
-                $article = Article::findOne($id);
-                $article->media_id = $this->id;
-                return $article->save();
-        }
-
-        return false;
-    }
-
-    /**
-     * @param $id
-     * @param $tipo
-     * @return bool
-     */
-    public static function esborrarMedia($id, $table)
-    {
-        switch ($table) {
-            case static::TBL_USER:
-                $model = User::findOne($id);
-                break;
-            case static::TBL_ARTICLE:
-                $model = Article::findOne($id);
-                break;
-        }
-
-        $model->media_id = null;
-        return $model->save();
-    }
 
     /* retorne imatge segons parametre - 150 - 250 - 750 */
     public function getUrlImatge($tipo = 'normal')

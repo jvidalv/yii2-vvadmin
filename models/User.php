@@ -180,15 +180,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return $this->role === 1;
     }
 
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMedia()
-    {
-        return $this->hasOne(Media::className(), ['id' => 'media_id']);
-    }
-
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -299,13 +290,5 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     public function getRolString()
     {
         return $this::ROLES[$this->role];
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrlFotoPerfil()
-    {
-        return Yii::$app->request->baseUrl . '/images/uploads/users/' . $this->imatge;
     }
 }
