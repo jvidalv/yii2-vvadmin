@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\VController;
 use app\models\Article;
 use app\models\ArticleHasAnchors;
 use app\models\ArticleHasTags;
@@ -16,22 +17,8 @@ use yii\web\NotFoundHttpException;
 /**
  * ArticleController implements the CRUD actions for Article model.
  */
-class ArticleController extends MainController
+class ArticleController extends VController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
 
     /**
      * Lists all Article models.

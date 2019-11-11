@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\VController;
 use app\models\Tag;
 use app\models\TagSearch;
 use Yii;
@@ -11,23 +12,8 @@ use yii\web\NotFoundHttpException;
 /**
  * TagController implements the CRUD actions for Tag model.
  */
-class TagController extends MainController
+class TagController extends VController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Tag models.
      * @return mixed

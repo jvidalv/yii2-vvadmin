@@ -48,22 +48,22 @@ $this->params['breadcrumbs'][] = $this->title;
                             'link_context_toolbar' => true,
                             'menubar' => 'file edit view insert format tools table help',
                             'toolbar' => "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl",
-                             'image_advtab' => true,
+                            'image_advtab' => true,
                             'image_uploadtab' => true,
                             'images_upload_url' => Url::to(['tiny-mce/upload-image-from-tiny', 'id' => $model->id, Yii::$app->request->csrfParam => Yii::$app->request->csrfToken]),
-                            'image_list' =>[
-                            ['title' => 'dog', 'value' => '/images/logo.png'],
-                                                        ['title' => 'dog', 'value' => 'hola.jpg'],
+                            'image_list' => [
+                                ['title' => 'dog', 'value' => '/images/logo.png'],
+                                ['title' => 'dog', 'value' => 'hola.jpg'],
 
-  ],
+                            ],
                         ]
                     ])
                     ?>
                     <?= $form->field($model, 'tags_form')->textInput(['maxlength' => true, 'value' => $model->getTagsString(), 'placeholder' => Yii::t('app', 'separate them using a comma, ej: react, html')]) ?>
                     <?php
-                        echo Html::beginTag('div', ['id' => 'contents-ghost', 'class' => 'd-none']);
-                        echo $model->content;
-                        echo Html::endTag('div');
+                    echo Html::beginTag('div', ['id' => 'contents-ghost', 'class' => 'd-none']);
+                    echo $model->content;
+                    echo Html::endTag('div');
                     ?>
                     <?= FileInput::widget([
                         'name' => 'media_upload[]',
@@ -74,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'language' => Yii::$app->user->identity->language_id,
                         'pluginOptions' => [
                             'initialPreview' => [
-                                '/' . Media::img($model->id, Media::TBL_ARTICLE, [150,150]),
+                                '/' . Media::img($model->id, Media::TBL_ARTICLE, [150, 150]),
                             ],
                             'initialPreviewAsData' => true,
                             'uploadUrl' => Url::to(['/media/upload-files',

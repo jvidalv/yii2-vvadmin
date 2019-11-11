@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'language' => 'ca',
                                 'pluginOptions' => [
                                     'initialPreview' => [
-                                        '/' . Media::img($model->id, Media::TBL_USER, [150,150]),
+                                        '/' . Media::img($model->id, Media::TBL_USER, [150, 150]),
                                     ],
                                     'initialPreviewAsData' => true,
                                     'uploadUrl' => Url::to(['/media/upload-files',

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\VController;
 use app\models\Category;
 use app\models\CategorySearch;
 use Yii;
@@ -11,23 +12,8 @@ use yii\web\NotFoundHttpException;
 /**
  * CategoryController implements the CRUD actions for Category model.
  */
-class CategoryController extends MainController
+class CategoryController extends VController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Category models.
      * @return mixed

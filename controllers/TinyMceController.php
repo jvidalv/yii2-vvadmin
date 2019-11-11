@@ -3,15 +3,19 @@
 
 namespace app\controllers;
 
-use app\models\Media;
 use Yii;
-use yii\imagine\Image;
-use yii\web\Controller;
+use yii\base\Controller;
 use yii\web\Response;
-use yii\web\UploadedFile;
 
-class TinyMceController extends \yii\base\Controller
+class TinyMceController extends Controller
 {
+    public function beforeAction($action)
+    {
+        if(!parent::beforeAction($action)){
+            return false;
+        };
+        var_dump($_SERVER['HTTP_ORIGIN'] );die();
+    }
 
     public function actionUploadImageFromTiny()
     {

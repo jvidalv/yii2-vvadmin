@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\VController;
 use app\controllers\JosepController;
 use app\models\Noticia;
 use app\models\NoticiaSearch;
@@ -12,23 +13,8 @@ use yii\web\NotFoundHttpException;
 /**
  * NoticiaController implements the CRUD actions for Noticia model.
  */
-class NoticiaController extends MainController
+class NoticiaController extends VController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Noticia models.
      * @return mixed

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\VController;
 use app\models\Article;
 use app\models\Media;
 use app\models\MediaHasTables;
@@ -12,6 +13,7 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\imagine\Image;
 use yii\web\BadRequestHttpException;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -20,23 +22,8 @@ use yii\web\UploadedFile;
 /**
  * MediaController implements the CRUD actions for Media model.
  */
-class MediaController extends MainController
+class MediaController extends VController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
     /**
      * Lists all Media models.
      * @return mixed

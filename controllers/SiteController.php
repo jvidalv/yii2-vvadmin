@@ -2,61 +2,15 @@
 
 namespace app\controllers;
 
-use app\models\ContactForm;
+use app\components\VController;
 use app\models\LoginForm;
+use app\models\Media;
 use app\models\User;
 use Yii;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\Response;
 
-class SiteController extends TopController
+class SiteController extends VController
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['login', 'existeix-usuari', 'contrassenya-correcta'],
-                        'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout', 'index', 'upload-imatge', 'upload-files', 'delete-imatge', 'set-session'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
-    }
 
     /**
      * Displays homepage.
@@ -67,6 +21,11 @@ class SiteController extends TopController
         return $this->render('index');
     }
 
+    public function actionError()
+    {
+        return $this->render('error');
+    }
+
     /**
      * Login action.
      *
@@ -74,6 +33,7 @@ class SiteController extends TopController
      */
     public function actionLogin()
     {
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -113,7 +73,7 @@ class SiteController extends TopController
             $data = \Yii::$app->request->post()['data'];
             $user = User::find()->where(['or', ['email' => $data]])->one();
             if ($user) {
-                return ['status' => true, 'nom' => $user->fullName, 'imatge' => $user->media ? $user->media->getUrlImatge() : ''];
+                return ['status' => true, 'nom' => $user->fullName, 'imatge' => Media::img($user->id, Media::TBL_USER, [117, 117])];
             }
         }
 
@@ -126,9 +86,9 @@ class SiteController extends TopController
      */
     public function actionContrassenyaCorrecta()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        if (\Yii::$app->request->isAjax && \Yii::$app->request->isPost) {
+        if (Yii::$app->request->isAjax && \Yii::$app->request->isPost) {
             $model = new LoginForm();
 
             if ($model->load(Yii::$app->request->post()) && $model->login()) {

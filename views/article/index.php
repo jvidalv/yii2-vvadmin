@@ -68,11 +68,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     ],
                     [
-                            'label' => Yii::t('app', 'image'),
-                            'format' => 'raw',
-                            'value' => function($model){
-                                return Html::img(['media/get-image', 'table' => Media::TBL_ARTICLE, 'table_id' => $model->id, 'size' => json_encode([65,65])]);
-                            }
+                        'label' => Yii::t('app', 'image'),
+                        'format' => 'raw',
+                        'value' => function ($model) {
+                            return Html::img(['media/get-image', 'table' => Media::TBL_ARTICLE, 'table_id' => $model->id, 'size' => json_encode([65, 65])]);
+                        }
 
                     ]
                 ],

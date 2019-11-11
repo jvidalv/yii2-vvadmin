@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\VController;
 use app\models\Language;
 use app\models\User;
 use app\models\UserSearch;
@@ -11,7 +12,7 @@ use yii\web\NotFoundHttpException;
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends MainController
+class UserController extends VController
 {
 
     /**
