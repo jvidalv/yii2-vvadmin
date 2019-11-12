@@ -5,13 +5,18 @@ namespace app\controllers;
 use app\components\VController;
 use app\models\Article;
 use app\models\ArticleHasAnchors;
+use app\models\ArticleHasMedia;
 use app\models\ArticleHasTags;
 use app\models\ArticleSearch;
 use app\models\Language;
+use app\models\Media;
+use app\models\MediaHasTables;
 use app\models\Tag;
 use DOMDocument;
+use Exception;
 use Yii;
 use yii\filters\VerbFilter;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -146,7 +151,7 @@ class ArticleController extends VController
     {
         libxml_use_internal_errors(true);
         $content = new DOMDocument();
-        $content->loadHTML($model->content);
+        $content->loadHTML($model->content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
         if (count(libxml_get_errors())) {
             foreach (libxml_get_errors() as $error) {
@@ -175,6 +180,88 @@ class ArticleController extends VController
                 $anchor->save();
             };
         }
+
+        $images = $content->getElementsByTagName('img');
+        foreach ($images as $img) {
+            if(strpos($img->getAttribute('id'), 'img-') === false)
+            {
+                $data = $img->getAttribute('src');
+
+                list($type, $data) = explode(';', $data);
+                list(, $data)      = explode(',', $data);
+                $data = base64_decode($data);
+
+                $tempPath = Media::PATH_TO_TEMPORARY . time() . '.png';
+                if(file_put_contents($tempPath, $data))
+                {
+                    $con = Yii::$app->db->beginTransaction();
+
+                    try {
+
+                        $imgC = getimagesize($tempPath);
+
+                        if(isset($imgC[0]) && isset($imgC[1])){
+                            if($imgC[0] > 1200 || $imgC[1] > 1200){
+                                $model->addError('size', Yii::t('app', 'image in line {line} is to big (max 1200px widht, height)', ['line' => $img->getLineNo() ]));
+                                throw new Exception(Yii::t('app', 'Error validating size, too big!'));
+                            }
+                        } else {
+                            $model->addError('image', Yii::t('app', 'image in line {line} is not an image?', ['line' => $img->getLineNo() ]));
+                            throw new Exception(Yii::t('app', 'error validating image'));
+                        }
+
+                        $table_name = 'article_has_media';
+                        Media::generateFoldersByTableName($table_name);
+
+                        $newA = new ArticleHasMedia();
+                        $newA->article_id = $model->id;
+                        $newA->save(false);
+
+                        $newM = new Media();
+                        $newM->setAttributes([
+                            'path' => 'uploads/' . date("Y") . '/' . date("m") . '/' . $table_name . '/',
+                            'file_name' => $table_name . '-' . $newA->id . '.png',
+                            'titol' => $img->getAttribute('title') ?: null,
+                            'user_id' => Yii::$app->user->identity->id,
+                            'es_imatge' => 1,
+                        ]);
+                        $newM->save();
+
+                        $newA->media_id = $newM->id;
+                        $newA->save();
+
+                        $newT = new MediaHasTables();
+                        $newT->setAttributes([
+                            'media_id' => $newM->id,
+                            'table_name' => $table_name,
+                            'table_id' => $newA->id,
+                        ]);
+                        $newT->save();
+
+                        file_put_contents($newM->path . $newM->file_name, $data);
+                        unlink($tempPath);
+
+                        $img->setAttribute('id','img-' . $newA->id);
+                        // todo cambiar a la api pa q xuto en public i privat
+                        $sizes =  [
+                            $img->getAttribute('width')  &&   $img->getAttribute('width') < 1201 ? $img->getAttribute('width') : $imgC[0],
+                            $img->getAttribute('height')  &&   $img->getAttribute('height') < 1201 ? $img->getAttribute('height') : $imgC[1],
+                        ];
+                        $img->setAttribute('src', Url::to(['media/get-image', 'table' => $table_name, 'table_id' => $newA->id, 'size' => json_encode($sizes)]));
+
+                        $con->commit();
+                    } catch(Exception $e){
+                        $model->addError('exception', $e);
+                        $con->rollback();
+                    }
+
+
+                }
+            }
+        }
+
+        // Save the modifications of dom
+        $model->content = $content->saveHTML();
 
         return $model;
     }

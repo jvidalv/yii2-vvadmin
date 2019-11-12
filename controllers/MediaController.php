@@ -3,17 +3,10 @@
 namespace app\controllers;
 
 use app\components\VController;
-use app\models\Article;
 use app\models\Media;
 use app\models\MediaHasTables;
 use app\models\MediaSearch;
-use app\models\User;
-use Exception;
 use Yii;
-use yii\filters\VerbFilter;
-use yii\imagine\Image;
-use yii\web\BadRequestHttpException;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -121,9 +114,7 @@ class MediaController extends VController
 
             if ($media->validate()) {
 
-                if (!is_dir('uploads/' . date("Y") . '/')) mkdir('uploads/' . date("Y"), 0755); // carpeta any
-                if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/')) mkdir('uploads/' . date("Y") . '/' . date("m"), 0755); // carpeta mes
-                if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/' . $table_name . '/')) mkdir('uploads/' . date("Y") . '/' . date("m") . '/' . $table_name, 0755); // carpeta tipo
+                Media::generateFoldersByTableName($table_name);
 
                 $path = 'uploads/' . date("Y") . '/' . date("m") . '/' . $table_name . '/';
                 // save in false to get an ID

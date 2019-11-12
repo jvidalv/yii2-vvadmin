@@ -28,6 +28,7 @@ class ArticleHasMedia extends \yii\db\ActiveRecord
     {
         return [
             [['article_id', 'media_id'], 'integer'],
+            [['description'], 'string', 'max' => 120]
         ];
     }
 

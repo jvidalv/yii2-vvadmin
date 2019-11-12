@@ -72,7 +72,7 @@ class Media extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id', 'borrat', 'es_imatge'], 'integer'],
-            [['file'], 'file', 'skipOnEmpty' => false, 'extensions' => 'xlsx, pptx, pdf, txt, doc, dot, docx, jpeg, jpg, png', 'maxFiles' => 10],
+            [['file'], 'file', 'skipOnEmpty' => true, 'extensions' => 'xlsx, pptx, pdf, txt, doc, dot, docx, jpeg, jpg, png', 'maxFiles' => 10],
             [['titol', 'path', 'file_name'], 'string', 'max' => 500],
             [['descripcio'], 'string', 'max' => 1000],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
@@ -233,6 +233,17 @@ class Media extends \yii\db\ActiveRecord
     public function getUrl()
     {
         return $this->path . $this->file_name;
+    }
+
+    /**
+     * Generates the following tables based on a table name
+     * @param $table_name
+     */
+    public static function generateFoldersByTableName($table_name)
+    {
+        if (!is_dir('uploads/' . date("Y") . '/')) mkdir('uploads/' . date("Y"), 0755); // carpeta any
+        if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/')) mkdir('uploads/' . date("Y") . '/' . date("m"), 0755); // carpeta mes
+        if (!is_dir('uploads/' . date("Y") . '/' . date("m") . '/' . $table_name . '/')) mkdir('uploads/' . date("Y") . '/' . date("m") . '/' . $table_name, 0755); // carpeta tipo
     }
 
 }

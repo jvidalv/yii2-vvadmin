@@ -43,18 +43,18 @@ $this->params['breadcrumbs'][] = $this->title;
                             'width' => "-webkit-fill-available",
                             'min_height' => 600,
                             'plugins' => [
-                                "print preview paste searchreplace autolink autosave save code visualblocks visualchars image link media template codesample table charmap hr pagebreak nonbreaking anchor toc advlist lists imagetools textpattern noneditable charmap quickbars autoresize",
+                                "print preview paste searchreplace autolink autosave save code visualblocks visualchars image link media template codesample table charmap hr pagebreak nonbreaking anchor toc advlist lists textpattern noneditable charmap quickbars autoresize",
                             ],
                             'link_context_toolbar' => true,
                             'menubar' => 'file edit view insert format tools table help',
                             'toolbar' => "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl",
-                            'image_advtab' => true,
-                            'image_uploadtab' => true,
-                            'images_upload_url' => Url::to(['tiny-mce/upload-image-from-tiny', 'id' => $model->id, Yii::$app->request->csrfParam => Yii::$app->request->csrfToken]),
+                            'image_title' => true,
+                            'automatic_uploads' => true,
+                            'file_picker_types' => 'image',
+                            'file_picker_callback' => new \yii\web\JsExpression("(cb, value, meta) => uploadImageTiny(cb, value, meta)"),
                             'image_list' => [
-                                ['title' => 'dog', 'value' => '/images/logo.png'],
+                                ['title' => 'dog', 'value' => '/images/logo.png', 'id' => 'ohla'],
                                 ['title' => 'dog', 'value' => 'hola.jpg'],
-
                             ],
                         ]
                     ])
