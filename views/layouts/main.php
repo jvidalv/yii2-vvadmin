@@ -152,39 +152,28 @@ $user = Yii::$app->user->identity;
                     </div>
                 </section>
             <?php endif; ?>
-            <?php if (Yii::$app->session->hasFlash('success')): ?>
-                <section class="flash-zone">
-                    <div class="container">
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <?= Yii::$app->session->getFlash('success'); ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </section>
-            <?php endif; ?>
-            <?php if (Yii::$app->session->hasFlash('danger')): ?>
-                <section class="flash-zone">
-                    <div class="container">
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <?php foreach (Yii::$app->session->getFlash('danger') as $error) {
-                                echo $error;;
-                            } ?>
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </section>
-            <?php endif; ?>
             <?= $content ?>
+        </div>
+        <!-- Position it -->
+        <div aria-live="polite" aria-atomic="true" style="position: absolute; top: 90px; right: 15px;">
+            <?php foreach (Yii::$app->session->getAllFlashes() as $type => $message): ?>
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
+                    <div class="toast-header">
+                        <span class="rounded mr-2 bg-<?= $type ?>" style="width:15px;height:15px"></span>
+                        <strong class="mr-auto"><?= Yii::t('app', 'atention') ?></strong>
+                        <small class="text-muted text-lowercase"><?= Yii::t('app', 'just now') ?></small>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="toast-body">
+                        <?= $message ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <?php $this->endBody() ?>
     </body>
-
     </html>
 <?php $this->endPage() ?>

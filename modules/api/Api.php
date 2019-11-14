@@ -2,15 +2,16 @@
 
 namespace app\modules\api;
 
+use yii\base\Module;
+
 /**
  * api module definition class
  */
-class Api extends \yii\base\Module
+class Api extends Module
 {
-    /**
-     * {@inheritdoc}
-     */
+
     public $controllerNamespace = 'app\modules\api\controllers';
+    public $defaultRoute = 'api';
 
     /**
      * {@inheritdoc}

@@ -152,7 +152,6 @@ class Article extends \yii\db\ActiveRecord
         return $this->hasOne(ArticleHasTranslations::className(), ['article_' . $this->language->code => 'id']);
     }
 
-
     /**
      * @return false|string
      */

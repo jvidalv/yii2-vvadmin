@@ -9,7 +9,7 @@ use yii\web\Response;
 /**
  * Default controller for the `api` module
  */
-class DefaultController extends Controller
+class ApiController extends Controller
 {
     public function behaviors()
     {
@@ -21,12 +21,7 @@ class DefaultController extends Controller
         return $behaviors;
     }
 
-    /**
-     * Renders the index view for the module
-     * @return string
-     */
-    public function actionIndex()
-    {
-        return true;
+    public function actionIndex(){
+        return 'It works! Check my blog at https://vblogv.io.';
     }
 }
