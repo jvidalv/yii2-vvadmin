@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             </div>
             <div class="row">
-                <div class="col-12 col-lg-8">
+                <div class="col-12 col-lg-9">
                     <?= $form->field($model, 'content', ['template' => '<div class="container-content">{input}</div>'])->widget(TinyMce::className(), [
                         'options' => ['rows' => 30],
                         'language' => Yii::$app->language,
@@ -43,20 +43,16 @@ $this->params['breadcrumbs'][] = $this->title;
                             'width' => "-webkit-fill-available",
                             'min_height' => 600,
                             'plugins' => [
-                                "print preview paste searchreplace autolink autosave save code visualblocks visualchars image link media codesample table hr nonbreaking anchor toc advlist lists noneditable charmap quickbars autoresize",
+                                "print preview paste searchreplace autolink autosave save code visualblocks visualchars wordcount autoresize image link media codesample table hr nonbreaking anchor toc advlist lists noneditable charmap quickbars",
                             ],
-                            'link_context_toolbar' => true,
                             'menubar' => 'file edit view insert format tools table help',
-                            'toolbar' => "undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen code preview save print | insertfile image media template link anchor codesample | ltr rtl",
+                            'toolbar' => "undo redo | bold italic underline strikethrough | image link anchor codesample | numlist bullist | charmap removeformat | code ",
+                            'link_context_toolbar' => true,
                             'image_title' => true,
                             'automatic_uploads' => true,
                             'visualblocks_default_state' => true,
                             'file_picker_types' => 'image',
                             'file_picker_callback' => new \yii\web\JsExpression("(cb, value, meta) => uploadImageTiny(cb, value, meta)"),
-                            'image_list' => [
-                                ['title' => 'dog', 'value' => '/images/logo.png', 'id' => 'ohla'],
-                                ['title' => 'dog', 'value' => 'hola.jpg'],
-                            ],
                         ]
                     ])
                     ?>
@@ -91,7 +87,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]
                     ]) ?>
                 </div>
-                <div class="col">
+                <div class="col-lg-3">
                     <div class="card">
                         <div class="card-header">
                             <strong><?= Yii::t('app', 'translations') ?></strong>
@@ -139,7 +135,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="card-body">
                             <?= $form->field($model, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->all(), 'id', 'name_' . $model->language->code)) ?>
                             <?= $form->field($model, 'resume')->textArea(['maxlength' => true, 'rows' => 2]) ?>
-
                         </div>
                     </div>
                     <div class="sticky-top">
@@ -150,7 +145,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="card-header">
                                 <strong><?= Yii::t('app', 'sections') ?></strong>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body overflow-hidden">
                                 <?php foreach ($model->articleHasAnchors as $anchor) {
                                     echo Html::a($anchor->content, '#' . $anchor->anchor_id, ['class' => 'anchor-section']) . '</br>';
                                 }

@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\Exception;
 
 /**
  * This is the model class for table "article".
@@ -33,7 +34,7 @@ class Article extends \yii\db\ActiveRecord
      * This variable is used to check if we are creating a new item for translation, and if so, we dont generate a new translations
      * @var [type]
      */
-    public $translating = 0;
+    public $translation_of = 0;
 
     /**
      * Tags and attributes constants for blog content
@@ -68,8 +69,9 @@ class Article extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['language_id', 'user_id', 'title'], 'required'],
-            [['user_id', 'category_id', 'state', 'updated_at', 'created_at', 'translating'], 'integer'],
+            [['language_id', 'user_id', 'title', 'category_id'], 'required'],
+            [['user_id', 'state', 'updated_at', 'created_at', 'translation_of'], 'integer'],
+            ['state', 'default', 'value' => 0],
             [['language_id'], 'string', 'max' => 2],
             [['date'], 'safe'],
             [['content'], 'string'],
@@ -105,9 +107,18 @@ class Article extends \yii\db\ActiveRecord
     {
         parent::afterSave($insert, $changedAttributes);
 
-        // We generate the translation log if it does not still
-        $translations = $this->translations;
-        if (!$translations && $this->translating) {
+        // If this is true then we are saving and element that has an origin, and in such cases we assign them a translation before contiue
+        if($this->translation_of){
+
+            $translation = ArticleHasTranslations::findOne(['article_' . Article::findOne($this->translation_of)->language_id => $this->translation_of]);
+            $translation->setAttributes([
+                'article_' . $this->language_id => $this->id,
+            ]);
+
+            $translation->save();
+        }
+        // We generate the translation log if it does not exist
+        if (!$this->translations) {
 
             $translation = new ArticleHasTranslations();
             $translation->setAttributes([
@@ -117,7 +128,34 @@ class Article extends \yii\db\ActiveRecord
             $translation->save();
         }
 
+        try {
+            // We dont update other translations of a recent created translation :d
+            if(!$this->translation_of){
+                $this->updateTranslations();
+            }
+        } catch (Exception $e) {
+            $this->addError('system', Yii::t('app', 'error while updating translations'));
+        }
+
         return true;
+    }
+
+    /**
+     * Update common fields between all translations
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    private function updateTranslations()
+    {
+        $trans = $this->getTranslations()->one();
+        Yii::$app->db->createCommand()->update('article_has_translations',
+            ['category_id' => $this->category_id, 'date' => $this->date, 'state' => $this->state],
+            ['article_'.$this->language_id => $this->id])
+            ->execute();
+        return Yii::$app->db->createCommand()->update('article',
+            ['category_id' => $this->category_id, 'date' => $this->date, 'state' => $this->state],
+            ['in', 'id', [$trans->article_ca, $trans->article_es, $trans->article_en ]])
+            ->execute();
     }
 
     /**

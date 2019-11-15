@@ -44,6 +44,8 @@
     color: #ff7600;
     font-size: 23px;
     border-bottom: 1px dashed;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 /**
@@ -53,8 +55,8 @@ Overriding tinymce menu bar to make it sticky
 .tox-editor-container, .tox-tinymce{
     overflow: unset !important;
 }
-.tox-toolbar{
+.tox-editor-header{
     position: sticky !important;
-    top: 76px;
+    top: 0px;
     z-index: 999;
 }

@@ -28,7 +28,8 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['article_ca', 'article_es', 'article_en'], 'integer'],
+            [['article_ca', 'article_es', 'article_en', 'state', 'category_id'], 'integer'],
+            [['date'], 'safe'],
         ];
     }
 

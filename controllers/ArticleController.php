@@ -64,7 +64,7 @@ class ArticleController extends VController
             $model = $this->parseArticleContent($model);
 
             if (!$model->errors && $model->save()) {
-                Yii::$app->session->setFlash('success', Yii::t('app', 'saved!'));
+                Yii::$app->session->setFlash('success', Yii::t('app', 'the changes have been saved!'));
             } else {
                  array_map(function ($string) {
                      Yii::$app->session->addFlash('danger', $string[0] . '<br/>');}, $model->errors);
@@ -96,9 +96,27 @@ class ArticleController extends VController
             $newArticle->created_at = null;
             $newArticle->updated_at = null;
             $newArticle->language_id = $lang->code;
-            $newArticle->translating = 1;
+            $newArticle->translation_of = $id;
 
             if ($newArticle->save()) {
+
+                // copy anchors
+                foreach($model->articleHasAnchors as $anchor){
+                    $an = new ArticleHasAnchors();
+                    $an->article_id = $newArticle->id;
+                    $an->anchor_id = $anchor->anchor_id;
+                    $an->content = $anchor->content;
+                    $an->save();
+                }
+
+                // copy tags
+                foreach($model->articleHasTags as $tag){
+                    $an = new ArticleHasTags();
+                    $an->article_id = $newArticle->id;
+                    $an->tag_id = $tag->id;
+                    $an->save();
+                }
+
                 $model->translations['article_' . $lang->code] = $newArticle->id;
                 $model->translations->save();
             }

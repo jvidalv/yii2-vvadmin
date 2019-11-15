@@ -169,6 +169,7 @@ a.desc:after {
 }
 
 .header-desktop3 {
+    position: relative;
     background: linear-gradient(to right, #18487b, #212529);
 }
 
