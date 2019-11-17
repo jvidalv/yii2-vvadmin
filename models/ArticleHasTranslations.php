@@ -70,5 +70,12 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
         return $this->hasOne(Article::className(), ['id' => 'article_en']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
 
 }

@@ -29,10 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 'action' => Url::to(['article/update', 'id' => $model->id])])
             ?>
             <div class="row">
-                <div class="col col">
+                <div class="col">
                     <?= $form->field($model, 'title')->textInput(['maxlength' => true, 'class' => 'form-control flex-grow-1', 'placeholder' => Yii::t('app', 'title')]) ?>
                 </div>
-
+            </div>
+            <div class="row mb-3">
+                <div class="col">
+                    <div style="background: url('/<?= Media::img($model->id, Media::TBL_ARTICLE, [1199, 150]) ?> ')" class="cover-no-repeat" >
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-12 col-lg-9">
@@ -62,18 +67,17 @@ $this->params['breadcrumbs'][] = $this->title;
                     echo $model->content;
                     echo Html::endTag('div');
                     ?>
-                    <?= FileInput::widget([
+                    <?php
+                        echo Html::tag('label', Yii::t('app', 'upload an image for the article'));
+                        echo FileInput::widget([
                         'name' => 'media_upload[]',
                         'id' => 'media-input',
                         'options' => [
-                            'accept' => '.jpeg,.jpg,.png'
+                            'accept' => '.jpeg,.jpg,.png',
                         ],
                         'language' => Yii::$app->user->identity->language_id,
                         'pluginOptions' => [
-                            'initialPreview' => [
-                                '/' . Media::img($model->id, Media::TBL_ARTICLE, [150, 150]),
-                            ],
-                            'initialPreviewAsData' => true,
+                           'showPreview' => false,
                             'uploadUrl' => Url::to(['/media/upload-files',
                                 'table_id' => $model->id,
                                 'table_name' => Media::TBL_ARTICLE,
@@ -85,12 +89,14 @@ $this->params['breadcrumbs'][] = $this->title;
                             'showRemove' => false,
                             'maxFileSize' => 300,
                         ]
-                    ]) ?>
+                    ]);
+                        ?>
                 </div>
                 <div class="col-lg-3">
                     <div class="card">
-                        <div class="card-header">
-                            <strong><?= Yii::t('app', 'translations') ?></strong>
+                        <div class="card-header d-flex align-items-center">
+                            <?= Html::tag('strong', Yii::t('app', 'translations'))?>
+                            <?= Html::tag('i', '', ['class' => 'fa fa-arrow-down ml-auto']) ?>
                         </div>
                         <div class="card-body">
                             <div class="translations-body">
@@ -133,6 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <strong><?= Yii::t('app', 'others') ?></strong>
                         </div>
                         <div class="card-body">
+                            <?= $form->field($model, 'state')->dropDownList(Article::getStates()) ?>
                             <?= $form->field($model, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->all(), 'id', 'name_' . $model->language->code)) ?>
                             <?= $form->field($model, 'resume')->textArea(['maxlength' => true, 'rows' => 2]) ?>
                         </div>

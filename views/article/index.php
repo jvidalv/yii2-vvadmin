@@ -61,9 +61,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         'label' => Yii::t('app', 'translations'),
                         'format' => 'raw',
                         'value' => function ($model) {
-                            $ca = $model->language_id !== Language::LANG_CA && $model->translations->article_ca ? Html::img(['media/get-language-image', 'code' => Language::LANG_CA]) : '';
-                            $es = $model->language_id !== Language::LANG_ES && $model->translations->article_es ? Html::img(['media/get-language-image', 'code' => Language::LANG_ES]) : '';
-                            $en = $model->language_id !== Language::LANG_EN && $model->translations->article_en ? Html::img(['media/get-language-image', 'code' => Language::LANG_EN]) : '';
+                            $ca = $model->language_id !== Language::LANG_CA && $model->translations->article_ca ? Html::img(['media/get-language-image', 'code' => Language::LANG_CA], ['class' => 'mr-1']) : '';
+                            $es = $model->language_id !== Language::LANG_ES && $model->translations->article_es ? Html::img(['media/get-language-image', 'code' => Language::LANG_ES], ['class' => 'mr-1']) : '';
+                            $en = $model->language_id !== Language::LANG_EN && $model->translations->article_en ? Html::img(['media/get-language-image', 'code' => Language::LANG_EN], ['class' => 'mr-1']) : '';
                             return $ca . $es . $en;
                         }
                     ],

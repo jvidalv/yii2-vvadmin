@@ -39,8 +39,16 @@ class Article extends \yii\db\ActiveRecord
     /**
      * Tags and attributes constants for blog content
      */
-    const TAGS_ANCHOR = 'anchor';
+    const TAGS_ANCHOR = 'anchor', TAGS_IMAGE = 'image';
 
+    /**
+     * STATES
+     * 0 -> Draft, 1 -> Published, 2 -> Private
+     */
+    const STATE_DRAFT = 0, STATE_PUBLISHED = 1, STATE_PRIVATE = 2;
+    /**
+     *
+     */
     /**
      * {@inheritdoc}
      */
@@ -108,7 +116,7 @@ class Article extends \yii\db\ActiveRecord
         parent::afterSave($insert, $changedAttributes);
 
         // If this is true then we are saving and element that has an origin, and in such cases we assign them a translation before contiue
-        if($this->translation_of){
+        if ($this->translation_of) {
 
             $translation = ArticleHasTranslations::findOne(['article_' . Article::findOne($this->translation_of)->language_id => $this->translation_of]);
             $translation->setAttributes([
@@ -130,7 +138,7 @@ class Article extends \yii\db\ActiveRecord
 
         try {
             // We dont update other translations of a recent created translation :d
-            if(!$this->translation_of){
+            if (!$this->translation_of) {
                 $this->updateTranslations();
             }
         } catch (Exception $e) {
@@ -150,12 +158,21 @@ class Article extends \yii\db\ActiveRecord
         $trans = $this->getTranslations()->one();
         Yii::$app->db->createCommand()->update('article_has_translations',
             ['category_id' => $this->category_id, 'date' => $this->date, 'state' => $this->state],
-            ['article_'.$this->language_id => $this->id])
+            ['article_' . $this->language_id => $this->id])
             ->execute();
         return Yii::$app->db->createCommand()->update('article',
             ['category_id' => $this->category_id, 'date' => $this->date, 'state' => $this->state],
-            ['in', 'id', [$trans->article_ca, $trans->article_es, $trans->article_en ]])
+            ['in', 'id', [$trans->article_ca, $trans->article_es, $trans->article_en]])
             ->execute();
+    }
+
+    public static function getStates()
+    {
+        return [
+            self::STATE_DRAFT => Yii::t('app', 'draft'),
+            self::STATE_PUBLISHED => Yii::t('app', 'published'),
+            self::STATE_PRIVATE => Yii::t('app', 'private')
+        ];
     }
 
     /**

@@ -42,10 +42,12 @@
 
 .anchor-section {
     color: #ff7600;
-    font-size: 23px;
+    font-size: 12px;
     border-bottom: 1px dashed;
-    white-space: nowrap;
     overflow: hidden;
+}
+.anchor-section:not(:last-child){
+    margin-bottom:5px;
 }
 
 /**
@@ -59,4 +61,13 @@ Overriding tinymce menu bar to make it sticky
     position: sticky !important;
     top: 0px;
     z-index: 999;
+}
+
+/**
+customs
+ */
+.cover-no-repeat{
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    height: 150px !important;
 }
