@@ -11,7 +11,6 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
     public $title_ca, $title_es, $title_en;
     public $resume_ca, $resume_es, $resume_en;
     public $slug_ca, $slug_es, $slug_en;
-    public $category_ca, $category_es, $category_en, $category_code;
 
     const SCENARIO_SNIPPETS = 'scenario_snippets';
 
@@ -66,6 +65,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
     public static function find()
     {
         return parent::find()->alias('t')->with('category')
+            ->where(['t.state' => Article::STATE_PUBLISHED])
             ->leftJoin('article as ca', 'ca.id = t.article_ca')
             ->leftJoin('article as es', 'es.id = t.article_es')
             ->leftJoin('article as en', 'en.id = t.article_en')

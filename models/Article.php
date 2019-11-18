@@ -100,17 +100,32 @@ class Article extends \yii\db\ActiveRecord
             'language_id' => Yii::t('app', 'language'),
             'user_id' => Yii::t('app', 'user'),
             'category_id' => Yii::t('app', 'category'),
-            'date' => Yii::t('app', 'Date'),
-            'title' => Yii::t('app', 'Title'),
-            'resume' => Yii::t('app', 'Resume'),
-            'content' => Yii::t('app', 'Content'),
-            'state' => Yii::t('app', 'State'),
-            'slug' => Yii::t('app', 'Slug'),
+            'date' => Yii::t('app', 'publish date'),
+            'title' => Yii::t('app', 'title'),
+            'resume' => Yii::t('app', 'resume'),
+            'content' => Yii::t('app', 'content'),
+            'state' => Yii::t('app', 'state'),
+            'slug' => Yii::t('app', 'slug'),
             'updated_at' => Yii::t('app', 'Updated At'),
             'created_at' => Yii::t('app', 'Created At'),
         ];
     }
 
+    /**
+     * @param bool $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        $this->date = Date('Y-m-d H:i', strtotime($this->date));
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     * @return bool|void
+     */
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
@@ -166,6 +181,10 @@ class Article extends \yii\db\ActiveRecord
             ->execute();
     }
 
+    /**
+     * All states than an article can be in
+     * @return array
+     */
     public static function getStates()
     {
         return [
@@ -256,5 +275,13 @@ class Article extends \yii\db\ActiveRecord
         return join(', ', array_map(function ($val) {
             return $val['name_' . $this->language->code];
         }, $this->tags ?: []));
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getDateF()
+    {
+        return Date('d-m-Y H:i', strtotime($this->date));
     }
 }

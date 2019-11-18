@@ -11,6 +11,9 @@ use Yii;
  * @property int $article_ca
  * @property int $article_es
  * @property int $article_en
+ * @property int $state
+ * @property string $category_id
+ * @property string $date
  */
 class ArticleHasTranslations extends \yii\db\ActiveRecord
 {

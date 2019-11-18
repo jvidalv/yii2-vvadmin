@@ -92,6 +92,7 @@ class ArticleController extends VController
 
             $newArticle = new Article();
             $newArticle->attributes = $model->attributes;
+            $newArticle->slug = null;
             $newArticle->title = "($lang->code) $newArticle->title";
             $newArticle->created_at = null;
             $newArticle->updated_at = null;

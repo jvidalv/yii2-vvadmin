@@ -6,6 +6,7 @@ use app\models\Category;
 use app\models\Language;
 use app\models\Media;
 use dosamigos\tinymce\TinyMce;
+use kartik\datetime\DateTimePicker;
 use kartik\file\FileInput;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -25,9 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <section class="pb-5 mb-5">
         <div class="container">
-            <?php $form = ActiveForm::begin([
-                'action' => Url::to(['article/update', 'id' => $model->id])])
-            ?>
+            <?php $form = ActiveForm::begin() ?>
             <div class="row">
                 <div class="col">
                     <?= $form->field($model, 'title')->textInput(['maxlength' => true, 'class' => 'form-control flex-grow-1', 'placeholder' => Yii::t('app', 'title')]) ?>
@@ -142,6 +141,21 @@ $this->params['breadcrumbs'][] = $this->title;
                             <?= $form->field($model, 'state')->dropDownList(Article::getStates()) ?>
                             <?= $form->field($model, 'category_id')->dropDownList(ArrayHelper::map(Category::find()->all(), 'id', 'name_' . $model->language->code)) ?>
                             <?= $form->field($model, 'resume')->textArea(['maxlength' => true, 'rows' => 2]) ?>
+                            <?= $form->field($model, 'date')->widget(DateTimePicker::class, [
+                                'type' => DateTimePicker::TYPE_BUTTON,
+                                'layout' => Html::tag('div', '{picker} {input}', ['class' => 'd-flex']),
+                                'options' => [
+                                    'type' => 'text',
+                                    'placeholder' => Yii::t('app','select a date'),
+                                    'readonly' => true,
+                                    'class' => 'form-control',
+                                ],
+                                'pluginOptions' => [
+                                    'format' => 'dd-mm-yyyy hh:ii',
+                                    'autoclose' => true,
+                                ]
+                            ]); ?>
+
                         </div>
                     </div>
                     <div class="sticky-top">

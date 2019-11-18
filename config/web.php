@@ -48,8 +48,8 @@ $config = [
             ],
         ],
         'formatter' => [
-            'dateFormat' => 'dd-MM-yyyy HH:mm',
-            'datetimeFormat' => 'dd-MM-yyyy HH:mm',
+            'dateFormat' => 'yyyy-mm-dd',
+            'datetimeFormat' => 'yyyy-mm-dd HH:mm',
         ],
         'request' => [
             'parsers' => [
