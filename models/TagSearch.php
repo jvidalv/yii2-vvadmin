@@ -40,9 +40,9 @@ class TagSearch extends Tag
     public function search($params)
     {
         $query = Tag::find();
+        $query->with('articles');
 
         // add conditions that should always apply here
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);

@@ -64,4 +64,9 @@ class Tag extends \yii\db\ActiveRecord
             'priority' => Yii::t('app', 'priority'),
         ];
     }
+
+    public function getArticles()
+    {
+        return $this->hasMany(Article::className(), ['id' => 'article_id'])->viaTable('article_has_tags', ['tag_id' => 'id']);
+    }
 }

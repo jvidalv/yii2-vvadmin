@@ -72,16 +72,12 @@ class JosepActionColumn extends \yii\grid\ActionColumn
                         $icon = 'zmdi zmdi-edit';
                         break;
                     case 'delete':
-                        if ($model->hasAttribute('borrat') && $model->borrat == 0) {
-                            $title = Yii::t('yii', 'Delete');
-                            $icon = 'zmdi zmdi-delete';
-                        } else return null;
+                        $title = Yii::t('yii', 'Delete');
+                        $icon = 'zmdi zmdi-delete';
                         break;
                     case 'restaurar':
-                        if ($model->hasAttribute('borrat') && $model->borrat == 1) {
-                            $title = Yii::t('yii', 'Restaurar');
-                            $icon = 'zmdi zmdi-arrow-missed';
-                        } else return null;
+                        $title = Yii::t('yii', 'Restaurar');
+                        $icon = 'zmdi zmdi-arrow-missed';
                         break;
                     default:
                         $title = ucfirst($name);
