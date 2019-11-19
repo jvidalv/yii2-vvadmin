@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'visibleButtons' => ['update' => true, 'delete' => true, 'restaurar' => false],
                                     'buttons' => [
                                         'update' => function ($url, $model, $key) {
-                                            return  Html::a(Html::tag('i','', ['class' =>'zmdi zmdi-edit']), '#', ['class' => 'item','data' => ['toggle' => 'modal', 'target' => '#modal-update']]) ;
+                                            return  Html::a(Html::tag('i','', ['class' =>'zmdi zmdi-edit']), '#', ['class' => 'item','data' => ['toggle' => 'modal', 'target' => '#modal-update', 'id' => $model->id]]) ;
                                         },
                                     ]
                                 ],
@@ -84,12 +84,12 @@ Modal::begin([
         'title' => Yii::t('app', 'modify tag'),
         'id' => 'modal-update',
 ]);
-echo 'hola';
+echo Yii::t('app', 'loading...');
 Modal::end();
 
 $this->registerJs(new JsExpression('
-    $( "#modal-update" ).on("shown.bs.modal", function(){
-        console.log("I want this to  appear after the modal has opened!");
+    $( "#modal-update" ).on("shown.bs.modal", function(e){
+        $(this).find(".modal-body").load("tag/update?id=" + $(e.relatedTarget).data("id"));
     });
 '));
 ?>

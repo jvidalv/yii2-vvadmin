@@ -1,6 +1,9 @@
 <?php
 
-use yii\widgets\ActiveForm; ?>
+use yii\bootstrap4\Html;
+use yii\widgets\ActiveForm;
+
+?>
 
 <?php $form = ActiveForm::begin([
     'fieldConfig' => [
@@ -24,7 +27,7 @@ use yii\widgets\ActiveForm; ?>
 
     </div>
     <div class="card-footer">
-        <?= Html::submitButton('💾 ' . Yii::t('app', 'save'), ['class' => "au-btn au-btn-icon au-btn--green au-btn--small float-right"]) ?>
+        <?= Html::submitButton('💾 ' . Yii::t('app', 'save'), ['class' => "au-btn au-btn-icon au-btn--green au-btn--small float-right", 'data' => ['ajax' => '1']]) ?>
     </div>
 </div>
 <?php ActiveForm::end(); ?>

@@ -29,7 +29,6 @@ class TagController extends VController
         }
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'model' => $model,
         ]);
@@ -43,8 +42,15 @@ class TagController extends VController
      */
     public function actionUpdate($id)
     {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('success', Yii::t('app', 'modified correctly!'));
+            $this->redirect(['tag/index']);
+        }
+
         return $this->renderAjax('update', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
