@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "article_has_translations".
@@ -26,12 +27,22 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['article_ca', 'article_es', 'article_en', 'state', 'category_id'], 'integer'],
+            [['article_ca', 'article_es', 'article_en', 'state', 'category_id', 'created_at', 'updated_at'], 'integer'],
             [['date'], 'safe'],
         ];
     }
