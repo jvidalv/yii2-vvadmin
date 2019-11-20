@@ -47,10 +47,6 @@ $config = [
 
             ],
         ],
-        'formatter' => [
-            'dateFormat' => 'yyyy-mm-dd',
-            'datetimeFormat' => 'yyyy-mm-dd HH:mm',
-        ],
         'request' => [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',

@@ -257,6 +257,11 @@ a.desc:after {
     margin-right: 11px;
 }
 
+/* Toast */
+.toast{
+    min-width: 350px;
+}
+
 /* Date time picker */
 .datetimepicker table {
     width: 100%;

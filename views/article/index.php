@@ -1,6 +1,7 @@
 <?php
 
 use app\libraries\JosepGridView;
+use app\models\Article;
 use app\models\Category;
 use app\models\Language;
 use app\models\Media;
@@ -15,22 +16,12 @@ use yii\widgets\Pjax;
 $this->title = Yii::t('app', 'articles');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<section class="welcome p-t-10">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="title-4"><?= Html::encode($this->title) ?>
-                </h1>
-                <hr class="line-seprate">
-            </div>
-        </div>
-    </div>
-</section>
 <section class="pt-5">
     <div class="container">
         <div class="article-index">
             <div class="table-data__tool">
                 <div class="table-data__tool-left">
+                    <h1><?= Html::encode($this->title) ?>
                 </div>
                 <div class="table-data__tool-right">
                     <form>
@@ -55,8 +46,20 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'class' => 'app\libraries\JosepActionColumn',
                         'contentOptions' => ['style' => 'width:5%;'],
+                        'visibleButtons' => [
+                            'update' => true,
+                            'delete' => false,
+                            'restaurar' => false,
+                        ]
                     ],
                     'title',
+                    [
+                        'label' => Yii::t('app', 'visibility'),
+                        'format' => 'raw',
+                        'value' => function ($model) {
+                            return Html::tag('span', Article::getStates()[$model->state], ['class' => 'badge badge-' . ( $model->state === 0 ? 'info' :  ( $model->state === 1 ? 'success' : 'danger' ) ) ]);
+                        }
+                    ],
                     [
                         'label' => Yii::t('app', 'translations'),
                         'format' => 'raw',

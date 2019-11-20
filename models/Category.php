@@ -75,4 +75,13 @@ class Category extends \yii\db\ActiveRecord
             'priority' => Yii::t('app', 'priority'),
         ];
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getArticles()
+    {
+        return $this->hasMany(Article::className(), ['category_id' => 'id']);
+    }
 }
