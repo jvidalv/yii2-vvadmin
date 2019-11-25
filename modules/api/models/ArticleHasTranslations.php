@@ -16,44 +16,42 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
 
     public function fields()
     {
+        $category = $this->category;
         switch ($this->scenario) {
             default:
             case self::SCENARIO_SNIPPETS:
                 return [
                     'id',
-                    'ca' => function ($model) {
+                    'ca' => function ($model) use ($category) {
                         return [
                             'id' => $model->article_ca,
                             'title' => $model->title_ca,
                             'resume' => $model->resume_ca,
                             'slug' => $model->slug_ca,
+                            'category' => $category->name_ca
                         ];
                     },
-                    'es' => function ($model) {
+                    'es' => function ($model) use ($category) {
                         return [
                             'id' => $model->article_es,
                             'title' => $model->title_es,
                             'resume' => $model->resume_es,
                             'slug' => $model->slug_es,
+                            'category' => $category->name_es
                         ];
                     },
-                    'en' => function ($model) {
+                    'en' => function ($model) use ($category) {
                         return [
                             'id' => $model->article_en,
                             'title' => $model->title_en,
                             'resume' => $model->resume_en,
                             'slug' => $model->slug_en,
+                            'category' => $category->name_en
                         ];
                     },
-                    'category' => function ($model) {
-                        $cat = $model->category;
-                        return [
-                            'code' => $cat->code,
-                            'ca' => $cat->name_ca,
-                            'es' => $cat->name_es,
-                            'en' => $cat->name_en,
-                        ];
-                    },
+                    'category' => function ($model) use ($category) {
+                        return $category->code;
+                    }
                 ];
         }
     }
