@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'label' => Yii::t('app', 'visibility'),
                         'format' => 'raw',
                         'value' => function ($model) {
-                            return Html::tag('span', Article::getStates()[$model->state], ['class' => 'badge badge-' . ( $model->state === 0 ? 'info' :  ( $model->state === 1 ? 'success' : 'danger' ) ) ]);
+                            return Html::tag('span', Article::getStates()[$model->state], ['class' => 'badge badge-' . ($model->state === 0 ? 'info' : ($model->state === 1 ? 'success' : 'danger'))]);
                         }
                     ],
                     [

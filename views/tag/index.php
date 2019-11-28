@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'visibleButtons' => ['update' => true, 'delete' => true, 'restaurar' => false],
                                     'buttons' => [
                                         'update' => function ($url, $model, $key) {
-                                            return  Html::a(Html::tag('i','', ['class' =>'zmdi zmdi-edit']), '#', ['class' => 'item','data' => ['toggle' => 'modal', 'target' => '#modal-update', 'id' => $model->id]]) ;
+                                            return Html::a(Html::tag('i', '', ['class' => 'zmdi zmdi-edit']), '#', ['class' => 'item', 'data' => ['toggle' => 'modal', 'target' => '#modal-update', 'id' => $model->id]]);
                                         },
                                     ]
                                 ],
@@ -81,8 +81,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 Modal::begin([
-        'title' => Yii::t('app', 'modify tag'),
-        'id' => 'modal-update',
+    'title' => Yii::t('app', 'modify tag'),
+    'id' => 'modal-update',
 ]);
 echo Yii::t('app', 'loading...');
 Modal::end();

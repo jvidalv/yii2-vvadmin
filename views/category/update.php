@@ -13,17 +13,17 @@ use yii\widgets\ActiveForm;
 ]); ?>
 
 
-<?= $form->field($model, 'name_ca')->textInput(['maxlength' => true]) ?>
+<?= $form->field($model, 'name_ca')->textInput(['maxlength' => true])->label('name_ca') ?>
 
-<?= $form->field($model, 'name_es')->textInput(['maxlength' => true]) ?>
+<?= $form->field($model, 'name_es')->textInput(['maxlength' => true])->label('name_es') ?>
 
-<?= $form->field($model, 'name_en')->textInput(['maxlength' => true]) ?>
+<?= $form->field($model, 'name_en')->textInput(['maxlength' => true])->label('name_en') ?>
 
-<?= $form->field($model, 'description_ca')->textarea(['maxlength' => true]) ?>
+<?= $form->field($model, 'description_ca')->textarea()->label('desc_ca') ?>
 
-<?= $form->field($model, 'description_es')->textarea(['maxlength' => true]) ?>
+<?= $form->field($model, 'description_es')->textarea()->label('desc_es') ?>
 
-<?= $form->field($model, 'description_en')->textarea(['maxlength' => true]) ?>
+<?= $form->field($model, 'description_en')->textarea()->label('desc_en') ?>
 
 <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
 

@@ -19,9 +19,6 @@ use yii\behaviors\SluggableBehavior;
  */
 class Category extends \yii\db\ActiveRecord
 {
-
-    const DEFAULT = 1;
-
     /**
      * {@inheritdoc}
      */
@@ -53,8 +50,7 @@ class Category extends \yii\db\ActiveRecord
             [['code'], 'unique'],
             [['priority'], 'integer'],
             [['name_ca', 'name_es', 'name_en', 'slug'], 'string', 'max' => 30],
-            [['description_ca', 'description_es'], 'string', 'max' => 220],
-            [['description_en'], 'string', 'max' => 22],
+            [['description_ca', 'description_es', 'description_en'], 'string', 'max' => 220],
         ];
     }
 

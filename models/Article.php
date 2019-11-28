@@ -46,9 +46,7 @@ class Article extends \yii\db\ActiveRecord
      * 0 -> Draft, 1 -> Published, 2 -> Private
      */
     const STATE_DRAFT = 0, STATE_PUBLISHED = 1, STATE_PRIVATE = 2;
-    /**
-     *
-     */
+
     /**
      * {@inheritdoc}
      */
@@ -140,6 +138,7 @@ class Article extends \yii\db\ActiveRecord
 
             $translation->save();
         }
+
         // We generate the translation log if it does not exist
         if (!$this->translations) {
 

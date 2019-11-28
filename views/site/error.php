@@ -22,10 +22,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= nl2br(Html::encode($message)) ?>
             </div>
             <h2 class="my-5">
-                <?=  Yii::t('app', 'the above error occurred while the Web server was processing your request.') ?>
+                <?= Yii::t('app', 'the above error occurred while the Web server was processing your request.') ?>
             </h2>
             <h4 class="mt-5">
-                <?=  Yii::t('app', 'please contact us if you think this is a server error. Thank you.') ?>
+                <?= Yii::t('app', 'please contact us if you think this is a server error. Thank you.') ?>
             </h4>
         </div>
     </div>

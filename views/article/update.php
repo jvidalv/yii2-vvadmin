@@ -34,7 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="row mb-3">
                 <div class="col">
-                    <div style="background: url('/<?= Media::img($model->id, Media::TBL_ARTICLE, [1199, 150]) ?> ')" class="cover-no-repeat" >
+                    <div style="background: url('/<?= Media::img($model->id, Media::TBL_ARTICLE, [1199, 150]) ?> ')"
+                         class="cover-no-repeat">
                     </div>
                 </div>
             </div>
@@ -67,8 +68,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     echo Html::endTag('div');
                     ?>
                     <?php
-                        echo Html::tag('label', Yii::t('app', 'upload an image for the article'));
-                        echo FileInput::widget([
+                    echo Html::tag('label', Yii::t('app', 'upload an image for the article'));
+                    echo FileInput::widget([
                         'name' => 'media_upload[]',
                         'id' => 'media-input',
                         'options' => [
@@ -76,7 +77,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                         'language' => Yii::$app->user->identity->language_id,
                         'pluginOptions' => [
-                           'showPreview' => false,
+                            'showPreview' => false,
                             'uploadUrl' => Url::to(['/media/upload-files',
                                 'table_id' => $model->id,
                                 'table_name' => Media::TBL_ARTICLE,
@@ -89,12 +90,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             'maxFileSize' => 300,
                         ]
                     ]);
-                        ?>
+                    ?>
                 </div>
                 <div class="col-lg-3">
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
-                            <?= Html::tag('strong', Yii::t('app', 'translations'))?>
+                            <?= Html::tag('strong', Yii::t('app', 'translations')) ?>
                             <?= Html::tag('i', '', ['class' => 'fa fa-arrow-down ml-auto']) ?>
                         </div>
                         <div class="card-body">
@@ -146,7 +147,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'layout' => Html::tag('div', '{picker} {input}', ['class' => 'd-flex']),
                                 'options' => [
                                     'type' => 'text',
-                                    'placeholder' => Yii::t('app','select a date'),
+                                    'placeholder' => Yii::t('app', 'select a date'),
                                     'readonly' => true,
                                     'class' => 'form-control',
                                 ],
