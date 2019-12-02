@@ -106,7 +106,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?= $form->field($model, 'user_id', ['options' => ['class' => 'd-none']])->hiddenInput(['maxlength' => true, 'value' => Yii::$app->user->identity->id])->label(false) ?>
                 <?= $form->field($model, 'translating', ['options' => ['class' => 'd-none']])->hiddenInput(['maxlength' => true, 'value' => 1])->label(false) ?>
                 <?= $form->field($model, 'language_id', ['options' => ['class' => 'd-none']])->hiddenInput(['maxlength' => true, 'value' => Yii::$app->user->identity->language_id])->label(false) ?>
-                <?= $form->field($model, 'category_id', ['options' => ['class' => 'd-none']])->hiddenInput(['maxlength' => true, 'value' => Category::DEFAULT])->label(false) ?>
+                <?= $form->field($model, 'category_id', ['options' => ['class' => 'd-none']])->hiddenInput(['maxlength' => true, 'value' => 1])->label(false) ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm"
