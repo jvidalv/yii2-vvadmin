@@ -12,48 +12,49 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
     public $resume_ca, $resume_es, $resume_en;
     public $slug_ca, $slug_es, $slug_en;
 
-    const SCENARIO_SNIPPETS = 'scenario_snippets';
-
     public function fields()
     {
         $category = $this->category;
-        switch ($this->scenario) {
-            default:
-            case self::SCENARIO_SNIPPETS:
+        return [
+            'id',
+            'ca' => function ($model) use ($category) {
+                setlocale(LC_TIME, array('catalan'));
                 return [
-                    'id',
-                    'ca' => function ($model) use ($category) {
-                        return [
-                            'id' => $model->article_ca,
-                            'title' => $model->title_ca,
-                            'resume' => $model->resume_ca,
-                            'slug' => $model->slug_ca,
-                            'category' => $category->name_ca
-                        ];
-                    },
-                    'es' => function ($model) use ($category) {
-                        return [
-                            'id' => $model->article_es,
-                            'title' => $model->title_es,
-                            'resume' => $model->resume_es,
-                            'slug' => $model->slug_es,
-                            'category' => $category->name_es
-                        ];
-                    },
-                    'en' => function ($model) use ($category) {
-                        return [
-                            'id' => $model->article_en,
-                            'title' => $model->title_en,
-                            'resume' => $model->resume_en,
-                            'slug' => $model->slug_en,
-                            'category' => $category->name_en
-                        ];
-                    },
-                    'category' => function ($model) use ($category) {
-                        return $category->code;
-                    }
+                    'id' => $model->article_ca,
+                    'title' => $model->title_ca,
+                    'resume' => $model->resume_ca,
+                    'slug' => $model->slug_ca,
+                    'category' => $category->name_ca,
+                    'date' => strftime("%b%e,%G"),
                 ];
-        }
+            },
+            'es' => function ($model) use ($category) {
+                setlocale(LC_TIME, array('spanish'));
+                return [
+                    'id' => $model->article_es,
+                    'title' => $model->title_es,
+                    'resume' => $model->resume_es,
+                    'slug' => $model->slug_es,
+                    'category' => $category->name_es,
+                    'date' => strftime("%b%e, %G"),
+                ];
+            },
+            'en' => function ($model) use ($category) {
+                setlocale(LC_TIME, array('english'));
+                return [
+                    'id' => $model->article_en,
+                    'title' => $model->title_en,
+                    'resume' => $model->resume_en,
+                    'slug' => $model->slug_en,
+                    'category' => $category->name_en,
+                    'date' => strftime("%b%e, %G"),
+                ];
+            },
+            'date',
+            'category' => function ($model) use ($category) {
+                return $category->code;
+            }
+        ];
     }
 
     /**

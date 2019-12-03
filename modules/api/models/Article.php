@@ -9,6 +9,10 @@ class Article extends \app\models\Article
         return array_merge(
             parent::fields(),
             [
+                'date_nice' => function(){
+                    setlocale(LC_TIME, [$this->language_id]);
+                    return strftime("%b%e, %G");
+                },
                 'anchors' => function () {
                     return $this->articleHasAnchors;
                 },
