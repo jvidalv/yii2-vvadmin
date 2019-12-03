@@ -3,8 +3,11 @@
 namespace app\models;
 
 use Yii;
+use yii\base\Security;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 /**
@@ -22,15 +25,15 @@ use yii\web\IdentityInterface;
  * @property string $authKey
  * @property string $password_reset_token
  * @property int $role
- * @property \yii\db\ActiveQuery $media
- * @property \yii\db\ActiveQuery $language
+ * @property ActiveQuery $info
+ * @property ActiveQuery $media
+ * @property ActiveQuery $language
  * @property string $fullName
  * @property mixed $rolString
  * @property string $urlFotoPerfil
  * @property string $imatge
- *
  */
-class User extends \yii\db\ActiveRecord implements IdentityInterface
+class User extends ActiveRecord implements IdentityInterface
 {
     /**
      * Roles
@@ -40,9 +43,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     const USER = 3;
     const ROLES = [self::ADMIN => 'ADMIN', self::EDITOR => 'EDITOR', self::USER => 'USER'];
 
-    /* camp per a filtrar */
     public $general;
-
     public $imatge;
 
     /**
@@ -62,11 +63,10 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
             TimestampBehavior::className(),
             [
                 'class' => SluggableBehavior::className(),
-                'attribute' => 'email',
+                'attribute' => ['nom', 'cognoms'],
             ],
         ];
     }
-
 
     /**
      * {@inheritdoc}
@@ -126,13 +126,12 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return true;
     }
 
-
     /**
-     * Retorna tots els usuaris filtrats segons permisos
+     * @return ActiveQuery
      */
-    public static function getUsuaris()
+    public function getInfo()
     {
-        return self::find()->all();
+        return $this->hasOne(UserHasInfo::className(), ['user_id' => 'id']);
     }
 
     /**
@@ -181,7 +180,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getLanguage()
     {
@@ -234,7 +233,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 
     /**
      * Validates password
-     *
      * @param string $password password to validate
      * @return bool if password provided is valid for current user
      */
@@ -254,6 +252,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 
     /**
      * Generates "remember me" authentication key
+     * @throws \yii\base\Exception
      */
     public function generateAuthKey()
     {
@@ -262,6 +261,7 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 
     /**
      * Generates new password reset token
+     * @throws \yii\base\Exception
      */
     public function generatePasswordResetToken()
     {

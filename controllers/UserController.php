@@ -5,12 +5,14 @@ namespace app\controllers;
 use app\components\VController;
 use app\models\Language;
 use app\models\User;
+use app\models\UserHasInfo;
 use app\models\UserSearch;
 use Yii;
 use yii\web\NotFoundHttpException;
 
 /**
- * UserController implements the CRUD actions for User model.
+ * Class UserController
+ * @package app\controllers
  */
 class UserController extends VController
 {
@@ -27,11 +29,10 @@ class UserController extends VController
             $model->password = bin2hex(openssl_random_pseudo_bytes(3));
 
             if ($model->load(Yii::$app->request->post())) {
-                $model->poble_id = Yii::$app->user->identity->isAdmin() ? $model->poble_id : Yii::$app->user->identity->poble_id;
                 $model->setPassword($model->password);
                 $model->password = $model->password_hash;
                 if ($model->save()) {
-                    Yii::$app->session->setFlash('general', "Usuari afegit correctament!");
+                    Yii::$app->session->setFlash('success', Yii::t('app', 'user created!'));
                     return $this->redirect(['update', 'slug' => $model->slug, 'id' => $model->id]);
                 }
             }
@@ -58,20 +59,25 @@ class UserController extends VController
     public function actionUpdate($id = false)
     {
         $model = $this->findModel($id ? $id : Yii::$app->user->identity->id);
-
-        if ($model->load(Yii::$app->request->post())) {
+        $info = $model->info ? $model->info : new UserHasInfo(['user_id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $info->load(Yii::$app->request->post())) {
             if ($model->password && $model->password != '******') {
                 $model->setPassword($model->password);
                 $model->password = $model->password_hash;
             }
-            $model->save();
-            Yii::$app->session->setFlash('general', Yii::t('app', 'Data saved correctly'));
+            if($model->save() && $info->save()){
+                Yii::$app->session->setFlash('success', Yii::t('app', 'data saved correctly'));
+            } else {
+                Yii::$app->session->setFlash('error', Yii::t('app', 'something went wrong'));
+            }
+
         }
 
         $model->password = '******';
 
         return $this->render('_form', [
             'model' => $model,
+            'info' => $info,
         ]);
     }
 

@@ -10,6 +10,7 @@ use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\User */
+/* @var $info app\models\UserHasInfo */
 /* @var $form yii\widgets\ActiveForm */
 
 $this->title = $model->fullName;
@@ -66,7 +67,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <div class="col">
                     <div class="card">
                         <div class="card-header">
-                            <strong><?= Yii::t('app', 'Foto') ?></strong>
+                            <strong><?= Yii::t('app', 'foto') ?></strong>
                         </div>
                         <div class="card-body">
                             <?= FileInput::widget([
@@ -94,6 +95,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'maxFileSize' => 300,
                                 ]
                             ]) ?>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <strong><?= Yii::t('app', 'extra info') ?></strong>
+                        </div>
+                        <div class="card-body">
+                            <?= $form->field($info, 'information_'.$model->language_id)->textArea(['rows' => 2]) ?>
                         </div>
                     </div>
                 </div>

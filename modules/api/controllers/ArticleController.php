@@ -14,7 +14,7 @@ use yii\rest\Controller;
 class ArticleController extends ApiController
 {
     public function actionOne(){
-        return Article::find()->where(['slug' => Yii::$app->request->get('slug')])->with('articleHasAnchors')->one();
+        return Article::find()->where(['slug' => Yii::$app->request->get('slug')])->with('articleHasAnchors')->with('articleHasTags')->one();
     }
 
     public function actionAll(){
