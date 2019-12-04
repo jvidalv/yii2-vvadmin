@@ -76,7 +76,7 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['language_id', 'user_id', 'title', 'category_id'], 'required'],
-            [['user_id', 'state', 'updated_at', 'created_at', 'translation_of'], 'integer'],
+            [['user_id', 'state', 'word_count', 'updated_at', 'created_at', 'translation_of', 'word_count'], 'integer'],
             ['state', 'default', 'value' => 0],
             [['language_id'], 'string', 'max' => 2],
             [['date'], 'safe'],
@@ -104,8 +104,7 @@ class Article extends \yii\db\ActiveRecord
             'content' => Yii::t('app', 'content'),
             'state' => Yii::t('app', 'state'),
             'slug' => Yii::t('app', 'slug'),
-            'updated_at' => Yii::t('app', 'Updated At'),
-            'created_at' => Yii::t('app', 'Created At'),
+            'word_count' => Yii::t('app', 'number of words'),
         ];
     }
 
@@ -171,7 +170,7 @@ class Article extends \yii\db\ActiveRecord
     {
         $trans = $this->getTranslations()->one();
         Yii::$app->db->createCommand()->update('article_has_translations',
-            ['category_id' => $this->category_id, 'date' => $this->date, 'state' => $this->state],
+            ['category_id' => $this->category_id, 'date' => $this->date, 'state' => $this->state, 'time_to_read' => $this->getTimeToRead()],
             ['article_' . $this->language_id => $this->id])
             ->execute();
         return Yii::$app->db->createCommand()->update('article',
@@ -282,5 +281,14 @@ class Article extends \yii\db\ActiveRecord
     public function getDateF()
     {
         return Date('d-m-Y H:i', strtotime($this->date));
+    }
+
+    /**
+     * Returns time to read an article in minutes
+     * @return float
+     */
+    public function getTimeToRead()
+    {
+        return ceil($this->word_count/200 );
     }
 }

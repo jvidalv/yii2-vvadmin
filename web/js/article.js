@@ -61,3 +61,13 @@ function uploadImageTiny(cb, value, meta) {
     input.click();
 }
 
+/**
+ * Capture form post and modify its default logic
+ */
+$(document).submit(function () {
+
+    // New input with number of words serverd by tinymce
+    $('form').append(`<input name="Article[word_count]" value="${tinymce.activeEditor.plugins.wordcount.body.getWordCount()}" />`);
+
+    return true;
+});

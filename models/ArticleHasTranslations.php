@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "article_has_translations".
@@ -12,8 +13,13 @@ use yii\behaviors\TimestampBehavior;
  * @property int $article_ca
  * @property int $article_es
  * @property int $article_en
+ * @property int $time_to_read
  * @property int $state
  * @property string $category_id
+ * @property ActiveQuery $articleEs
+ * @property ActiveQuery $articleCa
+ * @property ActiveQuery $category
+ * @property ActiveQuery $articleEn
  * @property string $date
  */
 class ArticleHasTranslations extends \yii\db\ActiveRecord
@@ -42,7 +48,7 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['article_ca', 'article_es', 'article_en', 'state', 'category_id', 'created_at', 'updated_at'], 'integer'],
+            [['article_ca', 'article_es', 'article_en', 'state', 'category_id', 'time_to_read', 'created_at', 'updated_at'], 'integer'],
             [['date'], 'safe'],
         ];
     }
@@ -57,11 +63,12 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
             'article_ca' => Yii::t('app', 'Article Ca ID'),
             'article_es' => Yii::t('app', 'Article Es ID'),
             'article_en' => Yii::t('app', 'Article En ID'),
+            'time_to_read' => Yii::t('app', 'time to read'),
         ];
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getArticleCa()
     {
@@ -69,7 +76,7 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getArticleEs()
     {
@@ -77,7 +84,7 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getArticleEn()
     {
@@ -85,7 +92,7 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getCategory()
     {
