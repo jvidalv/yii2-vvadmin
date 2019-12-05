@@ -202,6 +202,10 @@ a.desc:after {
     top: 10px;
 }
 
+.page-link{
+    color: #464646;
+}
+
 /* HELPERS */
 
 .cursor-pointer {

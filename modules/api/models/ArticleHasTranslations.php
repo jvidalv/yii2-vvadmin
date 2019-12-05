@@ -25,7 +25,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                     'resume' => $model->resume_ca,
                     'slug' => $model->slug_ca,
                     'category' => $category->name_ca,
-                    'date' => strftime("%b%e,%G"),
+                    'date' => strftime("%b%e, %G"),
                 ];
             },
             'es' => function ($model) use ($category) {
@@ -50,6 +50,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                     'date' => strftime("%b%e, %G"),
                 ];
             },
+            'featured',
             'date',
             'category' => function ($model) use ($category) {
                 return $category->code;

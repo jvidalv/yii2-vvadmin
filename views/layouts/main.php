@@ -129,7 +129,7 @@ $user = Yii::$app->user->identity;
                 </div>
             </div>
         </header>
-        <div class="page-content--bgf7">
+        <div class="page-content--bgf7 mb-5">
             <?php if (isset($this->params['breadcrumbs'])): ?>
                 <section class="au-breadcrumb2">
                     <div class="container">
@@ -156,7 +156,7 @@ $user = Yii::$app->user->identity;
         </div>
         <!-- Position it -->
         <div aria-live="polite" aria-atomic="true" style="position: absolute; top: 90px; right: 15px;">
-            <?php foreach (Yii::$app->session->getAllFlashes() as $type => $message): ?>
+            <?php foreach (Yii::$app->session->getAllFlashes() as $type => $messages): ?>
                 <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="5000">
                     <div class="toast-header">
                         <span class="rounded mr-2 bg-<?= $type ?>" style="width:15px;height:15px"></span>
@@ -167,7 +167,13 @@ $user = Yii::$app->user->identity;
                         </button>
                     </div>
                     <div class="toast-body">
-                        <?= $message ?>
+                        <?php if (is_array($messages)): ?>
+                            <?php foreach ($messages as $m): ?>
+                                <?= $m ?>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                        <?= $messages ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>

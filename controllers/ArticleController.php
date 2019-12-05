@@ -7,6 +7,7 @@ use app\models\Article;
 use app\models\ArticleHasAnchors;
 use app\models\ArticleHasMedia;
 use app\models\ArticleHasTags;
+use app\models\ArticleHasTranslations;
 use app\models\ArticleSearch;
 use app\models\Language;
 use app\models\Media;
@@ -15,9 +16,11 @@ use app\models\Tag;
 use DOMDocument;
 use Exception;
 use Yii;
+use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 /**
  * ArticleController implements the CRUD actions for Article model.
@@ -60,10 +63,7 @@ class ArticleController extends VController
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
 
-            $model = $this->parseArticleTags($model);
-            $model = $this->parseArticleContent($model);
-
-            if (!$model->errors && $model->save()) {
+            if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'the changes have been saved!'));
             } else {
                  array_map(function ($string) {
@@ -80,7 +80,7 @@ class ArticleController extends VController
     /**
      * @param $id
      * @param $lang_code
-     * @return \yii\web\Response
+     * @return Response
      * @throws NotFoundHttpException
      */
     public function actionNewTranslation($id, $lang_code)
@@ -131,11 +131,39 @@ class ArticleController extends VController
     }
 
     /**
+     * Sets articles as featured
      * @param $id
-     * @return \yii\web\Response
+     * @return Response
+     */
+    public function actionSetFeatured($id)
+    {
+        $art = Article::findOne($id);
+        $trans = $art->translations;
+        $trans->featured = (int)!$trans->featured;
+        $trans->save();
+        Yii::$app->session->setFlash('success', $trans->featured ? Yii::t('app', 'article is now featured') :  Yii::t('app', 'article is no longer featured')) ;
+        return $this->goBack();
+    }
+
+    /**
+     * Saves all articles again to regenerate certain contents
+     * @return Response
+     */
+    public function actionRegenerateArticles(){
+
+        foreach(Article::find()->all() as $article){
+            $article->save();
+        }
+
+        return $this->goBack();
+    }
+
+    /**
+     * @param $id
+     * @return Response
      * @throws NotFoundHttpException
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws StaleObjectException
      */
     public function actionDelete($id)
     {
@@ -158,172 +186,6 @@ class ArticleController extends VController
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-    }
-
-    /**
-     * We parse the content article and apply all the modifications
-     * We also capture errors
-     * @param Article $model
-     * @return Article
-     */
-    private function parseArticleContent(Article $model)
-    {
-        libxml_use_internal_errors(true);
-        $content = new DOMDocument();
-        $content->loadHTML($model->content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-        if (count(libxml_get_errors())) {
-            foreach (libxml_get_errors() as $error) {
-                switch ($error->code) {
-                    case 513:
-                        $model->addError('content', Yii::t('app', 'ID repetead at line {line}', ['line' => $error->line]));
-                }
-            }
-            libxml_clear_errors();
-            return $model;
-        };
-
-        array_map(function (ArticleHasAnchors $val) {
-            $val->delete();
-        }, ArticleHasAnchors::findAll(['article_id' => $model->id]));
-
-        $links = $content->getElementsByTagName('a');
-        foreach ($links as $link) {
-            if (strpos($link->getAttribute('id'), "anchor-") !== false) {
-                $anchor = new ArticleHasAnchors();
-                $anchor->setAttributes([
-                    'article_id' => $model->id,
-                    'anchor_id' => $link->getAttribute('id'),
-                    'content' => $link->parentNode->nodeValue
-                ]);
-                $anchor->save();
-            };
-        }
-
-        $images = $content->getElementsByTagName('img');
-        foreach ($images as $img) {
-            if(strpos($img->getAttribute('id'), 'img-') === false)
-            {
-                $data = $img->getAttribute('src');
-
-                list($type, $data) = explode(';', $data);
-                list(, $data)      = explode(',', $data);
-                $data = base64_decode($data);
-
-                $tempPath = Media::PATH_TO_TEMPORARY . time() . '.png';
-                if(file_put_contents($tempPath, $data))
-                {
-                    $con = Yii::$app->db->beginTransaction();
-
-                    try {
-
-                        $imgC = getimagesize($tempPath);
-
-                        if(isset($imgC[0]) && isset($imgC[1])){
-                            if($imgC[0] > 1200 || $imgC[1] > 1200){
-                                $model->addError('size', Yii::t('app', 'image in line {line} is to big (max 1200px widht, height)', ['line' => $img->getLineNo() ]));
-                                throw new Exception(Yii::t('app', 'Error validating size, too big!'));
-                            }
-                        } else {
-                            $model->addError('image', Yii::t('app', 'image in line {line} is not an image?', ['line' => $img->getLineNo() ]));
-                            throw new Exception(Yii::t('app', 'error validating image'));
-                        }
-
-                        $table_name = 'article_has_media';
-                        Media::generateFoldersByTableName($table_name);
-
-                        $newA = new ArticleHasMedia();
-                        $newA->article_id = $model->id;
-                        $newA->save(false);
-
-                        $newM = new Media();
-                        $newM->setAttributes([
-                            'path' => 'uploads/' . date("Y") . '/' . date("m") . '/' . $table_name . '/',
-                            'file_name' => $table_name . '-' . $newA->id . '.png',
-                            'titol' => $img->getAttribute('title') ?: null,
-                            'user_id' => Yii::$app->user->identity->id,
-                            'es_imatge' => 1,
-                        ]);
-                        $newM->save();
-
-                        $newA->media_id = $newM->id;
-                        $newA->save();
-
-                        $newT = new MediaHasTables();
-                        $newT->setAttributes([
-                            'media_id' => $newM->id,
-                            'table_name' => $table_name,
-                            'table_id' => $newA->id,
-                        ]);
-                        $newT->save();
-
-                        file_put_contents($newM->path . $newM->file_name, $data);
-                        unlink($tempPath);
-
-                        $img->setAttribute('id','img-' . $newA->id);
-                        // todo cambiar a la api pa q xuto en public i privat
-                        $sizes =  [
-                            $img->getAttribute('width')  &&   $img->getAttribute('width') < 1201 ? $img->getAttribute('width') : $imgC[0],
-                            $img->getAttribute('height')  &&   $img->getAttribute('height') < 1201 ? $img->getAttribute('height') : $imgC[1],
-                        ];
-                        $img->setAttribute('src', Url::to(['media/get-image', 'table' => $table_name, 'table_id' => $newA->id, 'size' => json_encode($sizes)]));
-
-                        $con->commit();
-                    } catch(Exception $e){
-                        $model->addError('exception', $e);
-                        $con->rollback();
-                    }
-
-
-                }
-            }
-        }
-
-        // Save the modifications of dom
-        $model->content = $content->saveHTML();
-
-        return $model;
-    }
-
-    /**
-     * Tag generation
-     * @param Article $model
-     * @return Article
-     */
-    private function parseArticleTags(Article $model)
-    {
-        if ($model->tags_form) {
-            $tags = explode(',', $model->tags_form);
-            array_map(function (ArticleHasTags $val) {
-                $val->delete();
-            }, ArticleHasTags::findAll(['article_id' => $model->id]));
-
-            foreach ($tags as $tag) {
-
-                $tag = trim($tag);
-                $tagf = Tag::findOne(['name_' . $model->language->code => $tag]);
-                if (!$tagf) {
-                    $tagf = new Tag();
-                    $tagf->setAttributes([
-                        'name_ca' => $tag,
-                        'name_es' => $tag,
-                        'name_en' => $tag,
-                        'priority' => 9,
-                    ]);
-                    $tagf->save();
-                }
-
-                $tagr = new ArticleHasTags();
-                $tagr->setAttributes([
-                    'tag_id' => $tagf->id,
-                    'article_id' => $model->id,
-                ]);
-
-                $tagr->save();
-            }
-        }
-
-        return $model;
     }
 
 }

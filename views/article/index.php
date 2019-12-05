@@ -6,6 +6,7 @@ use app\models\Category;
 use app\models\Language;
 use app\models\Media;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 
@@ -28,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <div class="input-group">
                             <div class="input-group-btn">
                                 <?= Html::button(Yii::t('app', 'create article'), ['type' => 'button', 'class' => 'btn btn-success', 'data' => ['toggle' => 'modal', 'target' => '#modal']]) ?>
+                                <?= Html::button(Yii::t('app', 'regenerate articles'), ['type' => 'button', 'class' => 'btn btn-danger', 'data' => ['confirm' => Yii::t('app', 'this will resave all articles and regenarate all properties are you sure?')]]) ?>
                                 <button class="btn btn-primary">
                                     <i class="fa fa-search"></i> <?= Yii::t('app', 'Filtrar') ?>
                                 </button>
@@ -54,6 +56,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     'title',
                     [
+                        'label' => Yii::t('app', 'featured'),
+                        'format' => 'raw',
+                        'contentOptions' => ['class' => 'text-center'],
+                        'value' => function ($model) {
+                            return Html::a( '⭐', Url::to(['article/set-featured', 'id' => $model->id]), ['style' => $model->isFeatured() ? '' : 'filter:grayscale(100)']);
+                        }
+                    ],
+                    [
                         'label' => Yii::t('app', 'visibility'),
                         'format' => 'raw',
                         'value' => function ($model) {
@@ -74,7 +84,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'label' => Yii::t('app', 'image'),
                         'format' => 'raw',
                         'value' => function ($model) {
-                            return Html::img(['media/get-image', 'table' => Media::TBL_ARTICLE, 'table_id' => $model->id, 'size' => json_encode([65, 65])]);
+                            return Html::img(['media/get-image', 'table' => Media::TBL_ARTICLE, 'table_id' => $model->id, 'size' => json_encode([65, 65])], ['style' => 'width:65px; height: 65px; background: white']);
                         }
 
                     ]

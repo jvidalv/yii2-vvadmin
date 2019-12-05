@@ -5,10 +5,10 @@ namespace app\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "article_has_translations".
- *
  * @property int $id
  * @property int $article_ca
  * @property int $article_es
@@ -22,7 +22,7 @@ use yii\db\ActiveQuery;
  * @property ActiveQuery $articleEn
  * @property string $date
  */
-class ArticleHasTranslations extends \yii\db\ActiveRecord
+class ArticleHasTranslations extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -48,7 +48,7 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['article_ca', 'article_es', 'article_en', 'state', 'category_id', 'time_to_read', 'created_at', 'updated_at'], 'integer'],
+            [['article_ca', 'article_es', 'article_en', 'state', 'featured', 'category_id', 'time_to_read', 'created_at', 'updated_at'], 'integer'],
             [['date'], 'safe'],
         ];
     }
@@ -64,6 +64,7 @@ class ArticleHasTranslations extends \yii\db\ActiveRecord
             'article_es' => Yii::t('app', 'Article Es ID'),
             'article_en' => Yii::t('app', 'Article En ID'),
             'time_to_read' => Yii::t('app', 'time to read'),
+            'featured' => Yii::t('app', 'featured'),
         ];
     }
 

@@ -2,10 +2,15 @@
 
 namespace app\models;
 
+use DOMDocument;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\Exception;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "article".
@@ -23,7 +28,7 @@ use yii\db\Exception;
  * @property int $updated_at
  * @property int $created_at
  */
-class Article extends \yii\db\ActiveRecord
+class Article extends ActiveRecord
 {
 
     public $general;
@@ -35,7 +40,10 @@ class Article extends \yii\db\ActiveRecord
      * @var [type]
      */
     public $translation_of = 0;
-
+    /**
+     * If its the next serie of certain article
+     */
+    public $continuation;
     /**
      * Tags and attributes constants for blog content
      */
@@ -76,7 +84,7 @@ class Article extends \yii\db\ActiveRecord
     {
         return [
             [['language_id', 'user_id', 'title', 'category_id'], 'required'],
-            [['user_id', 'state', 'word_count', 'updated_at', 'created_at', 'translation_of', 'word_count'], 'integer'],
+            [['user_id', 'state', 'word_count', 'updated_at', 'created_at', 'translation_of', 'word_count', 'continuation'], 'integer'],
             ['state', 'default', 'value' => 0],
             [['language_id'], 'string', 'max' => 2],
             [['date'], 'safe'],
@@ -105,6 +113,7 @@ class Article extends \yii\db\ActiveRecord
             'state' => Yii::t('app', 'state'),
             'slug' => Yii::t('app', 'slug'),
             'word_count' => Yii::t('app', 'number of words'),
+            'continuation' => Yii::t('app', 'continuation of'),
         ];
     }
 
@@ -115,7 +124,15 @@ class Article extends \yii\db\ActiveRecord
     public function beforeSave($insert)
     {
         $this->date = Date('Y-m-d H:i', strtotime($this->date));
-        return parent::beforeSave($insert);
+
+        if (!$this->isNewRecord) {
+            // Parse tags
+            $this->parseArticleTags();
+            // Parses content
+            $this->parseArticleContent();
+        }
+
+        return !$this->errors && parent::beforeSave($insert);
     }
 
     /**
@@ -149,6 +166,15 @@ class Article extends \yii\db\ActiveRecord
             $translation->save();
         }
 
+        // For series of articles, if we set the property first we delete the historical
+        if ($this->continuation) {
+            if ($ocon = $this->continuationA) {
+                $ocon->delete();
+            }
+            $continuation = new ArticleHasContinuation(['origen_id' => $this->continuation, 'continuation_id' => $this->id]);
+            $continuation->save();
+        }
+
         try {
             // We dont update other translations of a recent created translation :d
             if (!$this->translation_of) {
@@ -164,7 +190,7 @@ class Article extends \yii\db\ActiveRecord
     /**
      * Update common fields between all translations
      * @return int
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     private function updateTranslations()
     {
@@ -177,6 +203,163 @@ class Article extends \yii\db\ActiveRecord
             ['category_id' => $this->category_id, 'date' => $this->date, 'state' => $this->state],
             ['in', 'id', [$trans->article_ca, $trans->article_es, $trans->article_en]])
             ->execute();
+    }
+
+    /**
+     * Parses tag input and stores in the relational table
+     */
+    private function parseArticleTags()
+    {
+        if ($this->tags_form) {
+            $tags = explode(',', $this->tags_form);
+            array_map(function (ArticleHasTags $val) {
+                $val->delete();
+            }, ArticleHasTags::findAll(['article_id' => $this->id]));
+
+            foreach ($tags as $tag) {
+
+                $tag = trim($tag);
+                $tagf = Tag::findOne(['name_' . $this->language->code => $tag]);
+                if (!$tagf) {
+                    $tagf = new Tag();
+                    $tagf->setAttributes([
+                        'name_ca' => $tag,
+                        'name_es' => $tag,
+                        'name_en' => $tag,
+                        'priority' => 9,
+                    ]);
+                    $tagf->save();
+                }
+
+                $tagr = new ArticleHasTags();
+                $tagr->setAttributes([
+                    'tag_id' => $tagf->id,
+                    'article_id' => $this->id,
+                ]);
+
+                $tagr->save();
+            }
+        }
+    }
+
+    /**
+     * Parses the content article and apply all the modifications
+     * @return void
+     */
+    private function parseArticleContent()
+    {
+        libxml_use_internal_errors(true);
+        $content = new DOMDocument();
+        $content->loadHTML($this->content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        if (count(libxml_get_errors())) {
+            foreach (libxml_get_errors() as $error) {
+                switch ($error->code) {
+                    case 513:
+                        $this->addError('content', Yii::t('app', 'ID repetead at line {line}', ['line' => $error->line]));
+                }
+            }
+            libxml_clear_errors();
+            return;
+        };
+
+        array_map(function (ArticleHasAnchors $val) {
+            $val->delete();
+        }, ArticleHasAnchors::findAll(['article_id' => $this->id]));
+
+        $links = $content->getElementsByTagName('a');
+        foreach ($links as $link) {
+            if (strpos($link->getAttribute('id'), "anchor-") !== false) {
+                $anchor = new ArticleHasAnchors();
+                $anchor->setAttributes([
+                    'article_id' => $this->id,
+                    'anchor_id' => $link->getAttribute('id'),
+                    'content' => $link->parentNode->nodeValue
+                ]);
+                $anchor->save();
+            };
+        }
+
+        $images = $content->getElementsByTagName('img');
+        foreach ($images as $img) {
+            if (strpos($img->getAttribute('id'), 'img-') === false) {
+                $data = $img->getAttribute('src');
+
+                list($type, $data) = explode(';', $data);
+                list(, $data) = explode(',', $data);
+                $data = base64_decode($data);
+
+                $tempPath = Media::PATH_TO_TEMPORARY . time() . '.png';
+                if (file_put_contents($tempPath, $data)) {
+                    $con = Yii::$app->db->beginTransaction();
+
+                    try {
+
+                        $imgC = getimagesize($tempPath);
+
+                        if (isset($imgC[0]) && isset($imgC[1])) {
+                            if ($imgC[0] > 1200 || $imgC[1] > 1200) {
+                                $this->addError('size', Yii::t('app', 'image in line {line} is to big (max 1200px widht, height)', ['line' => $img->getLineNo()]));
+                                throw new Exception(Yii::t('app', 'Error validating size, too big!'));
+                            }
+                        } else {
+                            $this->addError('image', Yii::t('app', 'image in line {line} is not an image?', ['line' => $img->getLineNo()]));
+                            throw new Exception(Yii::t('app', 'error validating image'));
+                        }
+
+                        $table_name = 'article_has_media';
+                        Media::generateFoldersByTableName($table_name);
+
+                        $newA = new ArticleHasMedia();
+                        $newA->article_id = $this->id;
+                        $newA->save(false);
+
+                        $newM = new Media();
+                        $newM->setAttributes([
+                            'path' => 'uploads/' . date("Y") . '/' . date("m") . '/' . $table_name . '/',
+                            'file_name' => $table_name . '-' . $newA->id . '.png',
+                            'titol' => $img->getAttribute('title') ?: null,
+                            'user_id' => Yii::$app->user->identity->id,
+                            'es_imatge' => 1,
+                        ]);
+                        $newM->save();
+
+                        $newA->media_id = $newM->id;
+                        $newA->save();
+
+                        $newT = new MediaHasTables();
+                        $newT->setAttributes([
+                            'media_id' => $newM->id,
+                            'table_name' => $table_name,
+                            'table_id' => $newA->id,
+                        ]);
+                        $newT->save();
+
+                        file_put_contents($newM->path . $newM->file_name, $data);
+                        unlink($tempPath);
+
+                        $img->setAttribute('id', 'img-' . $newA->id);
+
+                        // todo cambiar a la api pa q xuto en public i privat
+                        $sizes = [
+                            $img->getAttribute('width') && $img->getAttribute('width') < 1201 ? $img->getAttribute('width') : $imgC[0],
+                            $img->getAttribute('height') && $img->getAttribute('height') < 1201 ? $img->getAttribute('height') : $imgC[1],
+                        ];
+
+                        $img->setAttribute('src', Url::base(true) . '/' . Media::img($newA->id, $table_name, $sizes));
+
+                        $con->commit();
+                    } catch (Exception $e) {
+                        $this->addError('exception', $e);
+                        $con->rollback();
+                    }
+
+
+                }
+            }
+        }
+        // Save the modifications in dom
+        $this->content = $content->saveHTML();
     }
 
     /**
@@ -193,7 +376,7 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getCategory()
     {
@@ -201,7 +384,7 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getLanguage()
     {
@@ -209,7 +392,15 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
+     */
+    public function getContinuationA()
+    {
+        return $this->hasOne(ArticleHasContinuation::className(), ['continuation_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
      */
     public function getUser()
     {
@@ -217,7 +408,7 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getTranslations()
     {
@@ -241,7 +432,7 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getArticleHasTags()
     {
@@ -249,7 +440,7 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      */
     public function getArticleHasAnchors()
     {
@@ -257,8 +448,8 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
-     * @throws \yii\base\InvalidConfigException
+     * @return ActiveQuery
+     * @throws InvalidConfigException
      */
     public function getTags()
     {
@@ -289,6 +480,15 @@ class Article extends \yii\db\ActiveRecord
      */
     public function getTimeToRead()
     {
-        return ceil($this->word_count/200 );
+        return ceil($this->word_count / 200);
+    }
+
+    /**
+     * Is featured?
+     * @return bool
+     */
+    public function isFeatured()
+    {
+        return (bool)$this->translations->featured;
     }
 }
