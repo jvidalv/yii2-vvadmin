@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Exception;
+use Imagine\Image\ImageInterface;
 use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -136,7 +137,7 @@ class Media extends \yii\db\ActiveRecord
      * @param $path
      * @param $size
      * @param $savepath
-     * @return bool|\Imagine\Image\ImageInterface
+     * @return bool|ImageInterface
      */
     public static function generate_image($filename, $path, $size, $savepath = false)
     {

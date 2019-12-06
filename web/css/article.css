@@ -71,3 +71,14 @@ customs
     background-size: cover !important;
     height: 150px !important;
 }
+
+.loader-tinymce{
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 1000px;
+    font-size: 138px;
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+}

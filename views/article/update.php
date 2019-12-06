@@ -12,6 +12,7 @@ use yii\bootstrap4\Modal;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\JsExpression;
 use yii\widgets\ActiveForm;
 
 ArticleAsset::register($this);
@@ -46,7 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
             <div class="row">
                 <div class="col-12 col-lg-9">
-                    <?= $form->field($model, 'content', ['template' => '<div class="container-content">{input}</div>'])->widget(TinyMce::className(), [
+                    <div class="loader-tinymce">
+                        <i class="fa fa-spinner fa-spin"></i>
+                    </div>
+                    <?= $form->field($model, 'content', ['template' => '<div class="container-content" style="display:none">{input}</div>'])->widget(TinyMce::className(), [
                         'options' => ['rows' => 30],
                         'language' => Yii::$app->language,
                         'clientOptions' => [
@@ -55,6 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'plugins' => [
                                 "print preview paste searchreplace autolink autosave save code visualblocks visualchars wordcount autoresize image link media codesample table hr nonbreaking anchor toc advlist lists noneditable charmap quickbars",
                             ],
+                            'extended_valid_elements' => 'img[longdesc|usemap|src|border|alt=|title|hspace|vspace|width|height|align|onerror|id|class|style]',
                             'menubar' => 'file edit view insert format tools table help',
                             'toolbar' => "undo redo | bold italic underline strikethrough | image link anchor codesample | numlist bullist | charmap removeformat | code ",
                             'link_context_toolbar' => true,
@@ -62,7 +67,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             'automatic_uploads' => true,
                             'visualblocks_default_state' => true,
                             'file_picker_types' => 'image',
-                            'file_picker_callback' => new \yii\web\JsExpression("(cb, value, meta) => uploadImageTiny(cb, value, meta)"),
+                            'file_picker_callback' => new JsExpression("(cb, value, meta) => uploadImageTiny(cb, value, meta)"),
+                            'relative_urls' => false,
+                            'remove_script_host' => false,
+                            'setup' => new JsExpression('function(editor){ editor.on("init", function (e) {
+                               $(".loader-tinymce").fadeOut("slow");
+                               $(".container-content").fadeIn("slow");
+                            });}'),
                         ]
                     ])
                     ?>

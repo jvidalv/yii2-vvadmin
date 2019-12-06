@@ -11,6 +11,7 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 use yii\helpers\Url;
+use yii\imagine\Image;
 
 /**
  * This is the model class for table "article".
@@ -284,22 +285,36 @@ class Article extends ActiveRecord
         foreach ($images as $img) {
             if (strpos($img->getAttribute('id'), 'img-') === false) {
                 $data = $img->getAttribute('src');
+                $tempPath = '';
 
-                list($type, $data) = explode(';', $data);
-                list(, $data) = explode(',', $data);
-                $data = base64_decode($data);
+                try {
+                    list($type, $data) = explode(';', $data);
+                    list(, $data) = explode(',', $data);
+                    $data = base64_decode($data);
 
-                $tempPath = Media::PATH_TO_TEMPORARY . time() . '.png';
+                    $tempPath = Media::PATH_TO_TEMPORARY . time() . '.png';
+                } catch(\Exception $e){
+                    $this->addError('image_decocde', Yii::t('app', 'there is a problem uploading the image to our servers'));
+                }
+
                 if (file_put_contents($tempPath, $data)) {
                     $con = Yii::$app->db->beginTransaction();
 
                     try {
 
-                        $imgC = getimagesize($tempPath);
+                        // If the image has settet size properties as attributes we use that props to upload the image
+                        // In any other case we use getimagesize
+                        $size = [];
+                        if ($img->getAttribute('width') && $img->getAttribute('height')) {
+                            $size = [$img->getAttribute('width'), $img->getAttribute('height')];
+                        } else {
+                            $image_data = getimagesize($tempPath);
+                            $size = [$image_data[0], $image_data[1]];
+                        }
 
-                        if (isset($imgC[0]) && isset($imgC[1])) {
-                            if ($imgC[0] > 1200 || $imgC[1] > 1200) {
-                                $this->addError('size', Yii::t('app', 'image in line {line} is to big (max 1200px widht, height)', ['line' => $img->getLineNo()]));
+                        if (isset($size[0]) && isset($size[1])) {
+                            if ($size[0] > 1000 || $size[1] > 1000) {
+                                $this->addError('size', Yii::t('app', 'image in line {line} is to big (max 1000px widht, height)', ['line' => $img->getLineNo()]));
                                 throw new Exception(Yii::t('app', 'Error validating size, too big!'));
                             }
                         } else {
@@ -335,18 +350,16 @@ class Article extends ActiveRecord
                         ]);
                         $newT->save();
 
-                        file_put_contents($newM->path . $newM->file_name, $data);
+                        Image::thumbnail($tempPath, $size[0], $size[1])
+                            ->save($newM->path . $newM->file_name, ['quality' => 100]);
                         unlink($tempPath);
 
                         $img->setAttribute('id', 'img-' . $newA->id);
-
-                        // todo cambiar a la api pa q xuto en public i privat
-                        $sizes = [
-                            $img->getAttribute('width') && $img->getAttribute('width') < 1201 ? $img->getAttribute('width') : $imgC[0],
-                            $img->getAttribute('height') && $img->getAttribute('height') < 1201 ? $img->getAttribute('height') : $imgC[1],
-                        ];
-
-                        $img->setAttribute('src', Url::base(true) . '/' . Media::img($newA->id, $table_name, $sizes));
+                        $img->setAttribute('src', Url::base(true) . '/' . Media::img($newA->id, $table_name, $size));
+                        $img->setAttribute('style', $img->getAttribute('style') . "width:$size[0]px;height:$size[1]px");
+                        $img->setAttribute('width', $size[0]);
+                        $img->setAttribute('height', $size[1]);
+                        $img->setAttribute('onerror', "this.src='" . Url::base(true) . '/' . Media::img(-1, -1 , $size) . "'");
 
                         $con->commit();
                     } catch (Exception $e) {

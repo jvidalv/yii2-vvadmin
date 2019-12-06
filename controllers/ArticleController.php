@@ -67,7 +67,8 @@ class ArticleController extends VController
                 Yii::$app->session->setFlash('success', Yii::t('app', 'the changes have been saved!'));
             } else {
                  array_map(function ($string) {
-                     Yii::$app->session->addFlash('danger', $string[0] . '<br/>');}, $model->errors);
+                     Yii::$app->session->addFlash('danger', $string[0] . '<br/>');}
+                     , $model->errors);
             }
         }
 
