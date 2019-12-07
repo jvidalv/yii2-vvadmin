@@ -5,7 +5,7 @@ namespace app\modules\api\models;
 class Article extends \app\models\Article
 {
     public $trans_id;
-    public $slug_ca, $slug_es, $slug_en;
+    public $ca, $es, $en;
     public $time_to_read;
 
     public function fields()
@@ -29,9 +29,9 @@ class Article extends \app\models\Article
                 'translations' => function () {
                     return [
                         'trans_id' => $this->translations->id,
-                        'slug_ca' => $this->translations->articleCa->slug,
-                        'slug_es' => $this->translations->articleEs->slug,
-                        'slug_en' => $this->translations->articleEn->slug,
+                        'ca' => $this->translations->articleCa->slug,
+                        'es' => $this->translations->articleEs->slug,
+                        'en' => $this->translations->articleEn->slug,
                     ];
                 },
             ]
