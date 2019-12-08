@@ -18,7 +18,7 @@ class Article extends \app\models\Article
                 },
                 'date_nice' => function () {
                     setlocale(LC_TIME, [$this->language_id]);
-                    return strftime("%b%e, %G");
+                    return strftime("%b %e, %G", strtotime($this->date));
                 },
                 'tags' => function () {
                     return $this->articleHasTags;

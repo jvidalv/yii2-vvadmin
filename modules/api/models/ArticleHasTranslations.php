@@ -5,6 +5,7 @@ namespace app\modules\api\models;
 
 
 use yii\db\ActiveQuery;
+use yii\helpers\Url;
 
 class ArticleHasTranslations extends \app\models\ArticleHasTranslations
 {
@@ -26,6 +27,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                     'slug' => $model->slug_ca,
                     'category' => $category->name_ca,
                     'date' => strftime("%b%e, %G"),
+                    'image' => Media::img($model->article_ca, Media::TBL_ARTICLE, [200, 200])
                 ];
             },
             'es' => function ($model) use ($category) {
@@ -37,6 +39,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                     'slug' => $model->slug_es,
                     'category' => $category->name_es,
                     'date' => strftime("%b%e, %G"),
+                    'image' => Media::img($model->article_es, Media::TBL_ARTICLE, [200, 200])
                 ];
             },
             'en' => function ($model) use ($category) {
@@ -48,6 +51,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                     'slug' => $model->slug_en,
                     'category' => $category->name_en,
                     'date' => strftime("%b%e, %G"),
+                    'image' => Media::img($model->article_en, Media::TBL_ARTICLE, [200, 200])
                 ];
             },
             'featured',
