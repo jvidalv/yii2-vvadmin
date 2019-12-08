@@ -201,18 +201,18 @@ class MediaController extends VController
         if ($media) {
             if (file_exists($media->getFullPath($size))) {
                 $response->stream = fopen($media->getFullPath($size), 'r');
-            } else {
-                $response->stream =  fopen(Media::generate_image($media->file_name, $media->path, $size), 'r');
+            } else if (file_exists($media->getFullPath())) {
+                $response->stream = fopen(Media::generate_image($media->file_name, $media->path, $size), 'r');
             }
         }
 
         if (!is_resource($response->stream)) {
             switch ($table) {
                 case Media::TBL_USER:
-                    $response->stream =  fopen(Media::generate_image('user.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY), 'r');
+                    $response->stream = fopen(Media::generate_image('user.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY), 'r');
                     break;
                 case Media::TBL_ARTICLE:
-                    $response->stream = fopen(Media::generate_image('article.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY),'r');
+                    $response->stream = fopen(Media::generate_image('article.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY), 'r');
                     break;
                 default:
                     $response->stream = fopen(Media::generate_image('404.jpg', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY), 'r');

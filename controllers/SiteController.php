@@ -67,10 +67,10 @@ class SiteController extends VController
      */
     public function actionExisteixUsuari()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if (\Yii::$app->request->isAjax && \Yii::$app->request->isPost) {
-            $data = \Yii::$app->request->post()['data'];
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            $data = Yii::$app->request->post()['data'];
             $user = User::find()->where(['or', ['email' => $data]])->one();
             if ($user) {
                 return ['status' => true, 'nom' => $user->fullName, 'imatge' => Media::img($user->id, Media::TBL_USER, [117, 117])];
@@ -86,9 +86,9 @@ class SiteController extends VController
      */
     public function actionContrassenyaCorrecta()
     {
-        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        Yii::$app->response->format = Response::FORMAT_JSON;
 
-        if (Yii::$app->request->isAjax && \Yii::$app->request->isPost) {
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             $model = new LoginForm();
 
             if ($model->load(Yii::$app->request->post()) && $model->login()) {

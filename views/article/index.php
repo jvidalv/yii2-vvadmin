@@ -83,7 +83,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label' => Yii::t('app', 'image'),
                         'format' => 'raw',
-                        'contentOptions' => ['style' => 'width:5%;'],
+                        'contentOptions' => ['style' => 'width:11%;'],
                         'value' => function ($model) {
                             return Html::img(['media/get-image', 'table' => Media::TBL_ARTICLE, 'table_id' => $model->id, 'size' => json_encode([65, 65])], ['style' => 'width:65px; height: 65px; background: white']);
                         }

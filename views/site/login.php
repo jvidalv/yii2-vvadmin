@@ -44,14 +44,14 @@ $this->beginPage() ?>
                             'id' => 'login-form',
                             'enableClientValidation' => false,
                             'fieldConfig' => [
-                                'template' => "<label class='login-labels'{label}</label>{input}",
+                                'template' => "<label class='login-labels mb-0'>{label}</label>{input}",
                             ],
                         ]); ?>
                         <div class="container-pantalles-login">
                             <div id="container-email">
                                 <div class="text-center">
-                                    <h2><?= Yii::t('app', 'Iniciar sessió ') ?></h2>
-                                    <p class="mt-1"><?= Yii::t('app', 'Utilitza el teu compte de vblogv') ?></p>
+                                    <h2><?= Yii::t('app', 'log in') ?></h2>
+                                    <p class="mt-1"><?= Yii::t('app', 'use your vvlog account') ?></p>
                                 </div>
                                 <div class="mt-4">
                                     <div>
@@ -62,19 +62,19 @@ $this->beginPage() ?>
                                                 'type' => 'email',
                                                 'autocorrect' => 'off',
                                                 'required' => true,
-                                            ])->label(Yii::t('app', 'Correu electrònic')) ?>
+                                            ])->label(Yii::t('app', 'email')) ?>
                                         <label id="error-label-email"
                                                class="m-0 float-right small text-danger error-label"></label>
                                     </div>
                                     <div class="d-flex flex-row-reverse flex-wrap w-100 mt-4">
                                         <div>
                                       <span id="seguent-usuari" class="btn btn-primary bg-blau-fosc br cursor-pointer">
-                                        <?= Yii::t('app', 'Següent') ?>
+                                        <?= Yii::t('app', 'next') ?>
                                       </span>
                                         </div>
                                         <div style="flex-grow: 1">
                                             <a href="https://www.fempoble.app/contactar"
-                                               class="text-secondary"><?= Yii::t('app', 'Vols solicitar un compte?') ?></a>
+                                               class="text-secondary"><?= Yii::t('app', 'do you need an acount?') ?></a>
                                         </div>
                                     </div>
                                 </div>

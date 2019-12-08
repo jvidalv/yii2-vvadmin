@@ -94,7 +94,7 @@ $user = Yii::$app->user->identity;
                         <div class="account-wrap">
                             <div class="account-item account-item--style2 clearfix js-item-menu">
                                 <div class="image">
-                                    <?= Html::img(['media/get-image', 'table' => Media::TBL_USER, 'table_id' => Yii::$app->user->identity->id, 'size' => json_encode([45, 45])]) ?>
+                                    <?= Html::img(['media/get-image', 'table' => Media::TBL_USER, 'table_id' => Yii::$app->user->identity->id, 'size' => json_encode([45, 45])], ['style' => 'width:45px;height:45px;background:black;']) ?>
                                 </div>
                                 <div class="content">
                                     <a class="js-acc-btn" href="#"><?= $user->nom ?></a>

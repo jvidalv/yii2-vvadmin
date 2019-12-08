@@ -32,9 +32,6 @@ $config = [
                 '/login' => 'site/login',
                 'logout' => 'site/logout',
 
-                'noticies' => 'noticia/index',
-                'noticia/<slug>-<id:\d+>' => 'noticia/update',
-
                 'media' => 'media/index',
                 'categories' => 'category/index',
                 'tags' => 'tag/index',

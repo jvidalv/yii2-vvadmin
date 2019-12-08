@@ -3,7 +3,6 @@
 namespace app\models;
 
 use Yii;
-use yii\base\Security;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;

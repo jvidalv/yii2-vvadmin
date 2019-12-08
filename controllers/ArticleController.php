@@ -143,7 +143,7 @@ class ArticleController extends VController
         $trans->featured = (int)!$trans->featured;
         $trans->save();
         Yii::$app->session->setFlash('success', $trans->featured ? Yii::t('app', 'article is now featured') :  Yii::t('app', 'article is no longer featured')) ;
-        return $this->goBack();
+        return $this->redirect('index');
     }
 
     /**
@@ -156,7 +156,7 @@ class ArticleController extends VController
             $article->save();
         }
 
-        return $this->goBack();
+        return $this->redirect('index');
     }
 
     /**

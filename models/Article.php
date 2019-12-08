@@ -85,6 +85,9 @@ class Article extends ActiveRecord
     {
         return [
             [['language_id', 'user_id', 'title', 'category_id'], 'required'],
+            [['date'], 'default', 'value' => function () {
+                    return Date('Y-m-d H:i:s');
+            }],
             [['user_id', 'state', 'word_count', 'updated_at', 'created_at', 'translation_of', 'word_count', 'continuation'], 'integer'],
             ['state', 'default', 'value' => 0],
             [['language_id'], 'string', 'max' => 2],
@@ -359,7 +362,8 @@ class Article extends ActiveRecord
                         $img->setAttribute('style', $img->getAttribute('style') . "width:$size[0]px;height:$size[1]px");
                         $img->setAttribute('width', $size[0]);
                         $img->setAttribute('height', $size[1]);
-                        $img->setAttribute('onerror', "this.src='" . Url::base(true) . '/' . Media::img(-1, -1 , $size) . "'");
+                        $img->setAttribute('onerror', "this.class='not-found'");
+                        // $img->setAttribute('onerror', "this.src='" . Url::base(true) . '/' . Media::img(-1, -1 , $size) . "'");
 
                         $con->commit();
                     } catch (Exception $e) {

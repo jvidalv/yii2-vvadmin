@@ -108,14 +108,15 @@ class Media extends \yii\db\ActiveRecord
     {
         $media = Media::find()->alias('m')
             ->leftJoin('media_has_tables as mt', 'mt.media_id = m.id')
-            ->where(['mt.table_name' => $table, 'mt.table_id' => $table_id])->orderBy('id desc')->one();
+            ->where(['mt.table_name' => $table, 'mt.table_id' => $table_id])->orderBy('id desc')
+            ->one();
 
         $size = Media::limit_size($size);
 
         if ($media) {
             if(is_file($media->getFullPath($size))) {
                 return $media->getFullPath($size);
-            } else {
+            } else if (file_exists($media->getFullPath())) {
                 return Media::generate_image($media->file_name, $media->path, $size);
             }
         }

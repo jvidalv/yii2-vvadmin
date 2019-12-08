@@ -78,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         [
                             'format' => 'raw',
                             'value' => function (Media $model) {
-                                return Html::img($model->getFullPath(), ['width' => 75]);
+                                return Html::img($model->getFullPath(), ['width' => 75, 'height' => 75, 'style' => 'width:75px;height:75px;background:white']);
                             },
                         ],
                         'titol',
