@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="SVGRoot"
+   version="1.1"
+   viewBox="0 0 256 256"
+   height="256px"
+   width="256px">
+  <defs
+     id="defs4953" />
+  <metadata
+     id="metadata4956">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1">
+    <flowRoot
+       style="fill:black;fill-opacity:1;stroke:none;font-family:console;font-style:normal;font-weight:normal;font-size:192px;line-height:1.25;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:console;font-stretch:normal;font-variant:normal;"
+       id="flowRoot4966"
+       xml:space="preserve"><flowRegion
+         style="font-size:192px;"
+         id="flowRegion4968"><rect
+           style="font-size:192px;"
+           y="20.5"
+           x="22.5"
+           height="217"
+           width="208.5"
+           id="rect4970" /></flowRegion><flowPara
+         id="flowPara4972"></flowPara></flowRoot>    <flowRoot
+       style="fill:black;fill-opacity:1;stroke:none;font-family:console;font-style:normal;font-weight:normal;font-size:192px;line-height:1.25;letter-spacing:0px;word-spacing:0px;-inkscape-font-specification:console;font-stretch:normal;font-variant:normal;"
+       id="flowRoot4974"
+       xml:space="preserve"><flowRegion
+         style="font-size:192px;"
+         id="flowRegion4976"><rect
+           style="font-size:192px;"
+           y="7"
+           x="10.5"
+           height="242.5"
+           width="236"
+           id="rect4978" /></flowRegion><flowPara
+         id="flowPara4980"></flowPara></flowRoot>    <text
+       transform="scale(1.0368172,0.96449017)"
+       id="big-v"
+       y="244.17047"
+       x="29.297054"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:367.30618286px;line-height:1.25;font-family:Bahnschrift;-inkscape-font-specification:Bahnschrift;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.91305315"
+       xml:space="preserve"><title
+         id="title5126">Big v</title><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Bahnschrift;-inkscape-font-specification:Bahnschrift;stroke-width:1.91305315"
+         y="244.17047"
+         x="29.297054"
+         id="tspan4982">v</tspan></text>
+    <text
+       transform="scale(1.0368172,0.96449017)"
+       id="small-v"
+       y="145.65598"
+       x="78.595612"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:172.96788025px;line-height:1.25;font-family:Bahnschrift;-inkscape-font-specification:Bahnschrift;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.90087444"
+       xml:space="preserve"><title
+         id="title5124">Small v</title><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Bahnschrift;-inkscape-font-specification:Bahnschrift;stroke-width:0.90087444"
+         y="145.65598"
+         x="78.595612"
+         id="tspan4982-3">v</tspan></text>
+    <path
+       id="top-left"
+       d="M 59.125,52.03263 68.746027,31.61492 77.75,52.03263 Z"
+       style="fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
+      <title
+         id="title5120">Top left</title>
+    </path>
+    <path
+       id="top-right"
+       d="M 175.625,52.03263 185.24603,31.61492 194.25,52.03263 Z"
+       style="fill:#000000;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1">
+      <title
+         id="title5122">Top right</title>
+    </path>
+  </g>
+</svg>

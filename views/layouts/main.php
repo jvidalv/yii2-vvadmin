@@ -39,7 +39,7 @@ $user = Yii::$app->user->identity;
                 <div class="header3-wrap">
                     <div class="header__logo">
                         <a href="/">
-                            <img src="/images/vblogv-logo.png" alt="vblogv logo">
+                            <img src="/images/logo.png" alt="vblogv logo">
                         </a>
                     </div>
                     <div class="header__navbar">
