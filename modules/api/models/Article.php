@@ -4,6 +4,7 @@ namespace app\modules\api\models;
 
 class Article extends \app\models\Article
 {
+    public $category_nice, $category_code;
     public $trans_id;
     public $ca, $es, $en;
     public $time_to_read;
@@ -13,6 +14,12 @@ class Article extends \app\models\Article
         return array_merge(
             parent::fields(),
             [
+                'category_nice' => function () {
+                    return $this->category["name_$this->language_id"];
+                },
+                'category_code' => function () {
+                    return $this->category->code;
+                },
                 'time_to_read' => function () {
                     return $this->translations->time_to_read;
                 },

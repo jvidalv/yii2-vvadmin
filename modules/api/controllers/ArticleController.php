@@ -16,7 +16,7 @@ class ArticleController extends ApiController
     public function actionOne(){
         return Article::find()->alias('a')
             ->where(['slug' => Yii::$app->request->get('slug')])
-            ->with('translations')->with('articleHasAnchors')->with('articleHasTags')
+            ->with('translations')->with('articleHasAnchors')->with('articleHasTags')->with('category')
             ->one();
     }
 
