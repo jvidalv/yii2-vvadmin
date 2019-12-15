@@ -13,6 +13,9 @@ use yii\rest\Controller;
 
 class ArticleController extends ApiController
 {
+    /**
+     * @return Article|array|\yii\db\ActiveRecord|null
+     */
     public function actionOne(){
         return Article::find()->alias('a')
             ->where(['slug' => Yii::$app->request->get('slug')])
@@ -20,6 +23,23 @@ class ArticleController extends ApiController
             ->one();
     }
 
+    /**
+     * @return Article[]|ArticleHasTranslations[]|array|\yii\db\ActiveRecord[]
+     */
+    public function actionRelated()
+    {
+        return Article::find()->alias('a')
+            ->where(['!=', 'id', Yii::$app->request->get('id')])
+            ->andWhere(['category_id' => Yii::$app->request->get('category_id')])
+            ->with('translations')->with('articleHasAnchors')->with('articleHasTags')->with('category')
+            ->orderBy(['date' => 'DESC'])
+            ->limit(Yii::$app->request->get('limit'))
+            ->all();
+    }
+
+    /**
+     * @return ArticleHasTranslations[]|array|\yii\db\ActiveRecord[]
+     */
     public function actionAll(){
         return ArticleHasTranslations::find()->all();
     }
