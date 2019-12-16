@@ -206,7 +206,7 @@ Modal::begin([
 echo $form->field($model, 'resume')->textArea(['maxlength' => true, 'rows' => 2]);
 echo $form->field($model, 'continuation')->dropDownList(
     ArrayHelper::map(Article::find()->where(['language_id' => $model->language_id])->andWhere(['not', ['id' => $model->id]])->all()
-        , 'id', 'title'));
+        , 'id', 'title'), ['prompt' => Yii::t('app', 'select a continuation')]);
 
 Modal::end();
 
