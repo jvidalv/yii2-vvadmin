@@ -30,8 +30,7 @@ class ArticleController extends ApiController
         $continuation = $aArticle->continuation ? $aArticle->continuation->id : null;
         $articles = Article::find()->alias('a')
             ->where(['language_id' => $aArticle->language_id])
-            ->andWhere(['or', ['!=', 'id', $aArticle->id], ['id' => $continuation]])
-            ->andWhere(['category_id' => $aArticle->category_id])
+            ->andWhere(['or', ['!=', 'id', $aArticle->id], ['id' => $continuation], ['category_id' => $aArticle->category_id]])
             ->with('translations')->with('articleHasAnchors')->with('articleHasTags')->with('category')
             ->orderBy(['date' => 'DESC'])
             ->limit(Yii::$app->request->get('limit'))
