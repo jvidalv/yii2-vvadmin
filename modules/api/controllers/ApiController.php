@@ -3,20 +3,47 @@
 namespace app\modules\api\controllers;
 
 use app\modules\api\components\ApiAuth;
+use Exception;
 use yii\rest\Controller;
+use yii\web\HttpException;
 use yii\web\Response;
 
 /**
- * Default controller for the `api` module
+ * Class ApiController
+ * @package app\modules\api\controllers
  */
 class ApiController extends Controller
 {
+    /**
+     * @param $action
+     * @return bool|string
+     * @throws HttpException
+     */
+    public function beforeAction($action)
+    {
+        $response = true;
+
+        try {
+            parent::beforeAction($action);
+        } catch (Exception $e){
+            throw new HttpException(500, $e->getMessage(), 100);
+        }
+
+        return $response;
+    }
+
+    /**
+     * @return array
+     */
     public static function allowedDomains() {
         return [
             '*'
         ];
     }
 
+    /**
+     * @return array
+     */
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -35,7 +62,11 @@ class ApiController extends Controller
         return $behaviors;
     }
 
+    /**
+     * @return string
+     */
     public function actionIndex(){
         return 'It works! Check my blog at https://vblogv.io.';
     }
+
 }
