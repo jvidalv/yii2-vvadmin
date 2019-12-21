@@ -27,16 +27,19 @@ class ArticleController extends ApiController
     public function actionRelated()
     {
         $aArticle = Article::findOne(['slug' => Yii::$app->request->get('slug')]);
-        $continuation = $aArticle->continuation ? $aArticle->continuation->id : null;
+        $continuation = $aArticle->continuationA ? $aArticle->continuationA->continuation_id : null;
         $articles = Article::find()->alias('a')
             ->where(['language_id' => $aArticle->language_id])
-            ->andWhere(['or', ['!=', 'id', $aArticle->id], ['id' => $continuation], ['category_id' => $aArticle->category_id]])
+            ->andWhere(['!=', 'id', $aArticle->id])
+            ->andWhere(['or', ['id' => $continuation], ['category_id' => $aArticle->category_id]])
             ->with('translations')->with('articleHasAnchors')->with('articleHasTags')->with('category')
             ->orderBy(['date' => 'DESC'])
             ->limit(Yii::$app->request->get('limit'))
             ->all();
-        return ArticleHasTranslations::find()->where(['in', 'article_' . $aArticle->language_id, array_map(function ($obj) {
+        $related = ArticleHasTranslations::find()->where(['in', 'article_' . $aArticle->language_id, array_map(function ($obj) {
             return $obj->id;}, $articles)])->all();
+
+        return $related;
     }
 
     /**

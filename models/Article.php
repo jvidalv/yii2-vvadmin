@@ -413,7 +413,7 @@ class Article extends ActiveRecord
      */
     public function getContinuationA()
     {
-        return $this->hasOne(ArticleHasContinuation::className(), ['continuation_id' => 'id']);
+        return $this->hasOne(ArticleHasContinuation::className(), ['origen_id' => 'id']);
     }
 
     /**
