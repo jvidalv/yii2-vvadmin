@@ -27,6 +27,7 @@ class Media extends \yii\db\ActiveRecord
     const TBL_USER = 'user';
     const TBL_ARTICLE = 'article';
     const TBL_MEDIA = 'media';
+    const TBL_CATEGORY = 'category';
     const TBL_ARTICLE_HAS_MEDIA = 'article_has_media';
 
     /* OUTPUTS */

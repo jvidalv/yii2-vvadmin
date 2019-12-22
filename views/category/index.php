@@ -1,6 +1,7 @@
 <?php
 
 use app\libraries\JosepGridView;
+use app\models\Media;
 use yii\bootstrap4\Modal;
 use yii\helpers\Html;
 use yii\web\JsExpression;
@@ -59,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 //   ['class' => 'app\libraries\JosepActionColumn'],
                                 'code',
                                 'name_' . Yii::$app->user->identity->language->code,
-                                'description_' . Yii::$app->user->identity->language->code,
+                                //'description_' . Yii::$app->user->identity->language->code,
                                 [
                                     'label' => Yii::t('app', '# of articles'),
                                     'format' => 'raw',
@@ -68,6 +69,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     }
                                 ],
                                 'priority',
+                                 [
+                                    'label' => Yii::t('app', 'image'),
+                                    'format' => 'raw',
+                                    'contentOptions' => ['style' => 'width:11%;'],
+                                    'value' => function ($model) {
+                                        return Html::img(['media/get-image', 'table' => Media::TBL_CATEGORY, 'table_id' => $model->id, 'size' => json_encode([65, 65])], ['style' => 'width:35px; height: 35px;']);
+                                    }
+
+                                ],
                                 [
                                     'class' => 'app\libraries\JosepActionColumn',
                                     'visibleButtons' => ['update' => true, 'delete' => true, 'restaurar' => false],

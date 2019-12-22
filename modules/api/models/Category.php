@@ -17,6 +17,9 @@ class Category extends \app\models\Category
             },
             'en' => function ($model) {
                 return ['name' => $model->name_en, 'description' => $model->description_en];
+            },
+            'image' => function ($model) {
+                return  Media::img($model->id, Media::TBL_CATEGORY, [100, 100]);
             }
 
         ];
