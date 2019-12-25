@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\SluggableBehavior;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "category".
@@ -15,9 +17,10 @@ use yii\behaviors\SluggableBehavior;
  * @property string $description_ca
  * @property string $description_es
  * @property string $description_en
+ * @property ActiveQuery $articles
  * @property int $priority
  */
-class Category extends \yii\db\ActiveRecord
+class Category extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -49,7 +52,7 @@ class Category extends \yii\db\ActiveRecord
             [['name_ca', 'name_es', 'name_en', 'code'], 'required'],
             [['code'], 'unique'],
             [['priority'], 'integer'],
-            [['name_ca', 'name_es', 'name_en', 'slug'], 'string', 'max' => 30],
+            [['name_ca', 'name_es', 'name_en', 'color_hex', 'slug'], 'string', 'max' => 30],
             [['description_ca', 'description_es', 'description_en'], 'string', 'max' => 220],
         ];
     }
@@ -69,11 +72,12 @@ class Category extends \yii\db\ActiveRecord
             'description_es' => Yii::t('app', 'description'),
             'description_en' => Yii::t('app', 'description'),
             'priority' => Yii::t('app', 'priority'),
+            'color_hex' => Yii::t('app', 'color'),
         ];
     }
 
     /**
-     * @return \yii\db\ActiveQuery
+     * @return ActiveQuery
      * @throws \yii\base\InvalidConfigException
      */
     public function getArticles()

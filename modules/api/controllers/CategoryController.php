@@ -12,6 +12,6 @@ class CategoryController extends ApiController
 {
     public function actionAll()
     {
-        return Category::find()->all();
+        return Category::find()->orderBy(['priority' => 'ASC'])->all();
     }
 }

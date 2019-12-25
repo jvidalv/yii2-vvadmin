@@ -31,22 +31,14 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <strong><?= Yii::t('app', 'create new category') ?></strong>
                             </div>
                             <div class="card-body">
-
                                 <?= $form->field($model, 'name_ca')->textInput(['maxlength' => true])->label('name_ca') ?>
-
                                 <?= $form->field($model, 'name_es')->textInput(['maxlength' => true])->label('name_es') ?>
-
                                 <?= $form->field($model, 'name_en')->textInput(['maxlength' => true])->label('name_en') ?>
-
                                 <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
-
                                 <?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1, 'value' => 9]) ?>
-
-
                             </div>
                             <div class="card-footer">
                                 <?= Html::submitButton('💾 ' . Yii::t('app', 'save'), ['class' => "au-btn au-btn-icon au-btn--green au-btn--small ml-auto"]) ?>
-
                             </div>
                         </div>
                         <?php ActiveForm::end(); ?>
@@ -68,13 +60,13 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return count($model->articles);
                                     }
                                 ],
-                                'priority',
-                                 [
+                                //'priority',
+                                [
                                     'label' => Yii::t('app', 'image'),
                                     'format' => 'raw',
                                     'contentOptions' => ['style' => 'width:11%;'],
                                     'value' => function ($model) {
-                                        return Html::img(['media/get-image', 'table' => Media::TBL_CATEGORY, 'table_id' => $model->id, 'size' => json_encode([65, 65])], ['style' => 'width:35px; height: 35px;']);
+                                        return Html::img(['media/get-image', 'table' => Media::TBL_CATEGORY, 'table_id' => $model->id, 'size' => json_encode([65, 65])], ['style' => 'width:35px; height: 35px;border-bottom:3px solid ' . $model->color_hex]);
                                     }
 
                                 ],
@@ -91,7 +83,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]); ?>
                         <?php Pjax::end(); ?>
                     </div>
-
                 </div>
             </div>
         </div>

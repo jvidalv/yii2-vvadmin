@@ -14,9 +14,7 @@ use yii\widgets\ActiveForm;
         'template' => "<div class=\"col col-md-4\">{label}</div>\n<div class=\"col-12 col-md-8\">{input}<small class=\"help-block form-text c-red\">{error}</small></div>\n",
     ]
 ]); ?>
-<div class="text-center mt-2 mb-4">
-    <?=  Html::img(['media/get-image', 'table' => Media::TBL_CATEGORY, 'table_id' => $model->id, 'size' => json_encode([125, 125])], ['style' => 'width:125px; height: 125px;']); ?>
-</div>
+
 <?php
 echo Html::tag('label', Yii::t('app', 'upload an image for the category'));
 echo FileInput::widget([
@@ -58,6 +56,9 @@ echo '<br>';
 <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
 
 <?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1, 'value' => 9]) ?>
+
+<?= $form->field($model, 'color_hex')->textInput(['type' => 'color']) ?>
+
 
 
 

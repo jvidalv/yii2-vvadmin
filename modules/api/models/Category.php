@@ -9,6 +9,7 @@ class Category extends \app\models\Category
         return [
             'id',
             'code',
+            'color_hex',
             'ca' => function ($model) {
                 return ['name' => $model->name_ca, 'description' => $model->description_ca];
             },
