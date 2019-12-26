@@ -31,7 +31,7 @@ $this->beginPage() ?>
         <div class="container">
             <div class="login-wrap">
                 <div class="login-logo">
-                    <img src="/images/logo-grande.png" alt="vblogv" width="200">
+                    <img src="/images/logo.svg" alt="vblogv" width="200">
                 </div>
                 <div class="login-content">
                     <div>

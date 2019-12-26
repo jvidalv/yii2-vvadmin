@@ -86,7 +86,7 @@ return [
     'description' => 'Descripción',
     'email' => 'Email',
     'id' => 'id',
-    'media' => 'media',
+    'media' => 'Media',
     'name' => 'Nombre',
     'no' => 'No',
     'no translation yet' => 'No existe traducción',
