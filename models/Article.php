@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\ArticleParser;
 use DOMDocument;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -131,9 +132,17 @@ class Article extends ActiveRecord
 
         if (!$this->isNewRecord) {
             // Parse tags
-            $this->parseArticleTags();
+            $parser = new ArticleParser($this->id, $this->content);
+            $parser->insertAnchors();
+            //$this->parseArticleTags();
             // Parses content
-            $this->parseArticleContent();
+            //$this->parseArticleContent();
+
+            if(!$parser->errors){
+                $this->content = $parser->getContent();
+            } else {
+                $this->addErrors($parser->errors);
+            }
         }
 
         return !$this->errors && parent::beforeSave($insert);
