@@ -5,9 +5,11 @@ use app\models\Article;
 use app\models\Category;
 use app\models\Language;
 use app\models\Media;
+use app\models\Tag;
 use dosamigos\tinymce\TinyMce;
 use kartik\datetime\DateTimePicker;
 use kartik\file\FileInput;
+use kartik\select2\Select2;
 use yii\bootstrap4\Modal;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -77,7 +79,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]
                     ])
                     ?>
-                    <?= $form->field($model, 'tags_form')->textInput(['maxlength' => true, 'value' => $model->getTagsString(), 'placeholder' => Yii::t('app', 'separate them using a comma, ej: react, html')]) ?>
+                    <?= $form->field($model, 'tags')->widget(Select2::classname(), [
+                        'data' => ArrayHelper::map(Tag::find()->all(), 'id', "name_$model->language_id"),
+                        'theme' => Select2::THEME_BOOTSTRAP,
+                        'options' => [
+                            'placeholder' => 'Seleccionar tags',
+                        ],
+                        'pluginOptions' => [
+                            'allowClear' => true,
+                            'multiple' => true,
+                        ],
+                    ]); ?>
                     <?php
                     echo Html::beginTag('div', ['id' => 'contents-ghost', 'class' => 'd-none']);
                     echo $model->content;

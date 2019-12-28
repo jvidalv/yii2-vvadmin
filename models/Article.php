@@ -100,14 +100,13 @@ class Article extends ActiveRecord
         return [
             [['language_id', 'user_id', 'title', 'category_id'], 'required'],
             [['date'], 'default', 'value' => function () {
-                    return Date('Y-m-d H:i:s');
+                return Date('Y-m-d H:i:s');
             }],
             [['user_id', 'state', 'word_count', 'updated_at', 'created_at', 'translation_of', 'word_count', 'continuation'], 'integer'],
             ['state', 'default', 'value' => 0],
             [['language_id'], 'string', 'max' => 2],
             [['date'], 'safe'],
             [['content'], 'string'],
-            [['tags_form'], 'string', 'max' => 200],
             [['title', 'slug'], 'string', 'max' => 120],
             [['resume'], 'string', 'max' => 180],
             [['imatge'], 'image', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxSize' => 1024 * 250],
@@ -145,16 +144,19 @@ class Article extends ActiveRecord
 
         if (!$this->isNewRecord) {
             // Parse tags
-            $this->parseArticleTags();
+            if($this->tags_form = Yii::$app->request->post()['Article']['tags']){
+                $this->parseArticleTags();
+            }
             // Parse article content
             $parser = new ArticleParser($this->id, $this->content);
             $parser->insertAnchors();
             $parser->parseImatges();
-            if(!$parser->errors){
+            if (!$parser->errors) {
                 $this->content = $parser->getContent();
             } else {
                 $this->addErrors($parser->errors);
             }
+            // End article parsing
         }
 
         return !$this->errors && parent::beforeSave($insert);
@@ -231,39 +233,22 @@ class Article extends ActiveRecord
     }
 
     /**
-     * Parses tag input and stores in the relational table
+     * Parses tags select and stores
+     * Also deletes all the tags
      */
     private function parseArticleTags()
     {
-        if ($this->tags_form) {
-            $tags = explode(',', $this->tags_form);
-            array_map(function (ArticleHasTags $val) {
-                $val->delete();
-            }, ArticleHasTags::findAll(['article_id' => $this->id]));
+        array_map(function (ArticleHasTags $val) {
+            $val->delete();
+        }, ArticleHasTags::findAll(['article_id' => $this->id]));
 
-            foreach ($tags as $tag) {
-
-                $tag = trim($tag);
-                $tagf = Tag::findOne(['name_' . $this->language->code => $tag]);
-                if (!$tagf) {
-                    $tagf = new Tag();
-                    $tagf->setAttributes([
-                        'name_ca' => $tag,
-                        'name_es' => $tag,
-                        'name_en' => $tag,
-                        'priority' => 9,
-                    ]);
-                    $tagf->save();
-                }
-
-                $tagr = new ArticleHasTags();
-                $tagr->setAttributes([
-                    'tag_id' => $tagf->id,
-                    'article_id' => $this->id,
-                ]);
-
-                $tagr->save();
-            }
+        foreach ($this->tags_form as $tag) {
+            $tagr = new ArticleHasTags();
+            $tagr->setAttributes([
+                'tag_id' => $tag,
+                'article_id' => $this->id,
+            ]);
+            $tagr->save();
         }
     }
 

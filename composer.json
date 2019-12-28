@@ -21,7 +21,7 @@
   "require": {
     "php": ">=7.2.0",
     "yiisoft/yii2": "~2.0.29",
-    "yiisoft/yii2-bootstrap4": "~2.0.8",
+    "yiisoft/yii2-bootstrap4": "*",
     "yiisoft/yii2-swiftmailer": "~2.1.0",
     "yiisoft/yii2-imagine": "~2.1.0",
     "2amigos/yii2-tinymce-widget": "~1.1",
@@ -35,7 +35,8 @@
     "ext-fileinfo": "*",
     "ext-dom": "*",
     "ext-libxml": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "kartik-v/yii2-widget-select2": "dev-master"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

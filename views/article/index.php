@@ -52,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'update' => true,
                             'delete' => false,
                             'restaurar' => false,
+                            'updateModal' => false,
                         ]
                     ],
                     'title',

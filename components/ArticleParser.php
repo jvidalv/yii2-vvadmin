@@ -92,6 +92,16 @@ class ArticleParser
     }
 
     /**
+     * Is a and DOMElement?
+     * @param DOMNode $node
+     * @return bool
+     */
+    private function anchorHasToBeInserted(DOMNode $node)
+    {
+        return $node->firstChild && get_class($node->firstChild) === 'DOMElement' && $node->firstChild->tagName === 'a';
+    }
+
+    /**
      * For all the H2 in the DOM thas has as a first child and A
      */
     public function insertAnchors()
@@ -100,7 +110,7 @@ class ArticleParser
         // get all h2 in content
         $h2s = $this->content->getElementsByTagName('h2');
         foreach ($h2s as $i => $h2) {
-            if ($h2->firstChild->tagName === 'a') {
+            if ($this->anchorHasToBeInserted($h2)) {
 
                 $h2->firstChild->setAttribute('id', "a$i");
 

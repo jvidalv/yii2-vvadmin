@@ -68,10 +68,8 @@ class JosepMediaActionColumn extends \yii\grid\ActionColumn
                         $icon = 'zmdi zmdi-edit';
                         break;
                     case 'delete':
-                        if ($model->hasAttribute('borrat') && $model->borrat == 0) {
                             $title = Yii::t('yii', 'Delete');
                             $icon = 'zmdi zmdi-delete';
-                        } else return null;
                         break;
                     default:
                         $title = ucfirst($name);

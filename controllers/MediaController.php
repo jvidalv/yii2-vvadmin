@@ -29,9 +29,9 @@ class MediaController extends VController
 
         /* pestanya activa */
         $activa = 'totals';
-        if (isset($params['MediaSearch']['es_imatge'])):
+        if (isset($params['MediaSearch']['es_imatge'])){
             $activa = (int)$params['MediaSearch']['es_imatge'] > 0 ? 'imatges' : ($params['MediaSearch']['es_imatge'] == 'null' ? 'totals' : 'documents');
-        endif;
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -168,12 +168,13 @@ class MediaController extends VController
     /**
      * @param $id
      * @param $table
-     * @return bool
+     * @return Response
      */
     public function actionDeleteFiles($id, $table)
     {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return Media::esborrarMedia($id, $table);
+       // return Media::esborrarMedia($id, $table);
+        return $this->redirect('index');
     }
 
     /**
