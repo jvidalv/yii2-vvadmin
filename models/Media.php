@@ -7,6 +7,7 @@ use Imagine\Image\ImageInterface;
 use Yii;
 use yii\behaviors\SluggableBehavior;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 use yii\imagine\Image;
 
 /**
@@ -16,12 +17,13 @@ use yii\imagine\Image;
  * @property int $user_id
  * @property string $titol
  * @property string $descripcio
- *
+ * @property string $path
+ * @property string $file_name
  * @property string $url
  * @property string $fullPath
  * @property User $user
  */
-class Media extends \yii\db\ActiveRecord
+class Media extends ActiveRecord
 {
     /* TABLES */
     const TBL_USER = 'user';

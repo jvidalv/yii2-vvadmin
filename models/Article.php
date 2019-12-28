@@ -28,6 +28,19 @@ use yii\imagine\Image;
  * @property int $state 0 = draft, 1 = private, 2 = public
  * @property string $slug
  * @property int $updated_at
+ * @property string $tagsString
+ * @property string|false $updatedAt
+ * @property \yii\db\ActiveQuery $user
+ * @property \yii\db\ActiveQuery $category
+ * @property string|false $dateF
+ * @property \yii\db\ActiveQuery $translations
+ * @property float $timeToRead
+ * @property string|false $createdAt
+ * @property \yii\db\ActiveQuery $articleHasTags
+ * @property \yii\db\ActiveQuery $tags
+ * @property \yii\db\ActiveQuery $continuationA
+ * @property \yii\db\ActiveQuery $language
+ * @property \yii\db\ActiveQuery $articleHasAnchors
  * @property int $created_at
  */
 class Article extends ActiveRecord
@@ -132,12 +145,11 @@ class Article extends ActiveRecord
 
         if (!$this->isNewRecord) {
             // Parse tags
+            $this->parseArticleTags();
+            // Parse article content
             $parser = new ArticleParser($this->id, $this->content);
             $parser->insertAnchors();
-            //$this->parseArticleTags();
-            // Parses content
-            //$this->parseArticleContent();
-
+            $parser->parseImatges();
             if(!$parser->errors){
                 $this->content = $parser->getContent();
             } else {
@@ -253,139 +265,6 @@ class Article extends ActiveRecord
                 $tagr->save();
             }
         }
-    }
-
-    /**
-     * Parses the content article and apply all the modifications
-     * @return void
-     */
-    private function parseArticleContent()
-    {
-        libxml_use_internal_errors(true);
-        $content = new DOMDocument();
-        $content->loadHTML($this->content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-
-        if (count(libxml_get_errors())) {
-            foreach (libxml_get_errors() as $error) {
-                switch ($error->code) {
-                    case 513:
-                        $this->addError('content', Yii::t('app', 'ID repetead at line {line}', ['line' => $error->line]));
-                }
-            }
-            libxml_clear_errors();
-            return;
-        };
-
-        array_map(function (ArticleHasAnchors $val) {
-            $val->delete();
-        }, ArticleHasAnchors::findAll(['article_id' => $this->id]));
-
-        $links = $content->getElementsByTagName('a');
-        foreach ($links as $link) {
-            if (strpos($link->getAttribute('id'), "anchor-") !== false) {
-                $anchor = new ArticleHasAnchors();
-                $anchor->setAttributes([
-                    'article_id' => $this->id,
-                    'anchor_id' => $link->getAttribute('id'),
-                    'content' => $link->parentNode->nodeValue
-                ]);
-                $anchor->save();
-            };
-        }
-
-        $images = $content->getElementsByTagName('img');
-        foreach ($images as $img) {
-            if (strpos($img->getAttribute('id'), 'img-') === false) {
-                $data = $img->getAttribute('src');
-                $tempPath = '';
-
-                try {
-                    list($type, $data) = explode(';', $data);
-                    list(, $data) = explode(',', $data);
-                    $data = base64_decode($data);
-
-                    $tempPath = Media::PATH_TO_TEMPORARY . time() . '.png';
-                } catch(\Exception $e){
-                    $this->addError('image_decocde', Yii::t('app', 'there is a problem uploading the image to our servers'));
-                }
-
-                if (file_put_contents($tempPath, $data)) {
-                    $con = Yii::$app->db->beginTransaction();
-
-                    try {
-
-                        // If the image has settet size properties as attributes we use that props to upload the image
-                        // In any other case we use getimagesize
-                        $size = [];
-                        if ($img->getAttribute('width') && $img->getAttribute('height')) {
-                            $size = [$img->getAttribute('width'), $img->getAttribute('height')];
-                        } else {
-                            $image_data = getimagesize($tempPath);
-                            $size = [$image_data[0], $image_data[1]];
-                        }
-
-                        if (isset($size[0]) && isset($size[1])) {
-                            if ($size[0] > 1000 || $size[1] > 1000) {
-                                $this->addError('size', Yii::t('app', 'image in line {line} is to big (max 1000px widht, height)', ['line' => $img->getLineNo()]));
-                                throw new Exception(Yii::t('app', 'Error validating size, too big!'));
-                            }
-                        } else {
-                            $this->addError('image', Yii::t('app', 'image in line {line} is not an image?', ['line' => $img->getLineNo()]));
-                            throw new Exception(Yii::t('app', 'error validating image'));
-                        }
-
-                        $table_name = 'article_has_media';
-                        Media::generateFoldersByTableName($table_name);
-
-                        $newA = new ArticleHasMedia();
-                        $newA->article_id = $this->id;
-                        $newA->save(false);
-
-                        $newM = new Media();
-                        $newM->setAttributes([
-                            'path' => 'uploads/' . date("Y") . '/' . date("m") . '/' . $table_name . '/',
-                            'file_name' => $table_name . '-' . $newA->id . '.png',
-                            'titol' => $img->getAttribute('title') ?: null,
-                            'user_id' => Yii::$app->user->identity->id,
-                            'es_imatge' => 1,
-                        ]);
-                        $newM->save();
-
-                        $newA->media_id = $newM->id;
-                        $newA->save();
-
-                        $newT = new MediaHasTables();
-                        $newT->setAttributes([
-                            'media_id' => $newM->id,
-                            'table_name' => $table_name,
-                            'table_id' => $newA->id,
-                        ]);
-                        $newT->save();
-
-                        Image::thumbnail($tempPath, $size[0], $size[1])
-                            ->save($newM->path . $newM->file_name, ['quality' => 100]);
-                        unlink($tempPath);
-
-                        $img->setAttribute('id', 'img-' . $newA->id);
-                        $img->setAttribute('src', Url::base(true) . '/' . Media::img($newA->id, $table_name, $size));
-                        $img->setAttribute('style', $img->getAttribute('style') . "width:$size[0]px;height:$size[1]px");
-                        $img->setAttribute('width', $size[0]);
-                        $img->setAttribute('height', $size[1]);
-                        $img->setAttribute('onerror', "this.class='not-found'");
-                        // $img->setAttribute('onerror', "this.src='" . Url::base(true) . '/' . Media::img(-1, -1 , $size) . "'");
-
-                        $con->commit();
-                    } catch (Exception $e) {
-                        $this->addError('exception', $e);
-                        $con->rollback();
-                    }
-
-
-                }
-            }
-        }
-        // Save the modifications in dom
-        $this->content = $content->saveHTML();
     }
 
     /**
