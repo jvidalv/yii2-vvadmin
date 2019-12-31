@@ -51,7 +51,7 @@ $this->beginPage() ?>
                             <div id="container-email">
                                 <div class="text-center">
                                     <h2><?= Yii::t('app', 'log in') ?></h2>
-                                    <p class="mt-1"><?= Yii::t('app', 'use your vvlog account') ?></p>
+                                    <p class="mt-1"><?= Yii::t('app', 'use your vvadmin account') ?></p>
                                 </div>
                                 <div class="mt-4">
                                     <div>
