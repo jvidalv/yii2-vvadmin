@@ -59,9 +59,6 @@ echo '<br>';
 
 <?= $form->field($model, 'color_hex')->textInput(['type' => 'color']) ?>
 
-
-
-
 <?= Html::submitButton('💾 ' . Yii::t('app', 'save'), ['class' => "au-btn au-btn-icon au-btn--green au-btn--small float-right", 'data' => ['ajax' => '1']]) ?>
 
 <?php ActiveForm::end(); ?>
