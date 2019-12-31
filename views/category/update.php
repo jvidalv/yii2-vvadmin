@@ -41,11 +41,11 @@ echo FileInput::widget([
 echo '<br>';
 ?>
 
-<?= $form->field($model, 'name_ca')->textInput(['maxlength' => true])->label('name_ca') ?>
+<?= $form->field($model, 'name_ca')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_ca') ?>
 
-<?= $form->field($model, 'name_es')->textInput(['maxlength' => true])->label('name_es') ?>
+<?= $form->field($model, 'name_es')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_es') ?>
 
-<?= $form->field($model, 'name_en')->textInput(['maxlength' => true])->label('name_en') ?>
+<?= $form->field($model, 'name_en')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_en') ?>
 
 <?= $form->field($model, 'description_ca')->textarea()->label('desc_ca') ?>
 
@@ -53,9 +53,9 @@ echo '<br>';
 
 <?= $form->field($model, 'description_en')->textarea()->label('desc_en') ?>
 
-<?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+<?= $form->field($model, 'code')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
 
-<?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1, 'value' => 9]) ?>
+<?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1]) ?>
 
 <?= $form->field($model, 'color_hex')->textInput(['type' => 'color']) ?>
 

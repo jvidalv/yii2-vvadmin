@@ -23,7 +23,6 @@ class CategoryController extends VController
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $model = new Category();
 
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('success', Yii::t('app', 'saved!'));
         }

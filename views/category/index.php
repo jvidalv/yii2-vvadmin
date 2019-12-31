@@ -31,10 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <strong><?= Yii::t('app', 'create new category') ?></strong>
                             </div>
                             <div class="card-body">
-                                <?= $form->field($model, 'name_ca')->textInput(['maxlength' => true])->label('name_ca') ?>
-                                <?= $form->field($model, 'name_es')->textInput(['maxlength' => true])->label('name_es') ?>
-                                <?= $form->field($model, 'name_en')->textInput(['maxlength' => true])->label('name_en') ?>
-                                <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+                                <?= $form->field($model, 'name_ca')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_ca') ?>
+                                <?= $form->field($model, 'name_es')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_es') ?>
+                                <?= $form->field($model, 'name_en')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_en') ?>
+                                <?= $form->field($model, 'code')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
                                 <?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1, 'value' => 9]) ?>
                             </div>
                             <div class="card-footer">
