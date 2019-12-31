@@ -1,14 +1,8 @@
 <?php
-// Comprobem si local o produccio
-$local = true;
-defined('YII_DEBUG') or define('YII_DEBUG', $local);
-defined('YII_ENV') or define('YII_ENV', $local ? 'dev' : 'prod');
+$prod = $_SERVER['HTTP_HOST'] === 'vvadmin.dev' ? 'prod' : 'dev';
 
-// Idioma per defecta catala
-setlocale(LC_TIME, 'ca_ES', 'Catalan_Spain', 'Catalan');
-
-// Activar HTTPS
-//$_SERVER['HTTPS']='on';
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', $prod);
 
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
