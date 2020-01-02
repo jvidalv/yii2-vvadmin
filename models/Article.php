@@ -392,12 +392,12 @@ class Article extends ActiveRecord
     {
         switch($this->language_id){
             case Language::LANG_CA:
-                return 'ca_ES';
+                return 'ca_ES.UTF-8';
             case Language::LANG_ES:
-                return 'es_ES';
+                return 'es_ES.UTF-8';
             case Language::LANG_EN:
             default:
-                return 'en_EN';
+                return 'en_EN.UTF-8';
         }
     }
 }
