@@ -17,6 +17,6 @@ use yii\widgets\ActiveForm;
 
 <?= $form->field($model, 'name_en')->textInput(['maxlength' => true])->label('name_en') ?>
 
-<?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1, 'value' => 9]) ?>
+<?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1]) ?>
 <?= Html::submitButton('💾 ' . Yii::t('app', 'save'), ['class' => "au-btn au-btn-icon au-btn--green au-btn--small float-right", 'data' => ['ajax' => '1']]) ?>
 <?php ActiveForm::end(); ?>

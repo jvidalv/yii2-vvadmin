@@ -213,7 +213,7 @@ class MediaController extends VController
                     $response->stream = fopen(Media::generate_image('user.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY), 'r');
                     break;
                 case Media::TBL_ARTICLE:
-                    $response->stream = fopen(Media::generate_image('article.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY), 'r');
+                    $response->stream = fopen(Media::generate_image('article.jpg', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY), 'r');
                     break;
                 default:
                     $response->stream = fopen(Media::generate_image('404.jpg', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY), 'r');

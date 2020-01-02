@@ -24,7 +24,7 @@ class Article extends \app\models\Article
                     return $this->translations->time_to_read;
                 },
                 'date_nice' => function () {
-                    setlocale(LC_TIME, [$this->language_id]);
+                    setlocale(LC_TIME, $this->getLocale());
                     return strftime("%b %e, %G", strtotime($this->date));
                 },
                 'tags' => function () {

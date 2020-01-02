@@ -148,13 +148,15 @@ class Article extends ActiveRecord
                 $this->parseArticleTags();
             }
             // Parse article content
-            $parser = new ArticleParser($this->id, $this->content);
-            $parser->insertAnchors();
-            $parser->parseImatges();
-            if (!$parser->errors) {
-                $this->content = $parser->getContent();
-            } else {
-                $this->addErrors($parser->errors);
+            if($this->content) {
+                $parser = new ArticleParser($this->id, $this->content);
+                $parser->insertAnchors();
+                $parser->parseImatges();
+                if (!$parser->errors) {
+                    $this->content = $parser->getContent();
+                } else {
+                    $this->addErrors($parser->errors);
+                }
             }
             // End article parsing
         }
@@ -380,5 +382,22 @@ class Article extends ActiveRecord
     public function isFeatured()
     {
         return (bool)$this->translations->featured;
+    }
+
+    /**
+     * Returns locale as expected from setlocale funcion
+     * @return string
+     */
+    public function getLocale()
+    {
+        switch($this->language_id){
+            case Language::LANG_CA:
+                return 'ca_ES';
+            case Language::LANG_ES:
+                return 'es_ES';
+            case Language::LANG_EN:
+            default:
+                return 'en_EN';
+        }
     }
 }

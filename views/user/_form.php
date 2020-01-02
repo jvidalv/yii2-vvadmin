@@ -74,7 +74,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'name' => 'media_upload[]',
                                 'id' => 'media-input',
                                 'options' => [
-                                    'multiple' => true,
                                     'accept' => '.jpeg,.jpg,.png'
                                 ],
                                 'language' => 'ca',

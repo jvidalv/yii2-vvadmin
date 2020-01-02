@@ -128,7 +128,7 @@ class Media extends ActiveRecord
             case Media::TBL_USER:
                 return Media::generate_image('user.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY);
             case Media::TBL_ARTICLE:
-                return Media::generate_image('article.png', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY);
+                return Media::generate_image('article.jpg', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY);
             default:
                 return Media::generate_image('404.jpg', Media::PATH_TO_DEFAULTS, $size, Media::PATH_TO_TEMPORARY);
         }
