@@ -21,7 +21,6 @@ return [
     '"{attribute}" does not support operator "{operator}".' => '',
     '(not set)' => '',
     'Action not found.' => '',
-    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => '',
     'Are you sure you want to delete this item?' => '',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => '',
@@ -42,7 +41,6 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => '',
     'Operator "{operator}" must be used with a search attribute.' => '',
     'Operator "{operator}" requires multiple operands.' => '',
-    'Options available: {options}' => '',
     'Page not found.' => '',
     'Please fix the following errors:' => '',
     'Please upload a file.' => '',
@@ -143,4 +141,6 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '',
+    'Aliases available: {aliases}' => '@@@@',
+    'Options available: {options}' => '@@@@',
 ];
