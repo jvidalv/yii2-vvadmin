@@ -57,9 +57,9 @@ Overriding tinymce menu bar to make it sticky
 .tox-editor-container, .tox-tinymce{
     overflow: unset !important;
 }
-.tox-editor-header{
+.tox-toolbar{
     position: sticky !important;
-    top: 0px;
+    top: 0;
     z-index: 999;
 }
 

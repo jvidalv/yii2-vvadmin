@@ -6,6 +6,7 @@ use app\components\VController;
 use app\models\Article;
 use app\models\ArticleHasAnchors;
 use app\models\ArticleHasMedia;
+use app\models\ArticleHasSources;
 use app\models\ArticleHasTags;
 use app\models\ArticleHasTranslations;
 use app\models\ArticleSearch;
@@ -16,6 +17,7 @@ use app\models\Tag;
 use DOMDocument;
 use Exception;
 use Yii;
+use yii\base\Model;
 use yii\db\StaleObjectException;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
@@ -27,7 +29,6 @@ use yii\web\Response;
  */
 class ArticleController extends VController
 {
-
     /**
      * Lists all Article models.
      * @return mixed
@@ -59,21 +60,32 @@ class ArticleController extends VController
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
         Yii::$app->user->identity->changeLanguage($model->language->code);
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-
+            // tags prop before save
+            $model->tags_form = isset(Yii::$app->request->post('Article')['tags']) ? Yii::$app->request->post('Article')['tags'] : null;
+            // soruces prop before save
+            $model->sources_form = Yii::$app->request->post('ArticleHasSources') ?? null;
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'the changes have been saved!'));
             } else {
-                 array_map(function ($string) {
-                     Yii::$app->session->addFlash('danger', $string[0] . '<br/>');}
-                     , $model->errors);
+                array_map(function ($string) {
+                    Yii::$app->session->addFlash('danger', $string[0] . '<br/>');
+                }
+                    , $model->errors);
             }
         }
 
+        // Load sources after saving them
+        $newSource = new ArticleHasSources(['article_id' => $id]);
+        $sources = ArticleHasSources::findAll(['article_id' => $id]);
+
         return $this->render('update', [
             'model' => $model,
+            'newSource' => $newSource,
+            'sources' => $sources,
         ]);
     }
 
@@ -101,21 +113,26 @@ class ArticleController extends VController
             $newArticle->translation_of = $id;
 
             if ($newArticle->save()) {
-
                 // copy anchors
-                foreach($model->articleHasAnchors as $anchor){
+                foreach ($model->articleHasAnchors as $anchor) {
                     $an = new ArticleHasAnchors();
                     $an->article_id = $newArticle->id;
                     $an->anchor_id = $anchor->anchor_id;
                     $an->content = $anchor->content;
                     $an->save();
                 }
-
                 // copy tags
-                foreach($model->articleHasTags as $tag){
+                foreach ($model->articleHasTags as $tag) {
                     $an = new ArticleHasTags();
                     $an->article_id = $newArticle->id;
                     $an->tag_id = $tag->id;
+                    $an->save();
+                }
+                // copy sources
+                foreach ($model->articleHasSources as $tag) {
+                    $an = new ArticleHasSources($tag);
+                    $an->id = nulL;
+                    $an->article_id = $newArticle->id;
                     $an->save();
                 }
 
@@ -124,11 +141,55 @@ class ArticleController extends VController
             }
 
             Yii::$app->user->identity->changeLanguage($lang_code);
-            return $this->redirect(['update', 'id' => $newArticle->id]);
+            return $this->redirect(['update', 'id' => $newArticle->id, 'slug' => $newArticle->slug]);
         }
 
         Yii::$app->session->setFlash('error', Yii::t('app', 'error'));
-        return $this->redirect(['update', 'id' => $model->id]);
+        return $this->redirect(['update', 'id' => $model->id, 'slug' => $model->slug]);
+    }
+
+    /**
+     * Syncs content between articles
+     * @param $id
+     * @return Response
+     */
+    public function actionSync($id)
+    {
+        $article = Article::findOne($id);
+        try {
+            $languages = Yii::$app->request->post('sync-languages');
+            $options = Yii::$app->request->post('sync-options');
+            foreach ($languages as $lang) {
+                if ($sArticle = $article->translations["article_$lang"]) {
+                    $sArticle = Article::findOne($article->translations["article_$lang"]);
+                    foreach ($options as $option) {
+                        switch ($option) {
+                            case 'tags':
+                                $sArticle->tags_form = $article->articleHasTags;
+                                break;
+                            case 'sources':
+                                $sArticle->sources_form = $article->articleHasSources;
+                                break;
+                            case 'resume':
+                                $sArticle->resume = $article->resume;
+                                break;
+                            case 'content':
+                                $sArticle->content = $article->content;
+                                break;
+                        }
+                    }
+                    $sArticle->save();
+                } else {
+                    Yii::$app->session->addFlash('error', Yii::t('app', 'language translation for this article does not exist'));
+                }
+            }
+            Yii::$app->session->addFlash('success', Yii::t('app', 'sync went right!'));
+
+        } catch (Exception $e) {
+            Yii::$app->session->addFlash('error', Yii::t('app', 'something went wrong'));
+        }
+
+        return $this->redirect(['update', 'id' => $id, 'slug' => $article->slug]);
     }
 
     /**
@@ -142,7 +203,7 @@ class ArticleController extends VController
         $trans = $art->translations;
         $trans->featured = (int)!$trans->featured;
         $trans->save();
-        Yii::$app->session->setFlash('success', $trans->featured ? Yii::t('app', 'article is now featured') :  Yii::t('app', 'article is no longer featured')) ;
+        Yii::$app->session->setFlash('success', $trans->featured ? Yii::t('app', 'article is now featured') : Yii::t('app', 'article is no longer featured'));
         return $this->redirect('index');
     }
 
@@ -150,12 +211,12 @@ class ArticleController extends VController
      * Saves all articles again to regenerate certain contents
      * @return Response
      */
-    public function actionRegenerateArticles(){
+    public function actionRegenerateArticles()
+    {
 
-        foreach(Article::find()->all() as $article){
+        /*foreach(Article::find()->all() as $article){
             $article->save();
-        }
-
+        }*/
         return $this->redirect('index');
     }
 

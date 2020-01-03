@@ -100,4 +100,13 @@ class ArticleHasTranslations extends ActiveRecord
         return $this->hasOne(Category::className(), ['id' => 'category_id']);
     }
 
+    /**
+     * Has all translations
+     * @return bool
+     */
+    public function hasAllTranslations()
+    {
+        return $this->article_ca && $this->article_es && $this->article_en;
+    }
+
 }

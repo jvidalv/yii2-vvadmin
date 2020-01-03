@@ -24,7 +24,7 @@ window.addEventListener("hashchange", function () {
  */
 function uploadImageTiny(cb, value, meta) {
 
-    var input = document.createElement('input');
+    const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
 
@@ -37,19 +37,19 @@ function uploadImageTiny(cb, value, meta) {
     */
 
     input.onchange = function () {
-        var file = this.files[0];
+        const file = this.files[0];
 
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.onload = function () {
             /*
               Note: Now we need to register the blob in TinyMCEs image blob
               registry. In the next release this part hopefully won't be
               necessary, as we are looking to handle it internally.
             */
-            var id = 'blobid' + (new Date()).getTime();
-            var blobCache = tinymce.activeEditor.editorUpload.blobCache;
-            var base64 = reader.result.split(',')[1];
-            var blobInfo = blobCache.create(id, file, base64);
+            const id = 'blobid' + (new Date()).getTime();
+            const blobCache = tinymce.activeEditor.editorUpload.blobCache;
+            const base64 = reader.result.split(',')[1];
+            let blobInfo = blobCache.create(id, file, base64);
             blobCache.add(blobInfo);
 
             /* call the callback and populate the Title field with the file name */
@@ -65,7 +65,6 @@ function uploadImageTiny(cb, value, meta) {
  * Capture form post and modify its default logic
  */
 $(document).submit(function () {
-
     // New input with number of words serverd by tinymce
     $('form').append(`<input name="Article[word_count]" value="${tinymce.activeEditor.plugins.wordcount.body.getWordCount()}" />`);
 

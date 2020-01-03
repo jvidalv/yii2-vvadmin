@@ -113,6 +113,8 @@ class ArticleParser
             if ($this->anchorHasToBeInserted($h2)) {
 
                 $h2->firstChild->setAttribute('id', "a$i");
+                // For the sake of better looking anchors (It leaves empty space on top)
+                $h2->firstChild->setAttribute('style', "padding-top: 50px; margin-top: -50px;");
 
                 $anchor = new ArticleHasAnchors();
                 $anchor->setAttributes([

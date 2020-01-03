@@ -33,6 +33,13 @@ class Article extends \app\models\Article
                 'anchors' => function () {
                     return $this->articleHasAnchors;
                 },
+                'sources' => function() {
+                    $sources = [];
+                    foreach($this->articleHasSources as $source){
+                        $sources[$source->type];
+                    }
+                    return $this->articleHasSources;
+                },
                 'translations' => function () {
                     return [
                         'trans_id' => $this->translations->id,

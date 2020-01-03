@@ -41,13 +41,15 @@ use yii\imagine\Image;
  * @property \yii\db\ActiveQuery $continuationA
  * @property \yii\db\ActiveQuery $language
  * @property \yii\db\ActiveQuery $articleHasAnchors
+ * @property string $locale
+ * @property \yii\db\ActiveQuery $articleHasSources
  * @property int $created_at
  */
 class Article extends ActiveRecord
 {
 
     public $general;
-    public $tags_form;
+    public $tags_form, $sources_form;
     public $imatge;
 
     /**
@@ -144,11 +146,15 @@ class Article extends ActiveRecord
 
         if (!$this->isNewRecord) {
             // Parse tags
-            if($this->tags_form = Yii::$app->request->post()['Article']['tags']){
+            if ($this->tags_form) {
                 $this->parseArticleTags();
             }
+            // Parse sources
+            if ($this->sources_form) {
+                $this->parseArticleSources();
+            }
             // Parse article content
-            if($this->content) {
+            if ($this->content) {
                 $parser = new ArticleParser($this->id, $this->content);
                 $parser->insertAnchors();
                 $parser->parseImatges();
@@ -175,7 +181,6 @@ class Article extends ActiveRecord
 
         // If this is true then we are saving and element that has an origin, and in such cases we assign them a translation before contiue
         if ($this->translation_of) {
-
             $translation = ArticleHasTranslations::findOne(['article_' . Article::findOne($this->translation_of)->language_id => $this->translation_of]);
             $translation->setAttributes([
                 'article_' . $this->language_id => $this->id,
@@ -186,7 +191,6 @@ class Article extends ActiveRecord
 
         // We generate the translation log if it does not exist
         if (!$this->translations) {
-
             $translation = new ArticleHasTranslations();
             $translation->setAttributes([
                 'article_' . $this->language_id => $this->id,
@@ -235,6 +239,24 @@ class Article extends ActiveRecord
     }
 
     /**
+     * Parses sources
+     * Also deletes all the previous sources
+     */
+    private function parseArticleSources()
+    {
+        array_map(function (ArticleHasSources $val) {
+            $val->delete();
+        }, ArticleHasSources::findAll(['article_id' => $this->id]));
+
+        foreach ($this->sources_form as $source) {
+            $nsource = new ArticleHasSources($source);
+            $nsource->article_id = $this->id;
+            $nsource->id = null;
+            $nsource->save();
+        }
+    }
+
+    /**
      * Parses tags select and stores
      * Also deletes all the tags
      */
@@ -247,7 +269,7 @@ class Article extends ActiveRecord
         foreach ($this->tags_form as $tag) {
             $tagr = new ArticleHasTags();
             $tagr->setAttributes([
-                'tag_id' => $tag,
+                'tag_id' => is_object($tag) ? $tag->tag_id : $tag, // If it is object the origin is from sync, other case from select2 post
                 'article_id' => $this->id,
             ]);
             $tagr->save();
@@ -334,6 +356,14 @@ class Article extends ActiveRecord
     /**
      * @return ActiveQuery
      */
+    public function getArticleHasSources()
+    {
+        return $this->hasMany(ArticleHasSources::className(), ['article_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getArticleHasAnchors()
     {
         return $this->hasMany(ArticleHasAnchors::className(), ['article_id' => 'id'])->orderBy('id asc');
@@ -385,12 +415,12 @@ class Article extends ActiveRecord
     }
 
     /**
-     * Returns locale as expected from setlocale funcion
+     * Returns locale as expected from setlocale function and ubuntu server
      * @return string
      */
     public function getLocale()
     {
-        switch($this->language_id){
+        switch ($this->language_id) {
             case Language::LANG_CA:
                 return 'ca_ES.utf8';
             case Language::LANG_ES:
@@ -399,5 +429,25 @@ class Article extends ActiveRecord
             default:
                 return 'en_EN.utf8';
         }
+    }
+
+    /**
+     * Returns an array of array translations that can be syncronized
+     * @return array
+     */
+    public function getSyncLanguages()
+    {
+        $languages = [Language::LANG_CA => Yii::t('app', 'catalan'), Language::LANG_ES => Yii::t('app', 'spanish'), Language::LANG_EN => Yii::t('app', 'english')];
+        unset($languages[$this->language_id]);
+        if (!$this->translations->article_ca) {
+            unset($languages[Language::LANG_CA]);
+        }
+        if (!$this->translations->article_es) {
+            unset($languages[Language::LANG_ES]);
+        }
+        if (!$this->translations->article_en) {
+            unset($languages[Language::LANG_EN]);
+        }
+        return $languages;
     }
 }
