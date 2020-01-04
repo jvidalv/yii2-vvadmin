@@ -22,6 +22,7 @@ class ArticleHasSources extends \yii\db\ActiveRecord
     const T_FRAMEWORK = 'framework';
     const T_PACKAGE = 'package';
     const T_SOURCE = 'source';
+    const T_SO = 'so';
     const T_OTHER = 'other';
 
     /**
@@ -68,6 +69,6 @@ class ArticleHasSources extends \yii\db\ActiveRecord
      */
     public static function getTypes()
     {
-        return [self::T_LANGUAGE => self::T_LANGUAGE, self::T_LIBRARY => self::T_LIBRARY, self::T_FRAMEWORK => self::T_FRAMEWORK, self::T_PACKAGE => self::T_PACKAGE, self::T_SOURCE => self::T_SOURCE, self::T_OTHER => self::T_OTHER];
+        return [self::T_LANGUAGE => self::T_LANGUAGE, self::T_SO => self::T_SO, self::T_LIBRARY => self::T_LIBRARY, self::T_FRAMEWORK => self::T_FRAMEWORK, self::T_PACKAGE => self::T_PACKAGE, self::T_SOURCE => self::T_SOURCE, self::T_OTHER => self::T_OTHER];
     }
 }
