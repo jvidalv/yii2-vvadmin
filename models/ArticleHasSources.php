@@ -68,6 +68,6 @@ class ArticleHasSources extends \yii\db\ActiveRecord
      */
     public static function getTypes()
     {
-        return [self::T_LANGUAGE => self::T_LANGUAGE, self::T_LIBRARY => self::T_LIBRARY, self::T_FRAMEWORK => self::T_FRAMEWORK, self::T_PACKAGE => self::T_PACKAGE, self::T_SOURCE => self::T_SOURCE, self::T_OTHER => self::T_OTHER,];
+        return [self::T_LANGUAGE => self::T_LANGUAGE, self::T_LIBRARY => self::T_LIBRARY, self::T_FRAMEWORK => self::T_FRAMEWORK, self::T_PACKAGE => self::T_PACKAGE, self::T_SOURCE => self::T_SOURCE, self::T_OTHER => self::T_OTHER];
     }
 }

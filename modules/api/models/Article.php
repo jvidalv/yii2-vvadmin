@@ -35,9 +35,9 @@ class Article extends \app\models\Article
                 },
                 'sources' => function() {
                     $sources = [];
-                    foreach($this->articleHasSources as $source){
+                    /*foreach($this->articleHasSources as $source){
                         $sources[$source->type];
-                    }
+                    }*/
                     return $this->articleHasSources;
                 },
                 'translations' => function () {
