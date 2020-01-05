@@ -34,11 +34,7 @@ class Article extends \app\models\Article
                     return $this->articleHasAnchors;
                 },
                 'sources' => function() {
-                    $sources = [];
-                    /*foreach($this->articleHasSources as $source){
-                        $sources[$source->type];
-                    }*/
-                    return $this->articleHasSources;
+                    return ArticleHasSources::mapSourcesToLabels($this->articleHasSources);
                 },
                 'translations' => function () {
                     return [

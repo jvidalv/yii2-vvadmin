@@ -11,3 +11,5 @@ CREATE TABLE `article_has_sources` (
 )
 ENGINE=InnoDB
 ;
+
+
