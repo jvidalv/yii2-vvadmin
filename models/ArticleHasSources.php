@@ -76,9 +76,9 @@ class ArticleHasSources extends \yii\db\ActiveRecord
      * Returns an array of arrays with labels as keys for the api to consume
      * @return array
      */
-    public static function getTypesLabelsAsKeys()
+    public static function getTypesAsKeys()
     {
-        return [Yii::t('app', 'languages') => [], Yii::t('app', 'OS') => [], Yii::t('app', 'library') => [], Yii::t('app', 'framework') => [], Yii::t('app', 'package') => [], Yii::t('app', 'source') => [], Yii::t('app', 'other') => []];
+        return [self::T_LANGUAGE => [], self::T_SO => [], self::T_LIBRARY => [], self::T_FRAMEWORK => [], self::T_PACKAGE => [], self::T_SOURCE => [], self::T_OTHER => []];
     }
 
 

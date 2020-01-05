@@ -34,7 +34,7 @@ class Article extends \app\models\Article
                     return $this->articleHasAnchors;
                 },
                 'sources' => function() {
-                    return ArticleHasSources::mapSourcesToLabels($this->articleHasSources);
+                    return $this->articleHasSources ? ArticleHasSources::mapSourcesToLabels($this->articleHasSources) : null;
                 },
                 'translations' => function () {
                     return [
