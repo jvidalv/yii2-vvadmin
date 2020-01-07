@@ -14,6 +14,9 @@ class Article extends \app\models\Article
         return array_merge(
             parent::fields(),
             [
+                'image' => function() {
+                    return Media::img($this->id, Media::TBL_ARTICLE, [200, 200]);
+                },
                 'category_nice' => function () {
                     return $this->category["name_$this->language_id"];
                 },

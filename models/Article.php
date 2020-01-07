@@ -101,6 +101,7 @@ class Article extends ActiveRecord
     {
         return [
             [['language_id', 'user_id', 'title', 'category_id'], 'required'],
+            [['title', 'resume'], 'trim'],
             [['date'], 'default', 'value' => function () {
                 return Date('Y-m-d H:i:s');
             }],
