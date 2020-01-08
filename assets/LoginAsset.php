@@ -9,6 +9,7 @@ class LoginAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
+        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css',
         'themes/CoolAdmin/css/font-face.css',
         'themes/CoolAdmin/css/theme.css',
         'css/login.css',

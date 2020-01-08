@@ -1,7 +1,7 @@
 <?php
 
 /* @var $this yii\web\View */
-/* @var $form yii\bootstrap\ActiveForm */
+/* @var $backgroundImageUrl */
 
 /* @var $model app\models\LoginForm */
 
@@ -27,11 +27,12 @@ $this->beginPage() ?>
 <body class="animsition">
 <?php $this->beginBody() ?>
 <div class="page-wrapper">
-    <div class="page-content--bge5 animacio-gradient">
+    <div class="page-content--bge5 animacio-gradient"
+         style="<?= "background: url(" . $backgroundImageUrl . ") no-repeat center center;" ?>">
         <div class="container">
             <div class="login-wrap">
                 <div class="login-logo">
-                    <img src="/images/logo.svg" alt="vblogv" width="200">
+                    <img src="/images/logo.svg" alt="vblogv" width="150">
                 </div>
                 <div class="login-content">
                     <div>
@@ -44,7 +45,7 @@ $this->beginPage() ?>
                             'id' => 'login-form',
                             'enableClientValidation' => false,
                             'fieldConfig' => [
-                                'template' => "<label class='login-labels mb-0'>{label}</label>{input}",
+                                'template' => "<span class='login-labels mb-0 text-dark'>{label}</span>{input}",
                             ],
                         ]); ?>
                         <div class="container-pantalles-login">
@@ -57,7 +58,7 @@ $this->beginPage() ?>
                                     <div>
                                         <?= $form->field($model, 'email')->textInput(
                                             [
-                                                'class' => 'form-control login-input p-4',
+                                                'class' => 'form-control login-input br-black p-4',
                                                 'autofocus' => true,
                                                 'type' => 'email',
                                                 'autocorrect' => 'off',
@@ -68,12 +69,13 @@ $this->beginPage() ?>
                                     </div>
                                     <div class="d-flex flex-row-reverse flex-wrap w-100 mt-4">
                                         <div>
-                                      <span id="seguent-usuari" class="btn btn-primary bg-blau-fosc br cursor-pointer">
+                                      <span id="seguent-usuari"
+                                            class="btn btn-primary bg-dark border-dark cursor-pointer">
                                         <?= Yii::t('app', 'next') ?>
                                       </span>
                                         </div>
                                         <div style="flex-grow: 1">
-                                            <a href="https://www.fempoble.app/contactar"
+                                            <a href="https://vvlog.dev/contact"
                                                class="text-secondary"><?= Yii::t('app', 'do you need an acount?') ?></a>
                                         </div>
                                     </div>
@@ -81,7 +83,8 @@ $this->beginPage() ?>
                             </div>
                             <div id="container-password" style="display:none">
                                 <div class="text-center">
-                                    <img id="empresa_imatge-response" class="rounded-circle mx-auto d-block w-25">
+                                    <img id="empresa_imatge-response" class="rounded-circle mx-auto d-block w-25"
+                                         alt="its you!" src="#">
                                     <p class="mt-2"><?= Yii::t('app', 'Benvingut de nou,') ?> <span id="nom-response"
                                                                                                     class="font-weight-bold">No_value</span>
                                     </p>
@@ -102,7 +105,7 @@ $this->beginPage() ?>
                                     <div class="d-flex flex-row-reverse flex-wrap w-100 mt-4">
                                         <div>
                                       <span id="seguent-password"
-                                            class="btn btn-primary bg-blau-fosc br cursor-pointer">
+                                            class="btn btn-primary bg-dark border-dark cursor-pointer">
                                         <?= Yii::t('app', 'Següent') ?>
                                       </span>
                                         </div>

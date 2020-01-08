@@ -4,9 +4,26 @@
     cursor: text
 }
 
+.login-logo {
+    margin-bottom: 10px;
+    transform: translateY(87px);
+    filter: invert(1);
+    text-align: left;
+}
+
+.form-control.form-control:focus {
+    color: #ffffff;
+    background-color: #000000;
+    outline: 0;
+    box-shadow: none;
+    transition: 0.5s;
+}
+
 .login-content {
-    border-radius: 20px;
-    border: 6px solid #2c53a6;
+    border: unset;
+    background: #ffffffc9;
+    border-radius: 2px;
+    box-shadow: 0 0 9px 5px #ffffff69;
 }
 
 .login-wrap {
@@ -21,8 +38,7 @@
 
 
 .login-input:focus {
-    background-color: #ffffff !important;
-    border: 2px solid #2c53a6 !important;
+    border: 2px solid #969696 !important;
     box-shadow: none;
 }
 
@@ -51,6 +67,6 @@
     position: relative;
     top: -50px;
     left: -25px;
-    height: 0px;
+    height: 0;
     font-weight: bold
 }

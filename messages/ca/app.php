@@ -161,7 +161,7 @@ return [
     'translations' => 'Traduccions',
     'upload an image for the article' => 'Puja una imatge per al article',
     'upload an image for the category' => 'Pujar una imatge per a la categoría',
-    'use your vvadmin account' => 'Utilitza el teu compte de vvadmin',
+    'use your vvadmin account' => 'Utilitza el teu usuari de vvadmin',
     'user' => 'Usuari',
     'user created!' => 'Usuari creat',
     'username' => 'Nom d\'usuari',

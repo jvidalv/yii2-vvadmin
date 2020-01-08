@@ -358,46 +358,91 @@ input[type="checkbox"] {
 
 /* ANIMATIONS */
 .animacio-gradient {
-    background: linear-gradient(89deg, #000000, #535354, #313131, #131313);
-    background-size: 800% 800%;
-    -webkit-animation: gradient 15s ease infinite;
-    -moz-animation: gradient 15s ease infinite;
-    animation: gradient 15s ease infinite;
+    position : relative;
+    overflow: hidden;
 }
+.animacio-gradient > div {
+    position: relative;
+}
+.animacio-gradient::before {
+    content: " ";
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    -webkit-animation: grow 60s ease forwards;
+    -moz-animation: grow 60s ease forwards;
+    animation: grow 60s ease forwards;
+    background: inherit;
+    background-size: cover;
+    transform-origin: center center;
+    filter: blur(1px);
+}
+
+
 
 @-webkit-keyframes gradient {
     0% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
     50% {
         background-position: 100% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
 }
 
 @-moz-keyframes gradient {
     0% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
     50% {
         background-position: 100% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
 }
 
 @keyframes gradient {
     0% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
     }
     50% {
         background-position: 100% 50%;
     }
     100% {
-        background-position: 0% 50%;
+        background-position: 0 50%;
+    }
+}
+
+@-webkit-keyframes grow {
+   from {
+       transform: scale(1);
+   }
+    to {
+        transform: scale(1.5);
+
+    }
+}
+
+@-moz-keyframes grow {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.5);
+
+    }
+}
+
+@keyframes grow {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.5);
+
     }
 }
 

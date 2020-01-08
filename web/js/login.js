@@ -1,16 +1,20 @@
-// self executing function here
+/**
+ * THIS CODE IS OLD AND NEEDS TO BE REFACTORED AND SIMPLIEFIED
+ */
 (function () {
     onEnterOrSeguent();
 })();
 
-//capturem enter
+/**
+ * Capture enter button so you can't enter and only click button
+ */
 function onEnterOrSeguent() {
     $("#seguent-usuari").on("click", function (e) {
         userExist();
         e.preventDefault();
     });
     $("#loginform-email").on("keyup", function (e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             userExist();
             e.preventDefault();
         }
@@ -20,16 +24,19 @@ function onEnterOrSeguent() {
         e.preventDefault();
     });
     $("#loginform-password").on("keyup", function (e) {
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             comprobarContrassenya();
             e.preventDefault();
         }
     });
 }
 
-//quan lajax retorna un usuari
+/**
+ * Throws when ajax returns successful
+ * @param response
+ */
 function onAjaxSuccess(response) {
-    var cP = $("#container-password");
+    let cP = $("#container-password");
     cP.addClass("apareixer-de-baix");
     cP.find("#empresa_imatge-response").attr("src", response.imatge);
     cP.find("#nom-response").html(response.nom);
@@ -38,21 +45,26 @@ function onAjaxSuccess(response) {
     }, 800);
 }
 
-// Crida ajax comprobar si existex usuari
+/**
+ * Checks if user exists using and ajax call
+ */
 function userExist() {
-    var val = $("#loginform-email").val();
+    const val = $("#loginform-email").val();
     if (val) {
+        $("#seguent-usuari").append('<i class="fas fa-circle-notch fa-spin ml-2"></i>');
         $.ajax({
             url: "/site/existeix-usuari",
             type: "post",
             data: {data: val}
+        }).always(() => {
+            $('.fa-circle-notch').remove();
         }).done(response => {
+            $('.fa-circle-notch').remove();
             if (response.status) {
                 $("#loginform-email").blur();
                 $("#loginform-email").removeClass("br-red");
 
                 onAjaxSuccess(response);
-
                 $("#container-email")
                     .addClass("desapareixer-esquerra")
                     .hide("fast");
@@ -68,15 +80,20 @@ function userExist() {
     }
 }
 
-// Crida ajax comprobar contrassenya
+/**
+ * Checks for user password
+ */
 function comprobarContrassenya() {
-    var data = $("#login-form").serializeArray();
+    const data = $("#login-form").serializeArray();
     if (data) {
+        $("#seguent-password").append('<i class="fas fa-circle-notch fa-spin ml-2"></i>');
         $.ajax({
             url: "/site/contrassenya-correcta",
             type: "post",
             dataType: "json",
             data: data
+        }).always(() => {
+            $('.fa-circle-notch').remove();
         }).done(response => {
             if (!response.status) {
                 mostrarLabelError("password", response.error);
@@ -89,9 +106,13 @@ function comprobarContrassenya() {
     }
 }
 
-//on mostrar lerror
+/**
+ * Error labbel and type
+ * @param tipo
+ * @param missatge
+ */
 function mostrarLabelError(tipo, missatge) {
-    if (tipo == "email") {
+    if (tipo === "email") {
         $("#error-label-email")
             .html(missatge)
             .show("fast");
@@ -101,7 +122,7 @@ function mostrarLabelError(tipo, missatge) {
                 .hide("fast");
         }, 5000);
     }
-    if (tipo == "password") {
+    if (tipo === "password") {
         $("#error-label-password")
             .html(missatge)
             .show("fast");
