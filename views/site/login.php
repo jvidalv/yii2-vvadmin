@@ -19,7 +19,7 @@ $this->beginPage() ?>
     <meta charset="<?= Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.jpg" type="image/x-icon">
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
@@ -110,7 +110,7 @@ $this->beginPage() ?>
                                       </span>
                                         </div>
                                         <div style="flex-grow: 1">
-                                            <a href="mailto:info@fempoble.app"
+                                            <a href="https://vvlog.dev/contact"
                                                class="text-secondary"><?= Yii::t('app', 'No recordes la teva contrassenya?') ?></a>
                                         </div>
                                     </div>
