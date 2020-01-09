@@ -24,7 +24,7 @@ class UserController extends VController
     public function actionIndex()
     {
         if (Yii::$app->user->identity->isAdmin()) {
-            // carreguem modal i dades per al modal de creacio
+
             $model = new User();
             $model->password = bin2hex(openssl_random_pseudo_bytes(3));
 
@@ -102,10 +102,10 @@ class UserController extends VController
      */
     public function actionChangeLanguage()
     {
-        $lang = Yii::$app->request->post()['lang'];
+        $lang = Yii::$app->request->post('lang');
 
         $session = Yii::$app->session;
-        $session->set('language', $lang);
+        $session->set('language', $lang ?? 'en');
 
         $query = Language::findOne(['code' => $lang]);
 

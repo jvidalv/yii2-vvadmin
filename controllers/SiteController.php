@@ -9,11 +9,15 @@ use app\models\User;
 use Yii;
 use yii\web\Response;
 
+/**
+ * Class SiteController
+ * @package app\controllers
+ */
 class SiteController extends VController
 {
 
     /**
-     * Displays homepage.
+     * Display homepage.
      * @return string
      */
     public function actionIndex()
@@ -21,6 +25,9 @@ class SiteController extends VController
         return $this->render('index');
     }
 
+    /**
+     * @return string
+     */
     public function actionError()
     {
             return $this->render('error');
@@ -28,13 +35,12 @@ class SiteController extends VController
 
     /**
      * Login action.
-     *
      * @return Response|string
      */
     public function actionLogin()
     {
         // Inserts random home images to the background of the login page
-        $randomBackground = ['/images/backgrounds/fondo-olivers-forques.jpg', '/images/backgrounds/fondo-flors.jpg', '/images/backgrounds/fondo-gebra.jpg', '/images/backgrounds/fondo-llarg-vinya.jpg',   '/images/backgrounds/fondo-mao-morro.jpg',  '/images/backgrounds/fondo-olivers-pare.jpg'];
+        $randomBackground = ['/images/backgrounds/fondo-olivers-forques.jpg', '/images/backgrounds/fondo-flors.jpg', '/images/backgrounds/fondo-gebra.jpg',  '/images/backgrounds/fondo-mao-morro.jpg',  ];
 
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -49,7 +55,7 @@ class SiteController extends VController
         $model->password = '';
         return $this->renderPartial('login', [
             'model' => $model,
-            'backgroundImageUrl' => $randomBackground[rand(0,5)],
+            'backgroundImageUrl' => $randomBackground[rand(0,3)],
         ]);
     }
 

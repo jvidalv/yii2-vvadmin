@@ -73,7 +73,7 @@ return [
     'Table Name' => '@',
     'Tag ID' => '@',
     'The requested page does not exist.' => 'La página solicitada no existe.',
-    'Title' => 'Titulo',
+    'Title' => 'Título',
     'Totes' => 'Todas',
     'Updated At' => 'Actualizado',
     'Upload files' => 'Subir ficheros',
