@@ -134,7 +134,7 @@ return [
     'phone' => 'Phone',
     'please contact us if you think this is a server error. Thank you.' => 'Please contact us if you think this is a server error. Thank you!',
     'priority' => 'Priority',
-    'private' => 'private',
+    'private' => 'Private',
     'publish date' => 'Publish date',
     'published' => 'Published',
     'regenerate articles' => 'Regenerate articles',
