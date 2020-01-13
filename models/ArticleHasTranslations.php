@@ -48,7 +48,7 @@ class ArticleHasTranslations extends ActiveRecord
     public function rules()
     {
         return [
-            [['article_ca', 'article_es', 'article_en', 'state', 'featured', 'category_id', 'time_to_read', 'created_at', 'updated_at'], 'integer'],
+            [['article_ca', 'article_es', 'article_en', 'state', 'featured', 'category_id', 'time_to_read', 'claps'], 'integer'],
             [['date'], 'safe'],
         ];
     }
@@ -64,6 +64,7 @@ class ArticleHasTranslations extends ActiveRecord
             'article_es' => Yii::t('app', 'Article Es ID'),
             'article_en' => Yii::t('app', 'Article En ID'),
             'time_to_read' => Yii::t('app', 'time to read'),
+            'claps' => Yii::t('app', 'claps'),
             'featured' => Yii::t('app', 'featured'),
         ];
     }

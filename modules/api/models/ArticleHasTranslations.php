@@ -77,6 +77,6 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                 'ca.title as title_ca', 'ca.resume as resume_ca', 'ca.slug as slug_ca',
                 'es.title as title_es', 'es.resume as resume_es', 'es.slug as slug_es',
                 'en.title as title_en', 'en.resume as resume_en', 'en.slug as slug_en',
-            ]);
+            ])->orderBy('t.date DESC');
     }
 }
