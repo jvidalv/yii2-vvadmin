@@ -66,7 +66,7 @@ class ApiController extends Controller
      * @return string
      */
     public function actionIndex(){
-        return 'It works! Check my blog at https://vblogv.io.';
+        return '👋 It works! Check my blog at https://vvlog.dev';
     }
 
 }
