@@ -1,7 +1,7 @@
 
 <p align="center">
   <img src="https://github.com/jvidalv/yii2-vvadmin/blob/master/web/images/logo-github.png?raw=true">
-</p>
+</p>    
 
 **``https://vvadmin.dev`` is a multi language _Wordpress wannabe_ that lets you write articles, create categories, tags, 
 upload media and has an users role system.**

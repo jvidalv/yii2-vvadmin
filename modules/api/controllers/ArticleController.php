@@ -39,6 +39,9 @@ class ArticleController extends ApiController
         $related = ArticleHasTranslations::find()->where(['in', 'article_' . $aArticle->language_id, array_map(function ($obj) {
             return $obj->id;}, $articles)])->all();
 
+        if(!$related) {
+            $related = ArticleHasTranslations::find()->where(['not', ['article_' . $aArticle->language_id => $aArticle->id]])->all();
+        }
         return $related;
     }
 
