@@ -1,13 +1,12 @@
 {
-  "name": "yiisoft/yii2-app-basic",
-  "description": "Fem Poble",
+  "name": "VVADMIN",
+  "description": "Backend administration",
   "keywords": [
-    "fempoble",
-    "poble",
-    "noticies",
-    "esdeveniments"
+    "backend",
+    "programming",
+    "api",
   ],
-  "homepage": "https://www.fempoble.app/",
+  "homepage": "https://vvadmin.dev/",
   "type": "project",
   "license": "BSD-3-Clause",
   "support": {
