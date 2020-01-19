@@ -14,7 +14,7 @@ Build with the power 🔥 of Yii2, PHP 7.4 and
 - Imagine
 - Bootstrap 4
 
-It uses the i18n for translating with ease the content to three languages.
+It uses the i18n package for translating with ease the content to three languages.
 
 ### And where is the data going
 
