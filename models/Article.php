@@ -195,6 +195,7 @@ class Article extends ActiveRecord
             $translation = new ArticleHasTranslations();
             $translation->setAttributes([
                 'article_' . $this->language_id => $this->id,
+                'claps' => rand(2,5)
             ]);
 
             $translation->save();

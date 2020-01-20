@@ -26,6 +26,9 @@ class Article extends \app\models\Article
                 'time_to_read' => function () {
                     return $this->translations->time_to_read;
                 },
+                'claps' => function () {
+                    return $this->translations->claps;
+                },
                 'date_nice' => function () {
                     setlocale(LC_TIME, $this->getLocale());
                     return strftime("%b %e, %G", strtotime($this->date));
@@ -41,7 +44,7 @@ class Article extends \app\models\Article
                 },
                 'translations' => function () {
                     return [
-                        'trans_id' => $this->translations->id,
+                        'id' => $this->translations->id,
                         'ca' => $this->translations->articleCa->slug,
                         'es' => $this->translations->articleEs->slug,
                         'en' => $this->translations->articleEn->slug,

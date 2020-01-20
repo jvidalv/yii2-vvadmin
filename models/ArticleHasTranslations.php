@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property int $article_en
  * @property int $time_to_read
  * @property int $state
+ * @property int $claps
  * @property string $category_id
  * @property ActiveQuery $articleEs
  * @property ActiveQuery $articleCa
