@@ -33,7 +33,7 @@ class VController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'existeix-usuari', 'contrassenya-correcta'],
+                        'actions' => ['login', 'existeix-usuari', 'contrassenya-correcta', 'get-image'],
                         'roles' => ['?'],
                         'allow' => true,
                     ],
