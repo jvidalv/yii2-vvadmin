@@ -26,7 +26,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                     'resume' => $model->resume_ca,
                     'slug' => $model->slug_ca,
                     'category' => $category->name_ca,
-                    'date' => strftime("%b%e, %G"),
+                    'date' => utf8_encode(strftime("%b%e, %G")),
                     'image' => Media::img($model->article_ca, Media::TBL_ARTICLE, [200, 200])
                 ];
             },
@@ -38,7 +38,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                     'resume' => $model->resume_es,
                     'slug' => $model->slug_es,
                     'category' => $category->name_es,
-                    'date' => strftime("%b%e, %G"),
+                    'date' => utf8_encode(strftime("%b%e, %G")),
                     'image' => Media::img($model->article_es, Media::TBL_ARTICLE, [200, 200])
                 ];
             },
@@ -50,7 +50,7 @@ class ArticleHasTranslations extends \app\models\ArticleHasTranslations
                     'resume' => $model->resume_en,
                     'slug' => $model->slug_en,
                     'category' => $category->name_en,
-                    'date' => strftime("%b%e, %G"),
+                    'date' => utf8_encode(strftime("%b%e, %G")),
                     'image' => Media::img($model->article_en, Media::TBL_ARTICLE, [200, 200])
                 ];
             },

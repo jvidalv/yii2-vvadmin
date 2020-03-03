@@ -50,7 +50,7 @@ class ApiController extends Controller
         $behaviors['corsFilter'] = [
             'class' => '\yii\filters\Cors',
             'cors' => [
-                'Origin' => ['http://localhost:3000'],
+                'Origin' => ['http://localhost:3000', 'https://vvlog.dev'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Request-Headers' => ['*'],
             ],

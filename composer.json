@@ -1,10 +1,10 @@
 {
-  "name": "VVADMIN",
+  "name": "yii2-vvadmin",
   "description": "Backend administration",
   "keywords": [
     "backend",
     "programming",
-    "api",
+    "api"
   ],
   "homepage": "https://vvadmin.dev/",
   "type": "project",
@@ -19,7 +19,7 @@
   "minimum-stability": "dev",
   "require": {
     "php": ">=7.2.0",
-    "yiisoft/yii2": "~2.0.29",
+    "yiisoft/yii2": "~2.0.32",
     "yiisoft/yii2-bootstrap4": "*",
     "yiisoft/yii2-swiftmailer": "~2.1.0",
     "yiisoft/yii2-imagine": "~2.1.0",

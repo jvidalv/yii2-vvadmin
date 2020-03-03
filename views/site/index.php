@@ -1,7 +1,7 @@
 <?php
 
 /* @var $this yii\web\View */
-$this->title = 'vblogv';
+$this->title = Yii::t('app', 'Home');
 
 ?>
 <section class="pt-4">
