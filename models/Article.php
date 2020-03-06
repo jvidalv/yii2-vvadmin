@@ -47,11 +47,19 @@ use yii\imagine\Image;
  */
 class Article extends ActiveRecord
 {
-
+    /**
+     * Generic filter
+     * @var string
+     */
     public $general;
     public $tags_form, $sources_form;
     public $imatge;
 
+    /**
+     * If true the slug will be regenerated with the content of the current title
+     * @var bool
+     */
+    public $regenerate_slug = false;
     /**
      * This variable is used to check if we are creating a new item for translation, and if so, we dont generate a new translations
      * @var [type]
@@ -90,6 +98,8 @@ class Article extends ActiveRecord
             [
                 'class' => SluggableBehavior::className(),
                 'attribute' => 'title',
+                'ensureUnique' => true,
+                'immutable' => !$this->regenerate_slug
             ],
         ];
     }
@@ -105,7 +115,7 @@ class Article extends ActiveRecord
             [['date'], 'default', 'value' => function () {
                 return Date('Y-m-d H:i:s');
             }],
-            [['user_id', 'state', 'word_count', 'updated_at', 'created_at', 'translation_of', 'word_count', 'continuation'], 'integer'],
+            [['user_id', 'state', 'word_count', 'updated_at', 'created_at', 'translation_of', 'word_count', 'continuation', 'regenerate_slug'], 'integer'],
             ['state', 'default', 'value' => 0],
             [['language_id'], 'string', 'max' => 2],
             [['date'], 'safe'],
@@ -134,6 +144,7 @@ class Article extends ActiveRecord
             'slug' => Yii::t('app', 'slug'),
             'word_count' => Yii::t('app', 'number of words'),
             'continuation' => Yii::t('app', 'continuation of'),
+            'regenerate_slug' => Yii::t('app', 'regenerate slug'),
         ];
     }
 
@@ -218,6 +229,9 @@ class Article extends ActiveRecord
         } catch (Exception $e) {
             $this->addError('system', Yii::t('app', 'error while updating translations'));
         }
+
+        // Sets regenerate slug to false
+        $this->regenerate_slug = false;
 
         return true;
     }

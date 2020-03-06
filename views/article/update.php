@@ -2,7 +2,6 @@
 
 use app\assets\ArticleAsset;
 use app\models\Article;
-use app\models\ArticleHasSources;
 use app\models\Category;
 use app\models\Language;
 use app\models\Media;
@@ -11,6 +10,7 @@ use dosamigos\tinymce\TinyMce;
 use kartik\datetime\DateTimePicker;
 use kartik\file\FileInput;
 use kartik\select2\Select2;
+use kartik\switchinput\SwitchInput;
 use yii\bootstrap4\Modal;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -157,7 +157,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'autoclose' => true,
                                 ]
                             ]); ?>
-
                         </div>
                     </div>
                     <div class="row">
@@ -221,6 +220,13 @@ echo $form->field($model, 'tags')->widget(Select2::classname(), [
         'multiple' => true,
     ],
 ]);
+echo $form->field($model, 'regenerate_slug')->widget(SwitchInput::class, [
+    'pluginOptions' => [
+        'onText' => 'Si',
+        'offText' => 'No'
+    ]
+]);
+
 echo $form->field($model, 'continuation')->dropDownList(
     ArrayHelper::map(Article::find()->where(['language_id' => $model->language_id])->andWhere(['not', ['id' => $model->id]])->all()
         , 'id', 'title'), ['prompt' => Yii::t('app', 'select a continuation')]);
