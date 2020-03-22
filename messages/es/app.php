@@ -59,7 +59,7 @@ return [
     'Media ID' => '@',
     'Modify image metadata' => 'Modificar metadatos de la imagen',
     'Name' => 'Nombre',
-    'No recordes la teva contrassenya?' => 'No recuerdas tu contraseña?',
+    'No recordes la teva contrassenya?' => 'Cambiar contraseña',
     'Origen ID' => '@',
     'Path to media' => 'Ruta al fichero',
     'Penjar fitxer' => 'Subir fichero',

@@ -2,7 +2,6 @@
 
 /* @var $this yii\web\View */
 /* @var $backgroundImageUrl */
-
 /* @var $model app\models\LoginForm */
 
 use app\assets\LoginAsset;
@@ -27,10 +26,9 @@ $this->beginPage() ?>
 <body class="animsition">
 <?php $this->beginBody() ?>
 <div class="page-wrapper">
-    <div class="page-content--bge5 animacio-gradient"
-         style="<?= "background: url(" . $backgroundImageUrl . ") no-repeat center center;" ?>">
+    <div class="page-content">
         <div class="container">
-            <div class="login-wrap">
+            <div class="login-wrapper">
                 <div class="login-logo">
                     <img src="/images/logo.svg" alt="vblogv" width="150">
                 </div>

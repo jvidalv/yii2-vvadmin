@@ -1,4 +1,16 @@
 /* Login Page */
+.page-content{
+    height: 100vh;
+    background: gray;
+}
+
+.container{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height: inherit;
+}
+
 .input-container {
     height: 50px;
     cursor: text
@@ -23,11 +35,11 @@
     border: unset;
     background: #ffffffc9;
     border-radius: 2px;
-    box-shadow: 0 0 9px 5px #ffffff69;
 }
 
-.login-wrap {
-    padding-top: 8vh;
+.login-wrapper {
+    min-width: 365px;
+    margin-top: -350px;
 }
 
 .login-input {
