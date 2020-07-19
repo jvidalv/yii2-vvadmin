@@ -15,6 +15,16 @@ use yii\web\Response;
 class ApiController extends Controller
 {
     /**
+     * @return array
+     */
+    public static function allowedDomains()
+    {
+        return [
+            '*'
+        ];
+    }
+
+    /**
      * @param $action
      * @return bool|string
      * @throws HttpException
@@ -25,20 +35,11 @@ class ApiController extends Controller
 
         try {
             parent::beforeAction($action);
-        } catch (Exception $e){
+        } catch (Exception $e) {
             throw new HttpException(500, $e->getMessage(), 100);
         }
 
         return $response;
-    }
-
-    /**
-     * @return array
-     */
-    public static function allowedDomains() {
-        return [
-            '*'
-        ];
     }
 
     /**
@@ -66,7 +67,8 @@ class ApiController extends Controller
     /**
      * @return string
      */
-    public function actionIndex(){
+    public function actionIndex()
+    {
         return '👋 It works! Check my blog at https://vvlog.dev';
     }
 

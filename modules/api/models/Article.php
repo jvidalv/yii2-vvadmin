@@ -14,7 +14,7 @@ class Article extends \app\models\Article
         return array_merge(
             parent::fields(),
             [
-                'image' => function() {
+                'image' => function () {
                     return Media::img($this->id, Media::TBL_ARTICLE, [200, 200]);
                 },
                 'category_nice' => function () {
@@ -39,7 +39,7 @@ class Article extends \app\models\Article
                 'anchors' => function () {
                     return $this->articleHasAnchors;
                 },
-                'sources' => function() {
+                'sources' => function () {
                     return $this->articleHasSources ? ArticleHasSources::mapSourcesToLabels($this->articleHasSources) : null;
                 },
                 'translations' => function () {

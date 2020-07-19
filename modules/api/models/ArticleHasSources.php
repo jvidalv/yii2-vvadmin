@@ -3,8 +3,6 @@
 
 namespace app\modules\api\models;
 
-use Yii;
-
 class ArticleHasSources extends \app\models\ArticleHasSources
 {
     /**
@@ -16,8 +14,8 @@ class ArticleHasSources extends \app\models\ArticleHasSources
     {
         $mapSources = self::getTypesAsKeys();
 
-        foreach($sources as $source){
-            switch($source->type){
+        foreach ($sources as $source) {
+            switch ($source->type) {
                 case self::T_LANGUAGE:
                     array_push($mapSources[self::T_LANGUAGE], ['name' => $source->name, 'version' => $source->version, 'url' => $source->url]);
                     break;

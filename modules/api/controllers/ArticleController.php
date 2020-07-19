@@ -8,11 +8,12 @@ use app\models\ArticleHasClaps;
 use app\modules\api\models\Article;
 use app\modules\api\models\ArticleHasTranslations;
 use Yii;
+use yii\db\ActiveRecord;
 
 class ArticleController extends ApiController
 {
     /**
-     * @return Article|array|\yii\db\ActiveRecord|null
+     * @return Article|array|ActiveRecord|null
      */
     public function actionOne()
     {
@@ -23,7 +24,7 @@ class ArticleController extends ApiController
     }
 
     /**
-     * @return Article[]|ArticleHasTranslations[]|array|\yii\db\ActiveRecord[]
+     * @return Article[]|ArticleHasTranslations[]|array|ActiveRecord[]
      */
     public function actionRelated()
     {
@@ -38,16 +39,17 @@ class ArticleController extends ApiController
             ->limit(Yii::$app->request->get('limit'))
             ->all();
         $related = ArticleHasTranslations::find()->where(['in', 'article_' . $aArticle->language_id, array_map(function ($obj) {
-            return $obj->id;}, $articles)])->andWhere(['t.state' => Article::STATE_PUBLISHED])->all();
+            return $obj->id;
+        }, $articles)])->andWhere(['t.state' => Article::STATE_PUBLISHED])->all();
 
-        if(!$related) {
+        if (!$related) {
             $related = ArticleHasTranslations::find()->where(['not', ['article_' . $aArticle->language_id => $aArticle->id]])->andWhere(['t.state' => Article::STATE_PUBLISHED])->all();
         }
         return $related;
     }
 
     /**
-     * @return ArticleHasTranslations[]|array|\yii\db\ActiveRecord[]
+     * @return ArticleHasTranslations[]|array|ActiveRecord[]
      */
     public function actionAll()
     {
@@ -61,13 +63,13 @@ class ArticleController extends ApiController
     public function actionClap()
     {
         $article = Article::findOne(['slug' => Yii::$app->request->get('slug')]);
-        if($article && !ArticleHasClaps::findOne(['article_has_translations_id' => $article->translations->id, 'voter_ip' => $_SERVER['REMOTE_ADDR']])){
+        if ($article && !ArticleHasClaps::findOne(['article_has_translations_id' => $article->translations->id, 'voter_ip' => $_SERVER['REMOTE_ADDR']])) {
             $article->translations->claps++;
             $article->translations->save();
             $clap = new ArticleHasClaps();
             $clap->setAttributes(
                 [
-                    'article_has_translations_id' =>  $article->translations->id,
+                    'article_has_translations_id' => $article->translations->id,
                     'voter_ip' => $_SERVER['REMOTE_ADDR'],
                 ]
             );

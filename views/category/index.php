@@ -33,9 +33,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             <div class="card-body">
                                 <?= $form->field($model, 'name_ca')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_ca') ?>
                                 <?= $form->field($model, 'name_es')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_es') ?>
-                                <?= $form->field($model, 'name_en')->textInput(['maxlength' => true, 'autocomplete' => 'off'])->label('name_en') ?>
                                 <?= $form->field($model, 'code')->textInput(['maxlength' => true, 'autocomplete' => 'off']) ?>
                                 <?= $form->field($model, 'priority')->textInput(['type' => 'number', 'max' => 9, 'min' => 1, 'value' => 9]) ?>
+                                <?= $form->field($model, 'color_hex')->textInput(['type' => 'color']) ?>
                             </div>
                             <div class="card-footer">
                                 <?= Html::submitButton('💾 ' . Yii::t('app', 'save'), ['class' => "au-btn au-btn-icon au-btn--green au-btn--small ml-auto"]) ?>
